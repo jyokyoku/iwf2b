@@ -174,29 +174,51 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	/**
-	 * 投稿のアイキャッチ画像を取得
-	 *
-	 * @param int|\WP_Post $post
+	 * @param int|\WP_Post $post_id
 	 * @param bool|string $search_post_key
-	 * @param bool|string $dummy_image
+	 * @param string $dummy_image
 	 *
 	 * @return array
 	 */
-	public static function get_thumbnail( $post, $search_post_key = false, $dummy_image = true ) {
-		$thumbnail = iwf_get_post_thumbnail_data( $post, $search_post_key );
+	public static function get_thumbnail( $post_id, $search_post_key = false, $dummy_image = '' ) {
+		$post = static::get( $post_id );
 
-		if ( empty( $thumbnail ) && $dummy_image ) {
-			if ( filter_var( $dummy_image, FILTER_VALIDATE_URL ) && preg_match( '|^https?://.*$|', $dummy_image ) ) {
-				$thumbnail['src'] = $dummy_image;
-
-			} else {
-				$thumbnail['src'] = Util::get_dummy_image();
-			}
-
-			$thumbnail['alt'] = get_the_title( $post );
+		if ( ! $post ) {
+			return [];
 		}
 
-		return $thumbnail;
+		$data = [
+			'src' => $dummy_image,
+			'alt' => get_the_title( $post ),
+		];
+
+		if ( has_post_thumbnail( $post->ID ) ) {
+			$attachment_id = get_post_thumbnail_id( $post->ID );
+			$attachment    = get_post( $attachment_id );
+
+			if ( $attachment ) {
+				$image_src   = wp_get_attachment_image_src( $attachment->ID, '' );
+				$data['src'] = isset( $image_src[0] ) ? $image_src[0] : '';
+
+				$alt = get_post_meta( $attachment->ID, '_wp_attachment_image_alt', true );
+
+				if ( empty( $alt ) ) {
+					$alt = $attachment->post_excerpt;
+				}
+
+				if ( empty( $alt ) ) {
+					$alt = $attachment->post_title;
+				}
+
+				$data['alt'] = trim( wp_strip_all_tags( $alt, true ) );
+			}
+
+		} else if ( $search_post_key && isset( $post->{$search_post_key} )
+		            && preg_match( '/<img[^>]*?src\s*=\s*["\']([^"\']+)["\'].*?\/?>/i', $post->{$search_post_key}, $matches ) ) {
+			$data['src'] = $matches[1];
+		}
+
+		return $data;
 	}
 
 	/**
