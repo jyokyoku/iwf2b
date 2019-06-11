@@ -6,6 +6,28 @@ namespace Iwf2b;
 
 class ViewHelper {
 	/**
+	 * @param $slug
+	 * @param string $name
+	 * @param array $vars
+	 */
+	public static function element( $slug, $name = '', $vars = [] ) {
+		$templates = [];
+		$name      = (string) $name;
+
+		if ( $name !== '' ) {
+			$templates[] = "parts/{$slug}-{$name}.php";
+		}
+
+		$templates[]    = "parts/{$slug}.php";
+		$_template_file = locate_template( $templates, false, false );
+
+		if ( $_template_file ) {
+			extract( $vars, EXTR_OVERWRITE );
+			include $_template_file;
+		}
+	}
+
+	/**
 	 * @param $value
 	 * @param array $protocols
 	 * @param array $attributes
