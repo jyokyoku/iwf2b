@@ -4,13 +4,6 @@ namespace Iwf2b;
 
 class Util {
 	/**
-	 * @return string
-	 */
-	public static function get_dummy_image() {
-		return get_stylesheet_directory_uri() . '/img/no_image.jpg';
-	}
-
-	/**
 	 * @param mixed $value
 	 * @param array $args
 	 *
