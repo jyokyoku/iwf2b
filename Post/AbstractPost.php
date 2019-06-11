@@ -200,13 +200,19 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	/**
-	 * @param $post
-	 * @param $key
+	 * @param int|\WP_Post $post
+	 * @param string $key
 	 * @param array $args
 	 *
 	 * @return mixed
 	 */
-	public static function get_meta( $post, $key, array $args = [] ) {
+	public static function get_meta( $post_id, $key, array $args = [] ) {
+		$post = static::get( $post_id );
+
+		if ( ! $post ) {
+			return null;
+		}
+
 		$value = function_exists( 'get_field' ) ? get_field( $key, $post ) : get_post_meta( $post->ID, $key, true );
 
 		return Util::filter( $value, $args );
