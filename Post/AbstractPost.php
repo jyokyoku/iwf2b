@@ -211,4 +211,33 @@ abstract class AbstractPost extends AbstractSingleton {
 
 		return Util::filter( $value, $args );
 	}
+
+	/**
+	 * @param int|\WP_Post $post_id
+	 * @param bool $include_current
+	 * @param bool $reverse
+	 *
+	 * @return \WP_Post[]
+	 */
+	public static function get_parents( $post_id, $include_current = false, $reverse = false ) {
+		$post = static::get( $post_id );
+
+		if ( ! $post ) {
+			return [];
+		}
+
+		$tree = $include_current ? [ $post ] : [];
+
+		while ( $post->post_parent ) {
+			$post = static::get( $post->post_parent );
+
+			if ( ! $post ) {
+				break;
+			}
+
+			$tree[] = $post;
+		}
+
+		return $reverse ? $tree : array_reverse( $tree );
+	}
 }
