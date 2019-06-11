@@ -249,7 +249,7 @@ class Util {
 		$headers = [];
 
 		/**
-		 * Fromアドレスをheader形式に変換
+		 * "From" address to header format
 		 */
 		if ( $args['from'] ) {
 			if ( is_array( $args['from'] ) ) {
@@ -263,7 +263,7 @@ class Util {
 		}
 
 		/**
-		 * CCアドレスをheader形式に変換
+		 * "CC" address to header format
 		 */
 		if ( $args['cc'] ) {
 			if ( ! is_array( $args['cc'] ) ) {
@@ -280,7 +280,7 @@ class Util {
 		}
 
 		/**
-		 * BCCアドレスをheader形式に変換
+		 * "BCC" address to header format
 		 */
 		if ( $args['bcc'] ) {
 			if ( ! is_array( $args['bcc'] ) ) {
@@ -297,7 +297,7 @@ class Util {
 		}
 
 		/**
-		 * 送信先アドレスを配列化
+		 * "TO" address to array
 		 */
 		if ( strpos( $to, ',' ) !== false ) {
 			$to = array_filter( array_map( 'trim', explode( ',', $to ) ) );
@@ -308,7 +308,7 @@ class Util {
 		}
 
 		/**
-		 * 送信先アドレスを正しい形式に変換
+		 * "TO" address to correct format
 		 */
 		$to_addrs = [];
 
@@ -321,13 +321,13 @@ class Util {
 		}
 
 		/**
-		 * テンプレートに変数を展開
+		 * Create mail body and subject
 		 */
 		$mail_body = static::text_replace( $mail_body, $vars, '%' );
 		$subject   = static::text_replace( $subject, $vars, '%' );
 
 		/**
-		 * 送信処理
+		 * Submit mail
 		 */
 		if ( $result = wp_mail( $to_addrs, $subject, $mail_body, $headers, $args['attachments'] ) ) {
 			static::log( sprintf( 'Email sent success - To: %s, Title: %s, Body: %s', implode( ',', $to_addrs ), $subject, $mail_body ) );

@@ -26,7 +26,7 @@ class App {
 	}
 
 	/**
-	 * AbstractSingletonを継承するライブラリファイルを全て生成する
+	 * Create all instances of AbstractSingleton sub classes.
 	 */
 	public function bootstrap( $base_dir, $base_namespace ) {
 		$recursive_include = function ( $parent_dir, $namespace ) use ( &$recursive_include ) {
