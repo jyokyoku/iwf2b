@@ -154,7 +154,7 @@ class Util {
 	 *
 	 * @return mixed
 	 */
-	public static function replace( $text, $vars, $bounds = '%' ) {
+	public static function text_replace( $text, $vars, $bounds = '%' ) {
 		$replaces = $searches = [];
 
 		foreach ( $vars as $key => $value ) {
@@ -323,8 +323,8 @@ class Util {
 		/**
 		 * テンプレートに変数を展開
 		 */
-		$mail_body = static::replace( $mail_body, $vars, '%' );
-		$subject   = static::replace( $subject, $vars, '%' );
+		$mail_body = static::text_replace( $mail_body, $vars, '%' );
+		$subject   = static::text_replace( $subject, $vars, '%' );
 
 		/**
 		 * 送信処理
