@@ -20,6 +20,8 @@ class App {
 	 * App constructor.
 	 */
 	protected function __construct() {
+		load_textdomain( 'iwf2b', __DIR__ . '/Lang/' . get_locale() . '.mo' );
+
 		$this->bootstrap( __DIR__, __NAMESPACE__ );
 	}
 

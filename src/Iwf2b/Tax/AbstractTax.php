@@ -21,6 +21,31 @@ abstract class AbstractTax extends AbstractSingleton {
 
 	public function register_taxonomy() {
 		if ( ! static::$builtin ) {
+			if ( empty( static::$args['labels'] ) ) {
+				static::$args['labels'] = [
+					'name'                       => static::$args['label'],
+					'singular_name'              => static::$args['label'],
+					'search_items'               => sprintf( _x( 'Search %s', 'tax', 'iwf2b' ), static::$args['label'] ),
+					'popular_items'              => sprintf( __( 'Popular %s', 'iwf2b' ), static::$args['label'] ),
+					'all_items'                  => sprintf( _x( 'All %s', 'tax', 'iwf2b' ), static::$args['label'] ),
+					'parent_item'                => sprintf( __( 'Parent %s', 'iwf2b' ), static::$args['label'] ),
+					'parent_item_colon'          => sprintf( _x( 'Parent %s:', 'tax', 'iwf2b' ), static::$args['label'] ),
+					'edit_item'                  => sprintf( _x( 'Edit %s', 'tax', 'iwf2b' ), static::$args['label'] ),
+					'view_item'                  => sprintf( _x( 'View %s', 'tax', 'iwf2b' ), static::$args['label'] ),
+					'update_item'                => sprintf( __( 'Update %s', 'iwf2b' ), static::$args['label'] ),
+					'add_new_item'               => sprintf( _x( 'Add New %s', 'tax', 'iwf2b' ), static::$args['label'] ),
+					'new_item_name'              => sprintf( __( 'New %s Name', 'iwf2b' ), static::$args['label'] ),
+					'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'iwf2b' ), static::$args['label'] ),
+					'add_or_remove_items'        => sprintf( __( 'Add or remove %s', 'iwf2b' ), static::$args['label'] ),
+					'choose_from_most_used'      => sprintf( __( 'Choose from the most used %s', 'iwf2b' ), static::$args['label'] ),
+					'not_found'                  => sprintf( _x( 'No %s found.', 'tax', 'iwf2b' ), static::$args['label'] ),
+					'no_terms'                   => sprintf( __( 'No %s', 'iwf2b' ), static::$args['label'] ),
+					'items_list_navigation'      => sprintf( _x( '%s list navigation', 'tax', 'iwf2b' ), static::$args['label'] ),
+					'items_list'                 => sprintf( _x( '%s list', 'tax', 'iwf2b' ), static::$args['label'] ),
+					'back_to_items'              => sprintf( __( '&larr; Back to %s', 'iwf2b' ), static::$args['label'] ),
+				];
+			}
+
 			register_taxonomy( static::$taxonomy, static::$object_type, static::$args );
 		}
 	}

@@ -1,0 +1,209 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2019-06-11 22:23+0900\n"
+"PO-Revision-Date: 2019-06-11 22:31+0900\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Poedit-KeywordsList: __;_x:1,2c\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: Post/AbstractPost.php:27
+#, php-format
+msgctxt "post"
+msgid "Add New %s"
+msgstr "新規%sを追加"
+
+#: Post/AbstractPost.php:28
+#, php-format
+msgctxt "post"
+msgid "Edit %s"
+msgstr "%sを編集"
+
+#: Post/AbstractPost.php:29
+#, php-format
+msgid "New %s"
+msgstr "新規%s"
+
+#: Post/AbstractPost.php:30
+#, php-format
+msgctxt "post"
+msgid "View %s"
+msgstr "%sを表示"
+
+#: Post/AbstractPost.php:31
+#, php-format
+msgid "View %s"
+msgstr "%sの表示"
+
+#: Post/AbstractPost.php:32
+#, php-format
+msgctxt "post"
+msgid "Search %s"
+msgstr "%sを検索"
+
+#: Post/AbstractPost.php:33
+#, php-format
+msgctxt "post"
+msgid "No %s found."
+msgstr "%sが見つかりませんでした。"
+
+#: Post/AbstractPost.php:34
+#, php-format
+msgid "No %s found in Trash."
+msgstr "ゴミ箱内に%sが見つかりませんでした。"
+
+#: Post/AbstractPost.php:35
+#, php-format
+msgctxt "post"
+msgid "Parent %s:"
+msgstr "親%s:"
+
+#: Post/AbstractPost.php:36
+#, php-format
+msgctxt "post"
+msgid "All %s"
+msgstr "%s一覧"
+
+#: Post/AbstractPost.php:37
+#, php-format
+msgid "%s Archives"
+msgstr "%sアーカイブ"
+
+#: Post/AbstractPost.php:38
+#, php-format
+msgid "%s Attributes"
+msgstr "%sの属性"
+
+#: Post/AbstractPost.php:39
+#, php-format
+msgid "Insert into %s"
+msgstr "%sに挿入"
+
+#: Post/AbstractPost.php:40
+#, php-format
+msgid "Uploaded to this %s"
+msgstr "この%sへのアップロード"
+
+#: Post/AbstractPost.php:41
+#, php-format
+msgid "Filter %s list"
+msgstr "%sリストの絞り込み"
+
+#: Post/AbstractPost.php:42
+#, php-format
+msgctxt "post"
+msgid "%s list navigation"
+msgstr "%sリストナビゲーション"
+
+#: Post/AbstractPost.php:43
+#, php-format
+msgctxt "post"
+msgid "%s list"
+msgstr "%sリスト"
+
+#: Tax/AbstractTax.php:28
+#, php-format
+msgctxt "tax"
+msgid "Search %s"
+msgstr "%sを検索"
+
+#: Tax/AbstractTax.php:29
+#, php-format
+msgid "Popular %s"
+msgstr "人気の%s"
+
+#: Tax/AbstractTax.php:30
+#, php-format
+msgctxt "tax"
+msgid "All %s"
+msgstr "%s一覧"
+
+#: Tax/AbstractTax.php:31
+#, php-format
+msgid "Parent %s"
+msgstr "親%s"
+
+#: Tax/AbstractTax.php:32
+#, php-format
+msgctxt "tax"
+msgid "Parent %s:"
+msgstr "親%s:"
+
+#: Tax/AbstractTax.php:33
+#, php-format
+msgctxt "tax"
+msgid "Edit %s"
+msgstr "%sの編集"
+
+#: Tax/AbstractTax.php:34
+#, php-format
+msgctxt "tax"
+msgid "View %s"
+msgstr "%sを表示"
+
+#: Tax/AbstractTax.php:35
+#, php-format
+msgid "Update %s"
+msgstr "%sを更新"
+
+#: Tax/AbstractTax.php:36
+#, php-format
+msgctxt "tax"
+msgid "Add New %s"
+msgstr "新規%sを追加"
+
+#: Tax/AbstractTax.php:37
+#, php-format
+msgid "New %s Name"
+msgstr "新規%s名"
+
+#: Tax/AbstractTax.php:38
+#, php-format
+msgid "Separate %s with commas"
+msgstr "%sが複数ある場合はコンマで区切ってください"
+
+#: Tax/AbstractTax.php:39
+#, php-format
+msgid "Add or remove %s"
+msgstr "%sの追加・削除"
+
+#: Tax/AbstractTax.php:40
+#, php-format
+msgid "Choose from the most used %s"
+msgstr "よく使われている%sから選択"
+
+#: Tax/AbstractTax.php:41
+#, php-format
+msgctxt "tax"
+msgid "No %s found."
+msgstr "%sが見つかりませんでした。"
+
+#: Tax/AbstractTax.php:42
+#, php-format
+msgid "No %s"
+msgstr "%sなし"
+
+#: Tax/AbstractTax.php:43
+#, php-format
+msgctxt "tax"
+msgid "%s list navigation"
+msgstr "%sリストナビゲーション"
+
+#: Tax/AbstractTax.php:44
+#, php-format
+msgctxt "tax"
+msgid "%s list"
+msgstr "%sリスト"
+
+#: Tax/AbstractTax.php:45
+#, php-format
+msgid "&larr; Back to %s"
+msgstr "&larr; %sに戻る"

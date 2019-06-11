@@ -20,6 +20,30 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	public function register_post_type() {
 		if ( ! static::$builtin ) {
+			if ( empty( static::$args['labels'] ) ) {
+				static::$args['labels'] = [
+					'name'                  => static::$args['label'],
+					'singular_name'         => static::$args['label'],
+					'add_new_item'          => sprintf( _x( 'Add New %s', 'post', 'iwf2b' ), static::$args['label'] ),
+					'edit_item'             => sprintf( _x( 'Edit %s', 'post', 'iwf2b' ), static::$args['label'] ),
+					'new_item'              => sprintf( __( 'New %s', 'iwf2b' ), static::$args['label'] ),
+					'view_item'             => sprintf( _x( 'View %s', 'post', 'iwf2b' ), static::$args['label'] ),
+					'view_items'            => sprintf( __( 'View %s', 'iwf2b' ), static::$args['label'] ),
+					'search_items'          => sprintf( _x( 'Search %s', 'post', 'iwf2b' ), static::$args['label'] ),
+					'not_found'             => sprintf( _x( 'No %s found.', 'post', 'iwf2b' ), static::$args['label'] ),
+					'not_found_in_trash'    => sprintf( __( 'No %s found in Trash.', 'iwf2b' ), static::$args['label'] ),
+					'parent_item_colon'     => sprintf( _x( 'Parent %s:', 'post', 'iwf2b' ), static::$args['label'] ),
+					'all_items'             => sprintf( _x( 'All %s', 'post', 'iwf2b' ), static::$args['label'] ),
+					'archives'              => sprintf( __( '%s Archives', 'iwf2b' ), static::$args['label'] ),
+					'attributes'            => sprintf( __( '%s Attributes', 'iwf2b' ), static::$args['label'] ),
+					'insert_into_item'      => sprintf( __( 'Insert into %s', 'iwf2b' ), static::$args['label'] ),
+					'uploaded_to_this_item' => sprintf( __( 'Uploaded to this %s', 'iwf2b' ), static::$args['label'] ),
+					'filter_items_list'     => sprintf( __( 'Filter %s list', 'iwf2b' ), static::$args['label'] ),
+					'items_list_navigation' => sprintf( _x( '%s list navigation', 'post', 'iwf2b' ), static::$args['label'] ),
+					'items_list'            => sprintf( _x( '%s list', 'post', 'iwf2b' ), static::$args['label'] ),
+				];
+			}
+
 			register_post_type( static::$post_type, static::$args );
 		}
 	}
