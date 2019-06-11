@@ -1,0 +1,18 @@
+{
+    "name": "jyokyoku/iwf2b",
+    "description": "Library for WordPress development.",
+    "type": "library",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "jyokyoku",
+            "email": "jyokyoku@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "~5.4||~7.0"
+    },
+    "autoload": {
+        "psr-4": {"Iwf2b\\": "src/Iwf2b"}
+    }
+}

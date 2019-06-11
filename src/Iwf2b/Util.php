@@ -18,15 +18,16 @@ class Util {
 	 */
 	public static function filter( $value, array $args = [] ) {
 		$synonym = [
+			'ift'  => 'if_true',
+			'iff'  => 'if_false',
 			'd'    => 'default',
-			'r'    => 'replace',
 			'f'    => 'filters',
 			'pre'  => 'prefix',
 			'post' => 'postfix',
 		];
 
 		foreach ( $synonym as $synonym_key => $arg_key ) {
-			if ( isset( $args[ $synonym_key ] ) && empty( $args[ $arg_key ] ) ) {
+			if ( isset( $args[ $synonym_key ] ) && ! isset( $args[ $arg_key ] ) ) {
 				$args[ $arg_key ] = $args[ $synonym_key ];
 			}
 
@@ -34,22 +35,31 @@ class Util {
 		}
 
 		$args = wp_parse_args( $args, [
-			'default' => null,
-			'filters' => [],
-			'prefix'  => null,
-			'postfix' => null,
-			'replace' => '',
+			'if_true'  => null,
+			'if_false' => null,
+			'default'  => null,
+			'filters'  => [],
+			'prefix'   => null,
+			'postfix'  => null,
 		] );
 
-		if ( empty( $value ) && $args['default'] !== null ) {
+		$is_empty = function ( $value ) {
+			return $value === '' || $value === [] || $value === false || $value === null;
+		};
+
+		if ( ! $is_empty( $value ) && $args['if_true'] !== null ) {
+			$value = $args['if_true'];
+		}
+
+		if ( $is_empty( $value ) && $args['if_false'] !== null ) {
+			$value = $args['if_false'];
+		}
+
+		if ( $is_empty( $value ) && $args['default'] !== null ) {
 			return $args['default'];
 		}
 
-		if ( $value ) {
-			if ( $args['replace'] ) {
-				$value = $args['replace'];
-			}
-
+		if ( ! $is_empty( $value ) ) {
 			if ( $args['filters'] ) {
 				if ( ! is_array( $args['filters'] ) ) {
 					$args['filters'] = [ $args['filters'] ];

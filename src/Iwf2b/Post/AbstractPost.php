@@ -181,16 +181,19 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @return array
 	 */
 	public static function get_thumbnail( $post_id, $search_post_key = false, $dummy_image = '' ) {
+		$data = [
+			'src' => '',
+			'alt' => '',
+		];
+
 		$post = static::get( $post_id );
 
 		if ( ! $post ) {
-			return [];
+			return $data;
 		}
 
-		$data = [
-			'src' => $dummy_image,
-			'alt' => get_the_title( $post ),
-		];
+		$data['src'] = $dummy_image;
+		$data['alt'] = get_the_title( $post );
 
 		if ( has_post_thumbnail( $post->ID ) ) {
 			$attachment_id = get_post_thumbnail_id( $post->ID );

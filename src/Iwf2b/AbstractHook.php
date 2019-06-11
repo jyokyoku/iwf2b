@@ -157,11 +157,11 @@ abstract class AbstractHook extends AbstractSingleton {
 	 */
 	public function acf_load_config() {
 		if ( ! $this->acf_activated() ) {
-			$files = scandir( __DIR__, SCANDIR_SORT_ASCENDING );
+			$files = scandir( get_stylesheet_directory(), SCANDIR_SORT_ASCENDING );
 
 			foreach ( $files as $file ) {
 				if ( preg_match( '|^acf-export-.*?\.json$|', $file, $matches ) ) {
-					$acf_configs = json_decode( file_get_contents( __DIR__ . DIRECTORY_SEPARATOR . $file ), true );
+					$acf_configs = json_decode( file_get_contents( trailingslashit( get_stylesheet_directory() ) . $file ), true );
 
 					foreach ( $acf_configs as $acf_config ) {
 						acf_add_local_field_group( $acf_config );
