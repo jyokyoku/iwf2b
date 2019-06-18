@@ -88,66 +88,6 @@ class Util {
 	}
 
 	/**
-	 * @param array $data
-	 * @param mixed ...$args
-	 *
-	 * @return array
-	 */
-	public static function array_merge_deep( array $data, ...$args ) {
-		$return = $data;
-
-		foreach ( $args as &$current_arg ) {
-			$stack[] = [ (array) $current_arg, &$return ];
-		}
-
-		unset( $current_arg );
-
-		while ( ! empty( $stack ) ) {
-			foreach ( $stack as $current_key => &$current_merge ) {
-				foreach ( $current_merge[0] as $key => &$val ) {
-					if ( ! empty( $current_merge[1][ $key ] ) && (array) $current_merge[1][ $key ] === $current_merge[1][ $key ] && (array) $val === $val ) {
-						$stack[] = [ &$val, &$current_merge[1][ $key ] ];
-
-					} elseif ( (int) $key === $key && isset( $current_merge[1][ $key ] ) ) {
-						$current_merge[1][] = $val;
-
-					} else {
-						$current_merge[1][ $key ] = $val;
-					}
-				}
-
-				unset( $stack[ $current_key ] );
-			}
-
-			unset( $current_merge );
-		}
-
-		return $return;
-	}
-
-	/**
-	 * @param $text
-	 * @param $vars
-	 * @param string $bounds
-	 *
-	 * @return mixed
-	 */
-	public static function text_replace( $text, $vars, $bounds = '%' ) {
-		$replaces = $searches = [];
-
-		foreach ( $vars as $key => $value ) {
-			if ( ! is_scalar( $value ) ) {
-				continue;
-			}
-
-			$searches[] = $bounds . $key . $bounds;
-			$replaces[] = (string) $value;
-		}
-
-		return str_replace( $searches, $replaces, $text );
-	}
-
-	/**
 	 * @param string $message
 	 * @param bool $with_callee
 	 */
@@ -301,8 +241,8 @@ class Util {
 		/**
 		 * Create mail body and subject
 		 */
-		$mail_body = static::text_replace( $mail_body, $vars, '%' );
-		$subject   = static::text_replace( $subject, $vars, '%' );
+		$mail_body = Text::replace( $mail_body, $vars, '%' );
+		$subject   = Text::replace( $subject, $vars, '%' );
 
 		/**
 		 * Submit mail

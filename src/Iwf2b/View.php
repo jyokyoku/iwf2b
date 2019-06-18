@@ -96,4 +96,26 @@ class View {
 
 		return $view_vars_store ? call_user_func_array( 'array_merge', $view_vars_store ) : [];
 	}
+
+	/**
+	 * @param $slug
+	 * @param string $name
+	 * @param array $vars
+	 */
+	public static function element( $slug, $name = '', $vars = [] ) {
+		$templates = [];
+		$name      = (string) $name;
+
+		if ( $name !== '' ) {
+			$templates[] = "parts/{$slug}-{$name}.php";
+		}
+
+		$templates[]    = "parts/{$slug}.php";
+		$_template_file = locate_template( $templates, false, false );
+
+		if ( $_template_file ) {
+			extract( $vars, EXTR_OVERWRITE );
+			include $_template_file;
+		}
+	}
 }

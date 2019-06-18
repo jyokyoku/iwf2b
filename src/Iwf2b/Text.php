@@ -1,30 +1,45 @@
 <?php
 
-
 namespace Iwf2b;
 
-
-class ViewHelper {
+class Text {
 	/**
-	 * @param $slug
-	 * @param string $name
-	 * @param array $vars
+	 * @param $text
+	 * @param $vars
+	 * @param string $bounds
+	 *
+	 * @return mixed
 	 */
-	public static function element( $slug, $name = '', $vars = [] ) {
-		$templates = [];
-		$name      = (string) $name;
+	public static function replace( $text, $vars, $bounds = '%' ) {
+		$replaces = $searches = [];
 
-		if ( $name !== '' ) {
-			$templates[] = "parts/{$slug}-{$name}.php";
+		foreach ( $vars as $key => $value ) {
+			if ( ! is_scalar( $value ) ) {
+				continue;
+			}
+
+			$searches[] = $bounds . $key . $bounds;
+			$replaces[] = (string) $value;
 		}
 
-		$templates[]    = "parts/{$slug}.php";
-		$_template_file = locate_template( $templates, false, false );
+		return str_replace( $searches, $replaces, $text );
+	}
 
-		if ( $_template_file ) {
-			extract( $vars, EXTR_OVERWRITE );
-			include $_template_file;
+	/**
+	 * @param $text
+	 * @param int $length
+	 * @param string $ellipsis
+	 *
+	 * @return string
+	 */
+	public static function truncate( $text, $length = 200, $ellipsis = '...' ) {
+		$text = wp_strip_all_tags( strip_shortcodes( $text ), true );
+
+		if ( mb_strlen( $text ) > $length ) {
+			$text = mb_substr( $text, 0, $length ) . $ellipsis;
 		}
+
+		return $text;
 	}
 
 	/**
