@@ -129,8 +129,8 @@ abstract class AbstractHook extends AbstractSingleton {
 	 */
 	function auto_post_slug( $slug, $post_ID, $post_status, $post_type ) {
 		if ( preg_match( '/(%[0-9a-f]{2})+/', $slug ) ) {
-			if ( $post_ID && $post_type === 'post' ) {
-				$slug = 'p' . $post_ID;
+			if ( $post_ID ) {
+				$slug = $post_type . '-' . $post_ID;
 			}
 		}
 
