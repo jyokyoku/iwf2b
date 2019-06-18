@@ -197,14 +197,40 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * ACF Path
 	 */
 	public function acf_settings_path( $path ) {
-		return get_template_directory() . '/vendor/advanced-custom-fields-pro/';
+		$new_path = get_stylesheet_directory() . '/vendor/advanced-custom-fields-pro/';
+
+		if ( is_dir( $new_path ) ) {
+			$path = $new_path;
+
+		} else {
+			$new_path = get_template_directory() . '/vendor/advanced-custom-fields-pro/';
+
+			if ( is_dir( $new_path ) ) {
+				$path = $new_path;
+			}
+		}
+
+		return $path;
 	}
 
 	/**
 	 * ACF Dir
 	 */
 	public function acf_settings_dir( $dir ) {
-		return get_template_directory_uri() . '/vendor/advanced-custom-fields-pro/';
+		$new_dir = get_stylesheet_directory() . '/vendor/advanced-custom-fields-pro/';
+
+		if ( is_dir( $new_dir ) ) {
+			$dir = get_stylesheet_directory_uri() . '/vendor/advanced-custom-fields-pro/';
+
+		} else {
+			$new_dir = get_template_directory() . '/vendor/advanced-custom-fields-pro/';
+
+			if ( is_dir( $new_dir ) ) {
+				$dir = get_template_directory_uri() . '/vendor/advanced-custom-fields-pro/';
+			}
+		}
+
+		return $dir;
 	}
 
 	/**
