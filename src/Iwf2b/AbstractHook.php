@@ -171,7 +171,7 @@ abstract class AbstractHook extends AbstractSingleton {
 			$files = scandir( get_stylesheet_directory(), SCANDIR_SORT_ASCENDING );
 
 			foreach ( $files as $file ) {
-				if ( preg_match( '|^acf-export-.*?\.json$|', $file, $matches ) ) {
+				if ( preg_match( '|^acf-export(?:-.*)?\.json$|', $file, $matches ) ) {
 					$acf_configs = json_decode( file_get_contents( trailingslashit( get_stylesheet_directory() ) . $file ), true );
 
 					foreach ( $acf_configs as $acf_config ) {
