@@ -52,6 +52,9 @@ abstract class AbstractHook extends AbstractSingleton {
 		// Contact Form 7の設定画面表示を管理者に限定する
 		add_filter( 'wpcf7_map_meta_cap', [ $this, 'cf7_meta_cap' ] );
 
+		// Yoastのメタボックスの位置を調整
+		add_filter( 'wpseo_metabox_prio', [ $this, 'yoast_seo_metabox_priority' ] );
+
 		// headerタグ内をクリーンに
 		remove_action( 'wp_head', 'wp_shortlink_wp_head' );
 		remove_action( 'wp_head', 'wp_generator' );
@@ -105,7 +108,15 @@ abstract class AbstractHook extends AbstractSingleton {
 		//remove_action( 'admin_init', '_maybe_update_themes' );
 		//add_filter( 'pre_site_transient_update_core', '__return_zero' );
 		//add_filter( 'pre_site_transient_update_plugins', '__return_zero' );
+	}
 
+	/**
+	 * Yoastのメタボックスの位置を調整
+	 *
+	 * @return string
+	 */
+	function yoast_seo_metabox_priority() {
+		return 'low';
 	}
 
 	/**
