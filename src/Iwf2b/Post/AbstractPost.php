@@ -262,7 +262,15 @@ abstract class AbstractPost extends AbstractSingleton {
 			return null;
 		}
 
+		if ( isset( $args['autop'] ) && $args['autop'] === false ) {
+			remove_filter( 'acf_the_content', 'wpautop' );
+		}
+
 		$value = function_exists( 'get_field' ) ? get_field( $key, $post ) : get_post_meta( $post->ID, $key, true );
+
+		if ( isset( $args['autop'] ) && $args['autop'] === false ) {
+			add_filter( 'acf_the_content', 'wpautop' );
+		}
 
 		return Util::filter( $value, $args );
 	}
