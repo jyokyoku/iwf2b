@@ -138,7 +138,8 @@ class Arr {
 	 *
 	 * @return array
 	 */
-	public static function merge( array $data, ...$args ) {
+	public static function merge( array $data, array $args ) {
+		$args   = array_slice( func_get_args(), 1 );
 		$return = $data;
 
 		foreach ( $args as &$current_arg ) {
