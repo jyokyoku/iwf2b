@@ -78,7 +78,7 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 		$template_file = trailingslashit( static::$template_dir ) . $file_name;
 
 		static::$loader->set_template_file( $template_file );
-		static::$loader->load( static::$view_vars );
+		static::$loader->load( static::$view_vars, false );
 	}
 
 	/**

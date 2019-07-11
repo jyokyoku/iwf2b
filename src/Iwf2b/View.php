@@ -25,12 +25,16 @@ class View {
 		}
 	}
 
-	public function load( array $view_vars = [] ) {
+	public function load( array $view_vars = [], $do_action = true ) {
 		if ( ! $this->template_file ) {
 			return;
 		}
 
-		$action_view_vars = $this->do_action();
+		$action_view_vars = [];
+
+		if ( $do_action ) {
+			$action_view_vars = $this->do_action();
+		}
 
 		if ( $action_view_vars ) {
 			$view_vars = array_merge( $view_vars, $action_view_vars );
@@ -43,7 +47,7 @@ class View {
 		include $this->template_file;
 	}
 
-	public function load_global( array $view_vars = [] ) {
+	public function load_global( array $view_vars = [], $do_action = true ) {
 		if ( ! $this->template_file ) {
 			return;
 		}
@@ -64,7 +68,11 @@ class View {
 			}
 		}
 
-		$action_view_vars = $this->do_action();
+		$action_view_vars = [];
+
+		if ( $do_action ) {
+			$action_view_vars = $this->do_action();
+		}
 
 		if ( $action_view_vars ) {
 			$view_vars = array_merge( $view_vars, $action_view_vars );
