@@ -107,10 +107,10 @@ class View {
 		$name      = (string) $name;
 
 		if ( $name !== '' ) {
-			$templates[] = "parts/{$slug}-{$name}.php";
+			$templates[] = "elements/{$slug}-{$name}.php";
 		}
 
-		$templates[]    = "parts/{$slug}.php";
+		$templates[]    = "elements/{$slug}.php";
 		$_template_file = locate_template( $templates, false, false );
 
 		if ( $_template_file ) {
