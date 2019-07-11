@@ -3,6 +3,8 @@
 namespace Iwf2b\Tax;
 
 use Iwf2b\AbstractSingleton;
+use Iwf2b\Arr;
+use Iwf2b\Util;
 
 abstract class AbstractTax extends AbstractSingleton {
 	protected static $object_type = '';
@@ -186,4 +188,32 @@ abstract class AbstractTax extends AbstractSingleton {
 
 		return $reverse ? $tree : array_reverse( $tree );
 	}
+
+	/**
+	 * @param int|\WP_Term $post
+	 * @param string $key
+	 * @param array $args
+	 *
+	 * @return mixed
+	 */
+	public static function get_meta( $term_id, $key, array $args = [] ) {
+		$term = static::get( $term_id );
+
+		if ( ! $term ) {
+			return null;
+		}
+
+		if ( Arr::get( $args, 'autop' ) === false ) {
+			remove_filter( 'acf_the_content', 'wpautop' );
+		}
+
+		$value = function_exists( 'get_field' ) ? get_field( $key, $term ) : get_term_meta( $term->term_id, $key, true );
+
+		if ( Arr::get( $args, 'autop' ) === false ) {
+			add_filter( 'acf_the_content', 'wpautop' );
+		}
+
+		return Util::filter( $value, $args );
+	}
+
 }
