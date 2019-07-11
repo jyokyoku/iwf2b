@@ -178,11 +178,10 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	/**
 	 * @param string $template
-	 * @param string $default
 	 *
-	 * @return string
+	 * @return null|\WP_Post
 	 */
-	public static function get_permalink_by_tmpl( $template, $default = '' ) {
+	public static function get_by_tmpl( $template ) {
 		$post = static::get_post( [
 			'meta_query' => [
 				[
@@ -192,11 +191,19 @@ abstract class AbstractPost extends AbstractSingleton {
 			],
 		] );
 
-		if ( $post ) {
-			return get_permalink( $post );
-		}
+		return $post;
+	}
 
-		return $default;
+	/**
+	 * @param string $template
+	 * @param string $default
+	 *
+	 * @return string
+	 */
+	public static function get_permalink_by_tmpl( $template, $default = '' ) {
+		$post = static::get_by_tmpl( $template );
+
+		return $post ? get_permalink( $post ) : $default;
 	}
 
 	/**
