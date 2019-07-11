@@ -84,14 +84,16 @@ abstract class AbstractTax extends AbstractSingleton {
 		if ( $term_id instanceof \WP_Term ) {
 			$term_object = $term_id;
 
-		} else if ( is_numeric( $term_id ) ) {
-			$term_object = get_term_by( 'id', (int) $term_id, static::$taxonomy );
+		} else if ( static::$taxonomy ) {
+			if ( is_numeric( $term_id ) ) {
+				$term_object = get_term_by( 'id', (int) $term_id, static::$taxonomy );
 
-		} else if ( is_string( $term_id ) ) {
-			$term_object = get_term_by( 'slug', $term_id, static::$taxonomy );
+			} else if ( is_string( $term_id ) ) {
+				$term_object = get_term_by( 'slug', $term_id, static::$taxonomy );
+			}
 		}
 
-		if ( ! $term_object || $term_object->taxonomy !== static::$taxonomy ) {
+		if ( ! $term_object || ( static::$taxonomy && $term_object->taxonomy !== static::$taxonomy ) ) {
 			return false;
 		}
 
@@ -104,8 +106,11 @@ abstract class AbstractTax extends AbstractSingleton {
 	 * @return array
 	 */
 	public static function create_args( array $args = [] ) {
-		$args             = array_merge( static::$find_args, $args );
-		$args['taxonomy'] = static::$taxonomy;
+		$args = array_merge( static::$find_args, $args );
+
+		if ( static::$taxonomy ) {
+			$args['taxonomy'] = static::$taxonomy;
+		}
 
 		return $args;
 	}

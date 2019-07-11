@@ -41,15 +41,32 @@ class AbstractUser extends AbstractSingleton {
 	 * @return \WP_User|null
 	 */
 	public static function get( $user_id ) {
-		if ( is_object( $user_id ) && ! empty( $user_id->ID ) ) {
-			$user_id = $user_id->ID;
+		$user = null;
+
+		if ( $user_id instanceof \WP_User ) {
+			$user = $user_id;
+
+		} else if ( preg_match( '/^[0-9]+?$/', $user_id ) ) {
+			$user = get_user_by( 'id', (int) $user_id );
+
+		} else if ( is_string( $user_id ) ) {
+			if ( is_email( $user_id ) ) {
+				$user = get_user_by( 'email', $user_id );
+
+			} else {
+				$user = get_user_by( 'login', $user_id );
+
+				if ( ! $user ) {
+					$user = get_user_by( 'slug', $user_id );
+				}
+			}
 		}
 
-		if ( ! is_numeric( $user_id ) ) {
+		if ( ! $user || ( static::$role && ! user_can( $user, static::$role ) ) ) {
 			return null;
 		}
 
-		return get_userdata( $user_id );
+		return $user;
 	}
 
 	/**
@@ -118,34 +135,6 @@ class AbstractUser extends AbstractSingleton {
 	 * @param $user_id
 	 */
 	public static function is_valid( $user_id = null ) {
-		$user = null;
-
-		if ( $user_id ) {
-			$user = static::get( $user_id );
-
-		} else if ( $user_id === null ) {
-			$user = wp_get_current_user();
-		}
-
-		if ( ! $user || $user->_deleted ) {
-			return false;
-		}
-
-		if ( empty( static::$role ) ) {
-			return true;
-		}
-
-		return user_can( $user, static::$role );
-	}
-
-	/**
-	 * 権限設定
-	 */
-	public static function init_role() {
-		$role = get_role( static::$role );
-
-		if ( ! $role ) {
-			$role = add_role( static::$role, static::$role_label );
-		}
+		return static::get( $user_id ) ? true : false;
 	}
 }

@@ -3,6 +3,7 @@
 namespace Iwf2b\Post;
 
 use Iwf2b\AbstractSingleton;
+use Iwf2b\Arr;
 use Iwf2b\Util;
 
 abstract class AbstractPost extends AbstractSingleton {
@@ -56,7 +57,7 @@ abstract class AbstractPost extends AbstractSingleton {
 	public static function get( $post_id ) {
 		$post = get_post( $post_id );
 
-		if ( ! $post || ! static::is_valid( $post ) ) {
+		if ( ! $post || ( static::$post_type && $post->post_type !== static::$post_type ) ) {
 			return null;
 		}
 
@@ -76,9 +77,7 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @return bool
 	 */
 	public static function is_valid( $post_id ) {
-		$post = get_post( $post_id );
-
-		return $post && $post->post_type === static::$post_type;
+		return static::get( $post_id ) ? true : false;
 	}
 
 	/**
@@ -87,8 +86,11 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @return array
 	 */
 	public static function create_args( array $args = [] ) {
-		$args              = array_merge( static::$find_args, $args );
-		$args['post_type'] = static::$post_type;
+		$args = array_merge( static::$find_args, $args );
+
+		if ( static::$post_type ) {
+			$args['post_type'] = static::$post_type;
+		}
 
 		return $args;
 	}
@@ -262,13 +264,13 @@ abstract class AbstractPost extends AbstractSingleton {
 			return null;
 		}
 
-		if ( isset( $args['autop'] ) && $args['autop'] === false ) {
+		if ( Arr::get( $args, 'autop' ) === false ) {
 			remove_filter( 'acf_the_content', 'wpautop' );
 		}
 
 		$value = function_exists( 'get_field' ) ? get_field( $key, $post ) : get_post_meta( $post->ID, $key, true );
 
-		if ( isset( $args['autop'] ) && $args['autop'] === false ) {
+		if ( Arr::get( $args, 'autop' ) === false ) {
 			add_filter( 'acf_the_content', 'wpautop' );
 		}
 
