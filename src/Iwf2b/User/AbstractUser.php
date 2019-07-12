@@ -38,7 +38,7 @@ class AbstractUser extends AbstractSingleton {
 	/**
 	 * @param $user_id
 	 *
-	 * @return \WP_User|null
+	 * @return \WP_User|int|string
 	 */
 	public static function get( $user_id ) {
 		$user = null;

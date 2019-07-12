@@ -76,7 +76,7 @@ abstract class AbstractTax extends AbstractSingleton {
 	}
 
 	/**
-	 * @param int|string|array $term_id
+	 * @param int|string|\WP_Term $term_id
 	 *
 	 * @return bool|\WP_Term
 	 */
@@ -190,7 +190,7 @@ abstract class AbstractTax extends AbstractSingleton {
 	}
 
 	/**
-	 * @param int|\WP_Term $post
+	 * @param int|string|\WP_Term $term_id
 	 * @param string $key
 	 * @param array $args
 	 *
