@@ -3,6 +3,8 @@
 namespace Iwf2b\User;
 
 use Iwf2b\AbstractSingleton;
+use Iwf2b\Arr;
+use Iwf2b\Util;
 
 class AbstractUser extends AbstractSingleton {
 	protected static $role = '';
@@ -136,5 +138,32 @@ class AbstractUser extends AbstractSingleton {
 	 */
 	public static function is_valid( $user_id = null ) {
 		return static::get( $user_id ) ? true : false;
+	}
+
+	/**
+	 * @param int|string|\WP_User $user_id
+	 * @param string $key
+	 * @param array $args
+	 *
+	 * @return mixed
+	 */
+	public static function get_meta( $user_id, $key, array $args = [] ) {
+		$user = static::get( $user_id );
+
+		if ( ! $user ) {
+			return null;
+		}
+
+		if ( Arr::get( $args, 'autop' ) === false ) {
+			remove_filter( 'acf_the_content', 'wpautop' );
+		}
+
+		$value = function_exists( 'get_field' ) ? get_field( $key, $user ) : get_user_meta( $user->term_id, $key, true );
+
+		if ( Arr::get( $args, 'autop' ) === false ) {
+			add_filter( 'acf_the_content', 'wpautop' );
+		}
+
+		return Util::filter( $value, $args );
 	}
 }
