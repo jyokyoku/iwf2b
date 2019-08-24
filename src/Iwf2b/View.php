@@ -118,12 +118,12 @@ class View {
 			$templates[] = "elements/{$slug}-{$name}.php";
 		}
 
-		$templates[]    = "elements/{$slug}.php";
-		$_template_file = locate_template( $templates, false, false );
+		$templates[]   = "elements/{$slug}.php";
+		$template_file = locate_template( $templates, false, false );
 
-		if ( $_template_file ) {
-			extract( $vars, EXTR_OVERWRITE );
-			include $_template_file;
-		}
+		$view = new static();
+
+		$view->set_template_file( $template_file );
+		$view->load_global( $vars );
 	}
 }
