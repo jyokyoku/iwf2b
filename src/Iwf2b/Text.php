@@ -117,4 +117,14 @@ class Text {
 
 		return $text;
 	}
+
+	/**
+	 * @param $string
+	 * @param string $to
+	 *
+	 * @return string
+	 */
+	public static function convert_eol( $string, $to = "\n" ) {
+		return strtr( $string, [ "\r\n" => $to, "\r" => $to, "\n" => $to ] );
+	}
 }
