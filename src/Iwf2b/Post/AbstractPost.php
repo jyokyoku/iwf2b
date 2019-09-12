@@ -115,11 +115,11 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	/**
-	 * @param int|array $args
+	 * @param array $args
 	 *
 	 * @return \WP_Post|null
 	 */
-	public static function get_post( $args = [] ) {
+	public static function get_post( array $args = [] ) {
 		$args['posts_per_page'] = 1;
 		$posts                  = get_posts( static::create_args( $args ) );
 
