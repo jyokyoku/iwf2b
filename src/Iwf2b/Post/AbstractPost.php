@@ -92,6 +92,16 @@ abstract class AbstractPost extends AbstractSingleton {
 			$args['post_type'] = static::$post_type;
 		}
 
+		// convert 'template' keyword to meta_query
+		if ( isset( $args['template'] ) ) {
+			$args['meta_query'][] = [
+				'key'   => '_wp_page_template',
+				'value' => $args['template'],
+			];
+
+			unset( $args['template'] );
+		}
+
 		return $args;
 	}
 
@@ -174,36 +184,6 @@ abstract class AbstractPost extends AbstractSingleton {
 		}
 
 		return null;
-	}
-
-	/**
-	 * @param string $template
-	 *
-	 * @return null|\WP_Post
-	 */
-	public static function get_by_tmpl( $template ) {
-		$post = static::get_post( [
-			'meta_query' => [
-				[
-					'key'   => '_wp_page_template',
-					'value' => $template,
-				],
-			],
-		] );
-
-		return $post;
-	}
-
-	/**
-	 * @param string $template
-	 * @param string $default
-	 *
-	 * @return string
-	 */
-	public static function get_permalink_by_tmpl( $template, $default = '' ) {
-		$post = static::get_by_tmpl( $template );
-
-		return $post ? get_permalink( $post ) : $default;
 	}
 
 	/**
