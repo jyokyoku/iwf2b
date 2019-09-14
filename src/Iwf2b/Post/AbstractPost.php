@@ -45,6 +45,10 @@ abstract class AbstractPost extends AbstractSingleton {
 				];
 			}
 
+			if ( ! empty( static::$args['supports'] ) && in_array( 'thumbnail', static::$args['supports'] ) ) {
+				add_theme_support( 'post-thumbnails', [ static::$post_type ] );
+			}
+
 			register_post_type( static::$post_type, static::$args );
 		}
 	}
