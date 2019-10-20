@@ -10,19 +10,9 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 
 	protected static $template_dir = '';
 
-	protected static $parent = '';
-
-	protected static $page_title = '';
-
-	protected static $menu_title = '';
-
-	protected static $capability = '';
-
 	protected static $menu_slug = '';
 
-	protected static $icon = '';
-
-	protected static $position = null;
+	protected static $args = [];
 
 	protected static $view_vars = [];
 
@@ -36,6 +26,15 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 
 		add_action( '_admin_menu', [ $this, 'action' ] );
 
+		static::$args = wp_parse_args( static::$args, [
+			'parent'     => '',
+			'page_title' => '',
+			'menu_title' => '',
+			'capability' => '',
+			'icon'       => '',
+			'position'   => '',
+		] );
+
 		static::$loader = new View();
 	}
 
@@ -43,11 +42,26 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 	 * Register pages
 	 */
 	public function register() {
-		if ( static::$parent ) {
-			add_submenu_page( static::$parent, static::$page_title, static::$menu_title, static::$capability, static::$menu_slug, [ $this, 'template' ] );
+		if ( static::$args['parent'] ) {
+			add_submenu_page(
+				static::$args['parent'],
+				static::$args['page_title'],
+				static::$args['menu_title'],
+				static::$args['capability'],
+				static::$menu_slug,
+				[ $this, 'template' ]
+			);
 
 		} else {
-			add_menu_page( static::$page_title, static::$menu_title, static::$capability, static::$menu_slug, [ $this, 'template' ], static::$icon, static::$position );
+			add_menu_page(
+				static::$args['page_title'],
+				static::$args['menu_title'],
+				static::$args['capability'],
+				static::$menu_slug,
+				[ $this, 'template' ],
+				static::$args['icon'],
+				static::$args['position']
+			);
 		}
 	}
 
