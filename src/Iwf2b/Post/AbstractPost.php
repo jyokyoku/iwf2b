@@ -17,40 +17,61 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	protected function initialize() {
 		add_action( 'init', [ $this, 'register_post_type' ] );
+		add_action( 'use_block_editor_for_post_type', [ $this, 'use_block_editor' ], 10, 2 );
 	}
 
 	public function register_post_type() {
 		if ( ! static::$builtin ) {
-			if ( empty( static::$args['labels'] ) ) {
-				static::$args['labels'] = [
-					'name'                  => static::$args['label'],
-					'singular_name'         => static::$args['label'],
-					'add_new_item'          => sprintf( _x( 'Add New %s', 'post', 'iwf2b' ), static::$args['label'] ),
-					'edit_item'             => sprintf( _x( 'Edit %s', 'post', 'iwf2b' ), static::$args['label'] ),
-					'new_item'              => sprintf( __( 'New %s', 'iwf2b' ), static::$args['label'] ),
-					'view_item'             => sprintf( _x( 'View %s', 'post', 'iwf2b' ), static::$args['label'] ),
-					'view_items'            => sprintf( __( 'View %s', 'iwf2b' ), static::$args['label'] ),
-					'search_items'          => sprintf( _x( 'Search %s', 'post', 'iwf2b' ), static::$args['label'] ),
-					'not_found'             => sprintf( _x( 'No %s found.', 'post', 'iwf2b' ), static::$args['label'] ),
-					'not_found_in_trash'    => sprintf( __( 'No %s found in Trash.', 'iwf2b' ), static::$args['label'] ),
-					'parent_item_colon'     => sprintf( _x( 'Parent %s:', 'post', 'iwf2b' ), static::$args['label'] ),
-					'all_items'             => sprintf( _x( 'All %s', 'post', 'iwf2b' ), static::$args['label'] ),
-					'archives'              => sprintf( __( '%s Archives', 'iwf2b' ), static::$args['label'] ),
-					'attributes'            => sprintf( __( '%s Attributes', 'iwf2b' ), static::$args['label'] ),
-					'insert_into_item'      => sprintf( __( 'Insert into %s', 'iwf2b' ), static::$args['label'] ),
-					'uploaded_to_this_item' => sprintf( __( 'Uploaded to this %s', 'iwf2b' ), static::$args['label'] ),
-					'filter_items_list'     => sprintf( __( 'Filter %s list', 'iwf2b' ), static::$args['label'] ),
-					'items_list_navigation' => sprintf( _x( '%s list navigation', 'post', 'iwf2b' ), static::$args['label'] ),
-					'items_list'            => sprintf( _x( '%s list', 'post', 'iwf2b' ), static::$args['label'] ),
+			$args = static::$args;
+
+			if ( empty( $args['labels'] ) ) {
+				$args['labels'] = [
+					'name'                  => $args['label'],
+					'singular_name'         => $args['label'],
+					'add_new_item'          => sprintf( _x( 'Add New %s', 'post', 'iwf2b' ), $args['label'] ),
+					'edit_item'             => sprintf( _x( 'Edit %s', 'post', 'iwf2b' ), $args['label'] ),
+					'new_item'              => sprintf( __( 'New %s', 'iwf2b' ), $args['label'] ),
+					'view_item'             => sprintf( _x( 'View %s', 'post', 'iwf2b' ), $args['label'] ),
+					'view_items'            => sprintf( __( 'View %s', 'iwf2b' ), $args['label'] ),
+					'search_items'          => sprintf( _x( 'Search %s', 'post', 'iwf2b' ), $args['label'] ),
+					'not_found'             => sprintf( _x( 'No %s found.', 'post', 'iwf2b' ), $args['label'] ),
+					'not_found_in_trash'    => sprintf( __( 'No %s found in Trash.', 'iwf2b' ), $args['label'] ),
+					'parent_item_colon'     => sprintf( _x( 'Parent %s:', 'post', 'iwf2b' ), $args['label'] ),
+					'all_items'             => sprintf( _x( 'All %s', 'post', 'iwf2b' ), $args['label'] ),
+					'archives'              => sprintf( __( '%s Archives', 'iwf2b' ), $args['label'] ),
+					'attributes'            => sprintf( __( '%s Attributes', 'iwf2b' ), $args['label'] ),
+					'insert_into_item'      => sprintf( __( 'Insert into %s', 'iwf2b' ), $args['label'] ),
+					'uploaded_to_this_item' => sprintf( __( 'Uploaded to this %s', 'iwf2b' ), $args['label'] ),
+					'filter_items_list'     => sprintf( __( 'Filter %s list', 'iwf2b' ), $args['label'] ),
+					'items_list_navigation' => sprintf( _x( '%s list navigation', 'post', 'iwf2b' ), $args['label'] ),
+					'items_list'            => sprintf( _x( '%s list', 'post', 'iwf2b' ), $args['label'] ),
 				];
 			}
 
-			if ( ! empty( static::$args['supports'] ) && in_array( 'thumbnail', static::$args['supports'] ) ) {
+			if ( is_array( $args['supports'] ) ) {
+				if ( in_array( 'thumbnail', $args['supports'] ) ) {
 				add_theme_support( 'post-thumbnails', [ static::$post_type ] );
 			}
+			}
 
-			register_post_type( static::$post_type, static::$args );
+			unset( $args['supports']['classic_editor'] );
+
+			register_post_type( static::$post_type, $args );
 		}
+	}
+
+	/**
+	 * @param $use_block_editor
+	 * @param $post_type
+	 *
+	 * @return bool
+	 */
+	public function use_block_editor( $use_block_editor, $post_type ) {
+		if ( static::$post_type && $post_type === static::$post_type ) {
+			return ! ( is_array( static::$args['supports'] ) && in_array( 'classic_editor', static::$args['supports'] ) );
+		}
+
+		return $use_block_editor;
 	}
 
 	/**
