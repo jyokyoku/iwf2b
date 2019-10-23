@@ -88,56 +88,6 @@ class Util {
 	}
 
 	/**
-	 * @param string $message
-	 * @param bool $with_callee
-	 */
-	public static function log( $message = null, $with_callee = true ) {
-		if ( ! is_string( $message ) ) {
-			$message = print_r( $message, true );
-		}
-
-		$log_dir = trailingslashit( WP_CONTENT_DIR . '/iwf2b-logs' );
-
-		if ( ! is_dir( $log_dir ) ) {
-			if ( ! @mkdir( $log_dir ) && ! is_dir( $log_dir ) ) {
-				if ( is_super_admin() ) {
-					wp_die( 'Could not make a log directory. - ' . $log_dir );
-				}
-			}
-		}
-
-		$log_file = $log_dir . date( 'Y-m-d', current_time( 'timestamp' ) ) . '.log';
-
-		if ( ! is_file( $log_file ) ) {
-			if ( ! @touch( $log_file ) ) {
-				if ( is_super_admin() ) {
-					wp_die( 'Could not make a log file. - ' . $log_file );
-				}
-			}
-		}
-
-		$time = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) );
-		$line = sprintf( '[%s] %s', $time, $message );
-
-		if ( $with_callee ) {
-			$backtrace = debug_backtrace();
-
-			if ( strpos( $backtrace[0]['file'], 'iwf2b/Util.php' ) !== false ) {
-				$callee = $backtrace[1];
-
-			} else {
-				$callee = $backtrace[0];
-			}
-
-			$line .= sprintf( ' - in %s, line %s', $callee['file'], $callee['line'] );
-		}
-
-		$line .= PHP_EOL;
-
-		file_put_contents( $log_file, $line, FILE_APPEND );
-	}
-
-	/**
 	 * @param $template
 	 * @param $to
 	 * @param $subject
