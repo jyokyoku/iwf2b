@@ -58,7 +58,10 @@ abstract class AbstractModel extends AbstractSingleton {
 			$sql        = str_replace( [ '%table_name%', '%charset%' ], [ $table_name, static::$db->get_charset_collate() ], static::$sql );
 
 			dbDelta( $sql );
-			update_option( $sql_config_name, static::$sql_version );
+
+			if ( ! static::$db->last_error ) {
+				update_option( $sql_config_name, static::$sql_version );
+			}
 		}
 
 		return true;
