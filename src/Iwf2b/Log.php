@@ -21,7 +21,7 @@ class Log implements LoggerInterface {
 		return $instance;
 	}
 
-	public static function set_logger( $key, LoggerInterface $logger, array $levels = [] ) {
+	public static function set_logger( LoggerInterface $logger, $key = 'default', array $levels = [] ) {
 		static::get_instance()->loggers[ $key ] = compact( 'logger', 'levels' );
 	}
 
