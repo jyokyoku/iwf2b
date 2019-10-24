@@ -13,6 +13,9 @@ class Debug {
 		if ( strpos( $backtrace[0]['file'], __FILE__ ) !== false ) {
 			$callee = $backtrace[1];
 
+		} else if ( strpos( $backtrace[1]['file'], __DIR__ . '/helpers.php' ) !== false ) {
+			$callee = $backtrace[2];
+
 		} else {
 			$callee = $backtrace[0];
 		}
