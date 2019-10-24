@@ -80,6 +80,48 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
+	 * @param array $data
+	 * @param array|string $format
+	 *
+	 * @return false|int
+	 */
+	public static function insert( array $data, $format = null ) {
+		return static::$db->insert( static::table_name(), $data, $format );
+	}
+
+	/**
+	 * @param array $data
+	 * @param array|string $format
+	 *
+	 * @return false|int
+	 */
+	public static function replace( array $data, $format = null ) {
+		return static::$db->replace( static::table_name(), $data, $format );
+	}
+
+	/**
+	 * @param array $data
+	 * @param array $where
+	 * @param array|string $format
+	 * @param array|string $where_format
+	 *
+	 * @return false|int
+	 */
+	public static function update( array $data, array $where, $format = null, $where_format = null ) {
+		return static::$db->update( static::table_name(), $data, $where, $format, $where_format );
+	}
+
+	/**
+	 * @param array $where
+	 * @param array|string $where_format
+	 *
+	 * @return false|int
+	 */
+	public static function delete( array $where, $where_format = null ) {
+		return static::$db->delete( static::table_name(), $where, $where_format );
+	}
+
+	/**
 	 * @param $code
 	 * @param array $args
 	 *
