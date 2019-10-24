@@ -4,9 +4,10 @@ namespace Iwf2b;
 
 class Debug {
 	/**
-	 * @return void
+	 * @param $_args
 	 */
-	public static function dump( ...$args ) {
+	public static function dump( $_args ) {
+		$args      = func_get_args();
 		$backtrace = debug_backtrace();
 
 		if ( strpos( $backtrace[0]['file'], __FILE__ ) !== false ) {
