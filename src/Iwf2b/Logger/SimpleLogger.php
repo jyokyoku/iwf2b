@@ -2,6 +2,7 @@
 
 namespace Iwf2b\Logger;
 
+use Iwf2b\Arr;
 use Iwf2b\Text;
 use Psr\Log\LoggerInterface;
 
@@ -13,7 +14,7 @@ class SimpleLogger implements LoggerInterface {
 	protected $date_format = '';
 
 	public function __construct( $path = null, array $args = [] ) {
-		$args = shortcode_atts( [
+		$args = Arr::merge_intersect_key( [
 			'file_format' => '%date%.log',
 			'date_format' => 'Y-m-d H:i:s',
 		], $args );
