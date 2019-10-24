@@ -37,7 +37,7 @@ class App {
 
 				$file_path = $parent_dir . '/' . $file_name;
 
-				if ( is_file( $file_path ) && strrpos( $file_name, '.php' ) !== false && $file_path !== __FILE__ ) {
+				if ( is_file( $file_path ) && strrpos( $file_name, '.php' ) !== false && ctype_upper( substr( $file_name, 0, 1 ) ) && $file_path !== __FILE__ ) {
 					$class           = substr( $file_name, 0, - 4 );
 					$namespace_class = $namespace . '\\' . substr( $file_name, 0, - 4 );
 
