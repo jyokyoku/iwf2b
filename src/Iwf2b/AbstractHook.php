@@ -90,18 +90,18 @@ abstract class AbstractHook extends AbstractSingleton {
 		add_action( 'wp_insert_post', [ $this, 'save_preview_post' ] );
 
 		if ( class_exists( 'ACF' ) ) {
-		// ACF対応
-		add_action( 'init', [ $this, 'acf_load_config' ], 1 );
-		add_filter( 'acf_activated', [ $this, 'acf_activated' ] );
-		add_filter( 'acf/settings/path', [ $this, 'acf_settings_path' ] );
-		add_filter( 'acf/settings/dir', [ $this, 'acf_settings_dir' ] );
-		add_filter( 'acf/load_field', [ $this, 'acf_default_vars' ] );
-		add_action( 'save_preview_postmeta', [ $this, 'acf_save_preview_postmeta' ] );
+			// ACF対応
+			add_action( 'init', [ $this, 'acf_load_config' ], 1 );
+			add_filter( 'acf_activated', [ $this, 'acf_activated' ] );
+			add_filter( 'acf/settings/path', [ $this, 'acf_settings_path' ] );
+			add_filter( 'acf/settings/dir', [ $this, 'acf_settings_dir' ] );
+			add_filter( 'acf/load_field', [ $this, 'acf_default_vars' ] );
+			add_action( 'save_preview_postmeta', [ $this, 'acf_save_preview_postmeta' ] );
 			add_action( 'save_post', [ $this, 'acf_field_auto_export' ], 1000, 3 );
 
-		if ( ! apply_filters( 'acf_activated', false ) ) {
-			add_filter( 'acf/settings/show_admin', '__return_false' );
-		}
+			if ( ! apply_filters( 'acf_activated', false ) ) {
+				add_filter( 'acf/settings/show_admin', '__return_false' );
+			}
 		}
 
 		// アップデート通知をOFF
@@ -175,13 +175,13 @@ abstract class AbstractHook extends AbstractSingleton {
 
 			foreach ( $files as $file ) {
 				if ( preg_match( '|^acf-export(?:-.*)?\.json$|', $file, $matches ) ) {
-					$acf_configs = json_decode( file_get_contents( trailingslashit( get_stylesheet_directory() ) . $file ), true );
+					$field_groups = json_decode( file_get_contents( trailingslashit( get_stylesheet_directory() ) . $file ), true );
 
-					foreach ( $acf_configs as $acf_config ) {
-						acf_add_local_field_group( $acf_config );
+					if ( ! empty( $field_groups ) ) {
+						foreach ( $field_groups as $field_group ) {
+							acf_add_local_field_group( $field_group );
+						}
 					}
-
-					break;
 				}
 			}
 		}
