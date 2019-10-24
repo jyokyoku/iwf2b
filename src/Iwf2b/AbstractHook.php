@@ -89,6 +89,7 @@ abstract class AbstractHook extends AbstractSingleton {
 		add_filter( 'get_post_metadata', [ $this, 'get_preview_post_meta_data' ], 10, 4 );
 		add_action( 'wp_insert_post', [ $this, 'save_preview_post' ] );
 
+		if ( class_exists( 'ACF' ) ) {
 		// ACF対応
 		add_action( 'init', [ $this, 'acf_load_config' ], 1 );
 		add_filter( 'acf_activated', [ $this, 'acf_activated' ] );
@@ -96,9 +97,11 @@ abstract class AbstractHook extends AbstractSingleton {
 		add_filter( 'acf/settings/dir', [ $this, 'acf_settings_dir' ] );
 		add_filter( 'acf/load_field', [ $this, 'acf_default_vars' ] );
 		add_action( 'save_preview_postmeta', [ $this, 'acf_save_preview_postmeta' ] );
+			add_action( 'save_post', [ $this, 'acf_field_auto_export' ], 1000, 3 );
 
 		if ( ! apply_filters( 'acf_activated', false ) ) {
 			add_filter( 'acf/settings/show_admin', '__return_false' );
+		}
 		}
 
 		// アップデート通知をOFF
@@ -242,6 +245,32 @@ abstract class AbstractHook extends AbstractSingleton {
 	 */
 	public function acf_default_vars( $field ) {
 		return $field;
+	}
+
+	/**
+	 * ACFフィールド定義を自動的にjson出力
+	 *
+	 * @param $post_id
+	 * @param $post
+	 * @param $update
+	 */
+	public function acf_field_auto_export( $post_id, $post, $update ) {
+		if ( $post->post_type !== 'acf-field-group' ) {
+			return;
+		}
+
+		$field_groups = acf_get_field_groups();
+		$json         = array();
+
+		foreach ( $field_groups as $field_group ) {
+			$field_group['fields'] = acf_get_fields( $field_group );
+			$json[]                = acf_prepare_field_group_for_export( $field_group );
+		}
+
+		$hash      = strtr( rtrim( base64_encode( pack( 'H*', crc32( wp_hash( 'acf_export' ) ) ) ), '=' ), '+/', '-_' );
+		$file_name = 'acf-export-9' . $hash . '.json';
+
+		file_put_contents( trailingslashit( get_stylesheet_directory() ) . $file_name, acf_json_encode( $json ) );
 	}
 
 	/**
