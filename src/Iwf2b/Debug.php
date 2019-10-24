@@ -11,26 +11,32 @@ class Debug {
 	 * @param $_args
 	 */
 	public static function dump( $_args ) {
-		$args      = func_get_args();
-		$backtrace = debug_backtrace();
+		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 5 );
 
-		if ( strpos( $backtrace[0]['file'], __FILE__ ) !== false ) {
-			$callee = $backtrace[1];
+		foreach ( $backtrace as $stack => $trace ) {
+			if ( isset( $trace['file'] ) ) {
+				if ( strpos( $trace['file'], __DIR__ . '/helpers.php' ) !== false ) {
+					$callee = $backtrace[ $stack + 1 ];
 
-		} else if ( strpos( $backtrace[1]['file'], __DIR__ . '/helpers.php' ) !== false ) {
-			$callee = $backtrace[2];
+				} else {
+					$callee = $trace;
+				}
 
-		} else {
-			$callee = $backtrace[0];
+				break;
+			}
 		}
+
+		$arguments = func_get_args();
 
 		echo '<div style="text-align: left !important; font-size: 13px;background: #EEE !important; border:1px solid #666; color: #000 !important; padding:10px; position: relative; z-index: 999999;">';
 		echo '<h1 style="border-bottom: 1px solid #CCC; padding: 0 0 5px 0; margin: 0 0 5px 0; font: bold 120% sans-serif;">' . $callee['file'] . ' @ line: ' . $callee['line'] . '</h1>';
 		echo '<pre style="overflow:auto;font-size:100%;">';
 
-		for ( $i = 1, $max = count( $args ); $i <= $max; $i ++ ) {
+		$count = count( $arguments );
+
+		for ( $i = 1; $i <= $count; $i ++ ) {
 			echo '<strong>Variable #' . $i . ':</strong>' . PHP_EOL;
-			var_dump( $args[ $i - 1 ] );
+			var_dump( $arguments[ $i - 1 ] );
 			echo PHP_EOL . PHP_EOL;
 		}
 
