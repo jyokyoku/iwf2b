@@ -133,41 +133,73 @@ class Arr {
 	}
 
 	/**
-	 * @param array $data
-	 * @param mixed ...$args
+	 * @param array $array
+	 * @param mixed $_args
 	 *
 	 * @return array
 	 */
-	public static function merge( array $data, array $args ) {
+	public static function merge( array $array, array $_args ) {
 		$args   = array_slice( func_get_args(), 1 );
-		$return = $data;
+		$return = $array;
 
-		foreach ( $args as &$current_arg ) {
-			$stack[] = [ (array) $current_arg, &$return ];
+		foreach ( $args as &$merge ) {
+			$stack[] = [ (array) $merge, &$return ];
 		}
 
-		unset( $current_arg );
+		unset( $merge );
+		static::merge_recursive( $stack );
 
+		return $return;
+	}
+
+	/**
+	 * @param array $array
+	 * @param array $_args
+	 *
+	 * @return array
+	 */
+	public static function merge_intersect_key( array $array, array $_args ) {
+		$args   = array_slice( func_get_args(), 1 );
+		$return = $array;
+
+		foreach ( $args as &$merge ) {
+			$stack[] = [ (array) $merge, &$return ];
+		}
+
+		unset( $merge );
+		static::merge_recursive( $stack, true );
+
+		return $return;
+	}
+
+	/**
+	 * @param $stack
+	 * @param bool $intersect_key
+	 */
+	protected static function merge_recursive( $stack, $intersect_key = false ) {
 		while ( ! empty( $stack ) ) {
-			foreach ( $stack as $current_key => &$current_merge ) {
-				foreach ( $current_merge[0] as $key => &$val ) {
-					if ( ! empty( $current_merge[1][ $key ] ) && (array) $current_merge[1][ $key ] === $current_merge[1][ $key ] && (array) $val === $val ) {
-						$stack[] = [ &$val, &$current_merge[1][ $key ] ];
+			foreach ( $stack as $i => &$merges ) {
+				foreach ( $merges[0] as $key => &$val ) {
+					if ( is_array( $merges[1] ) && ! empty( $merges[1][ $key ] ) && (array) $merges[1][ $key ] === $merges[1][ $key ] && (array) $val === $val ) {
+						$stack[] = [ &$val, &$merges[1][ $key ] ];
 
-					} elseif ( (int) $key === $key && isset( $current_merge[1][ $key ] ) ) {
-						$current_merge[1][] = $val;
+					} else if ( $intersect_key ) {
+						if ( isset( $merges[1][ $key ] ) ) {
+							$merges[1][ $key ] = $val;
+						}
+
+					} else if ( (int) $key === $key && isset( $merges[1][ $key ] ) ) {
+						$merges[1][] = $val;
 
 					} else {
-						$current_merge[1][ $key ] = $val;
+						$merges[1][ $key ] = $val;
 					}
 				}
 
-				unset( $stack[ $current_key ] );
+				unset( $stack[ $i ] );
 			}
 
-			unset( $current_merge );
+			unset( $merges );
 		}
-
-		return $return;
 	}
 }
