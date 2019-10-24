@@ -3,6 +3,7 @@
 namespace Iwf2b\Model;
 
 use Iwf2b\AbstractSingleton;
+use Iwf2b\Text;
 
 /**
  * Class AbstractModel
@@ -54,8 +55,10 @@ abstract class AbstractModel extends AbstractSingleton {
 		if ( version_compare( static::$sql_version, get_option( $sql_config_name ), '!=' ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-			$table_name = static::table_name();
-			$sql        = str_replace( [ '%table_name%', '%charset%' ], [ $table_name, static::$db->get_charset_collate() ], static::$sql );
+			$sql = Text::replace( static::$sql, [
+				'table_name' => static::table_name(),
+				'charset'    => static::$db->get_charset_collate(),
+			] );
 
 			dbDelta( $sql );
 
