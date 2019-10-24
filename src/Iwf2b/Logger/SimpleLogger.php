@@ -1,6 +1,6 @@
 <?php
 
-namespace Theme\Logger;
+namespace Iwf2b\Logger;
 
 use Iwf2b\Text;
 use Psr\Log\LoggerInterface;
