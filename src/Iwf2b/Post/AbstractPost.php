@@ -6,20 +6,50 @@ use Iwf2b\AbstractSingleton;
 use Iwf2b\Arr;
 use Iwf2b\Util;
 
+/**
+ * Class AbstractPost
+ * @package Iwf2b\Post
+ */
 abstract class AbstractPost extends AbstractSingleton {
+	/**
+	 * Post type slug
+	 *
+	 * @var string
+	 */
 	protected static $post_type = '';
 
+	/**
+	 * Args for registration
+	 *
+	 * @var array
+	 */
 	protected static $args = [];
 
+	/**
+	 * Builtin post type
+	 *
+	 * @var bool
+	 */
 	protected static $builtin = false;
 
+	/**
+	 * Search conditions
+	 *
+	 * @var array
+	 */
 	protected static $find_args = [];
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function initialize() {
 		add_action( 'init', [ $this, 'register_post_type' ] );
 		add_action( 'use_block_editor_for_post_type', [ $this, 'use_block_editor' ], 10, 2 );
 	}
 
+	/**
+	 * Register post type
+	 */
 	public function register_post_type() {
 		$args = wp_parse_args( static::$args, [
 			'supports' => [],
@@ -52,8 +82,8 @@ abstract class AbstractPost extends AbstractSingleton {
 
 			if ( is_array( $args['supports'] ) ) {
 				if ( in_array( 'thumbnail', $args['supports'] ) ) {
-				add_theme_support( 'post-thumbnails', [ static::$post_type ] );
-			}
+					add_theme_support( 'post-thumbnails', [ static::$post_type ] );
+				}
 
 				if ( in_array( 'block-editor', $args['supports'] ) && empty( $args['show_in_rest'] ) ) {
 					$args['show_in_rest'] = true;

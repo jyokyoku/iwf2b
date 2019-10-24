@@ -6,13 +6,38 @@ use Iwf2b\Arr;
 use Iwf2b\Text;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class SimpleLogger
+ * @package Iwf2b\Logger
+ */
 class SimpleLogger implements LoggerInterface {
+	/**
+	 * Log file path
+	 *
+	 * @var string
+	 */
 	protected $path = '';
 
+	/**
+	 * Log file name template
+	 *
+	 * @var string
+	 */
 	protected $file_format = '';
 
+	/**
+	 * Log date format
+	 *
+	 * @var string
+	 */
 	protected $date_format = '';
 
+	/**
+	 * SimpleLogger constructor.
+	 *
+	 * @param string $path
+	 * @param array $args
+	 */
 	public function __construct( $path = null, array $args = [] ) {
 		$args = Arr::merge_intersect_key( [
 			'file_format' => '%date%.log',
@@ -40,48 +65,93 @@ class SimpleLogger implements LoggerInterface {
 		}
 	}
 
+	/**
+	 * @param string $message
+	 * @param array $context
+	 */
 	public function emergency( $message, array $context = array() ) {
 		$this->white_log( __FUNCTION__, $message, $context );
 	}
 
+	/**
+	 * @param string $message
+	 * @param array $context
+	 */
 	public function alert( $message, array $context = array() ) {
 		$this->white_log( __FUNCTION__, $message, $context );
 	}
 
+	/**
+	 * @param string $message
+	 * @param array $context
+	 */
 	public function critical( $message, array $context = array() ) {
 		$this->white_log( __FUNCTION__, $message, $context );
 	}
 
+	/**
+	 * @param string $message
+	 * @param array $context
+	 */
 	public function error( $message, array $context = array() ) {
 		$this->white_log( __FUNCTION__, $message, $context );
 	}
 
+	/**
+	 * @param string $message
+	 * @param array $context
+	 */
 	public function warning( $message, array $context = array() ) {
 		$this->white_log( __FUNCTION__, $message, $context );
 	}
 
+	/**
+	 * @param string $message
+	 * @param array $context
+	 */
 	public function notice( $message, array $context = array() ) {
 		$this->white_log( __FUNCTION__, $message, $context );
 	}
 
+	/**
+	 * @param string $message
+	 * @param array $context
+	 */
 	public function info( $message, array $context = array() ) {
 		$this->white_log( __FUNCTION__, $message, $context );
 	}
 
+	/**
+	 * @param string $message
+	 * @param array $context
+	 */
 	public function debug( $message, array $context = array() ) {
 		$this->white_log( __FUNCTION__, $message, $context );
 	}
 
+	/**
+	 * @param mixed $level
+	 * @param string $message
+	 * @param array $context
+	 */
 	public function log( $level, $message, array $context = array() ) {
 		$this->white_log( $level, $message, $context );
 	}
 
+	/**
+	 * @param $level
+	 * @param $message
+	 * @param array $context
+	 */
 	protected function white_log( $level, $message, array $context = array() ) {
 		$message = sprintf( '%s [%s] %s', current_time( $this->date_format ), strtoupper( $level ), $this->format( $message ) ) . "\n";
 
 		error_log( $message, 3, trailingslashit( $this->path ) . $this->get_file_name() );
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function get_file_name() {
 		$replaces = [
 			'date' => current_time( 'Ymd' ),
@@ -90,6 +160,11 @@ class SimpleLogger implements LoggerInterface {
 		return Text::replace( $this->file_format, $replaces );
 	}
 
+	/**
+	 * @param mixed $message
+	 *
+	 * @return string
+	 */
 	protected function format( $message ) {
 		if ( is_string( $message ) ) {
 			return $message;

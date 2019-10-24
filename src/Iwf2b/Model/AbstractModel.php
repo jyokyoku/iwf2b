@@ -4,20 +4,41 @@ namespace Iwf2b\Model;
 
 use Iwf2b\AbstractSingleton;
 
+/**
+ * Class AbstractModel
+ * @package Iwf2b\Model
+ */
 abstract class AbstractModel extends AbstractSingleton {
+	/**
+	 * Table name
+	 *
+	 * @var string
+	 */
 	protected static $table_name = '';
 
+	/**
+	 * SQL version
+	 *
+	 * @var string
+	 */
 	protected static $sql_version = '';
 
+	/**
+	 * SQL
+	 *
+	 * @var string
+	 */
 	protected static $sql = '';
 
 	/**
+	 * wpdb object
+	 *
 	 * @var \wpdb
 	 */
 	public static $db;
 
 	/**
-	 * @return bool
+	 * {@inheritdoc}
 	 */
 	protected function initialize() {
 		global $wpdb;
@@ -67,7 +88,7 @@ abstract class AbstractModel extends AbstractSingleton {
 			'groupby' => null,
 			'orderby' => null,
 			'limit'   => 0,
-			'offset'  => 0
+			'offset'  => 0,
 		] );
 
 		$query = array(

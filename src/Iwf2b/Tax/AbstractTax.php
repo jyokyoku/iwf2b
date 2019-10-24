@@ -6,21 +6,56 @@ use Iwf2b\AbstractSingleton;
 use Iwf2b\Arr;
 use Iwf2b\Util;
 
+/**
+ * Class AbstractTax
+ * @package Iwf2b\Tax
+ */
 abstract class AbstractTax extends AbstractSingleton {
+	/**
+	 * Assoc object slug
+	 *
+	 * @var string
+	 */
 	protected static $object_type = '';
 
+	/**
+	 * Taxonomy slug
+	 *
+	 * @var string
+	 */
 	protected static $taxonomy = '';
 
+	/**
+	 * Params for registration
+	 *
+	 * @var array
+	 */
 	protected static $args = [];
 
+	/**
+	 * Search conditions
+	 *
+	 * @var array
+	 */
 	protected static $find_args = [];
 
+	/**
+	 * Builtin taxonomy
+	 *
+	 * @var bool
+	 */
 	protected static $builtin = false;
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function initialize() {
 		add_action( 'init', [ $this, 'register_taxonomy' ] );
 	}
 
+	/**
+	 * Register taxonomy
+	 */
 	public function register_taxonomy() {
 		if ( ! static::$builtin ) {
 			if ( empty( static::$args['labels'] ) ) {

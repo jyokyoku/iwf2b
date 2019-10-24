@@ -2,6 +2,10 @@
 
 namespace Iwf2b;
 
+/**
+ * Class Arr
+ * @package Iwf2b
+ */
 class Arr {
 	/**
 	 * Get a value from array

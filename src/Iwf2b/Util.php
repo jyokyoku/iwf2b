@@ -2,6 +2,10 @@
 
 namespace Iwf2b;
 
+/**
+ * Class Util
+ * @package Iwf2b
+ */
 class Util {
 	/**
 	 * @param mixed $value

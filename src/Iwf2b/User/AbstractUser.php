@@ -6,19 +6,49 @@ use Iwf2b\AbstractSingleton;
 use Iwf2b\Arr;
 use Iwf2b\Util;
 
+/**
+ * Class AbstractUser
+ * @package Iwf2b\User
+ */
 class AbstractUser extends AbstractSingleton {
+	/**
+	 * Role slug
+	 *
+	 * @var string
+	 */
 	protected static $role = '';
 
+	/**
+	 * Role label
+	 *
+	 * @var string
+	 */
 	protected static $role_label = '';
 
+	/**
+	 * Capabilities
+	 *
+	 * @var array
+	 */
 	protected static $capabilities = [];
 
+	/**
+	 * Search conditions
+	 *
+	 * @var array
+	 */
 	protected static $find_args = [];
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function initialize() {
 		add_action( 'init', [ $this, 'register_roles' ] );
 	}
 
+	/**
+	 * Register roles
+	 */
 	public function register_roles() {
 		if ( static::$role ) {
 			$role = get_role( static::$role );

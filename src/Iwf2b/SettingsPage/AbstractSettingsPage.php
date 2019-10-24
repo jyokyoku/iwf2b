@@ -5,15 +5,44 @@ namespace Iwf2b\SettingsPage;
 use Iwf2b\AbstractSingleton;
 use Iwf2b\View;
 
+/**
+ * Class AbstractSettingsPage
+ * @package Iwf2b\SettingsPage
+ */
 abstract class AbstractSettingsPage extends AbstractSingleton {
+	/**
+	 * Action files dir
+	 *
+	 * @var string
+	 */
 	protected static $action_dir = '';
 
+	/**
+	 * Template files dir
+	 *
+	 * @var string
+	 */
 	protected static $template_dir = '';
 
+	/**
+	 * Menu slug
+	 *
+	 * @var string
+	 */
 	protected static $menu_slug = '';
 
+	/**
+	 * Args for registration
+	 *
+	 * @var array
+	 */
 	protected static $args = [];
 
+	/**
+	 * Variables for template
+	 *
+	 * @var array
+	 */
 	protected static $view_vars = [];
 
 	/**
@@ -21,6 +50,9 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 	 */
 	protected static $loader = null;
 
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function initialize() {
 		add_action( 'admin_menu', [ $this, 'register' ] );
 

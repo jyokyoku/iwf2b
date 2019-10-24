@@ -4,17 +4,28 @@ namespace Iwf2b;
 
 use Iwf2b\ThumbDriver\ThumbDriverInterface;
 
+/**
+ * Class Thumb
+ * @package Iwf2b
+ */
 class Thumb {
 	/**
+	 * Thumbnail driver
+	 *
 	 * @var ThumbDriverInterface
 	 */
 	protected $driver;
 
 	/**
+	 * Endpoint file
+	 *
 	 * @var string
 	 */
 	protected $endpoint = '';
 
+	/**
+	 * Thumb constructor.
+	 */
 	protected function __construct() {
 	}
 

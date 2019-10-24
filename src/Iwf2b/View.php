@@ -4,16 +4,33 @@ namespace Iwf2b;
 
 /**
  * Class View
+ * @package Iwf2b
  */
 class View {
+	/**
+	 * Template file
+	 *
+	 * @var string
+	 */
 	protected $template_file = '';
 
+	/**
+	 * Action files
+	 *
+	 * @var array
+	 */
 	protected $action_files = [];
 
+	/**
+	 * @param $file
+	 */
 	public function set_template_file( $file ) {
 		$this->template_file = $file;
 	}
 
+	/**
+	 * @param $file
+	 */
 	public function add_action_file( $file ) {
 		if ( ! is_array( $file ) ) {
 			$this->action_files[] = $file;
@@ -25,6 +42,10 @@ class View {
 		}
 	}
 
+	/**
+	 * @param array $view_vars
+	 * @param bool $do_action
+	 */
 	public function load( array $view_vars = [], $do_action = true ) {
 		if ( ! $this->template_file ) {
 			return;
@@ -47,6 +68,10 @@ class View {
 		include $this->template_file;
 	}
 
+	/**
+	 * @param array $view_vars
+	 * @param bool $do_action
+	 */
 	public function load_global( array $view_vars = [], $do_action = true ) {
 		if ( ! $this->template_file ) {
 			return;
@@ -85,6 +110,9 @@ class View {
 		include $this->template_file;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function do_action() {
 		if ( ! $this->action_files ) {
 			return [];

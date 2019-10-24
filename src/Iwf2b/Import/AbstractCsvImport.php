@@ -2,39 +2,118 @@
 
 namespace Iwf2b\Import;
 
+/**
+ * Class AbstractCsvImport
+ * @package Iwf2b\Import
+ */
 abstract class AbstractCsvImport {
 	const LOG_DEBUG = 1;
 
 	const LOG_ROW_NUM = 2;
 
+	/**
+	 * Output type
+	 *
+	 * @var string
+	 */
 	protected $log_type = 'echo';
 
+	/**
+	 * Debug mode
+	 *
+	 * @var bool
+	 */
 	protected $debug = true;
 
+	/**
+	 * Show progress bar
+	 *
+	 * @var bool
+	 */
 	protected $show_progress = false;
 
+	/**
+	 * CSV control
+	 *
+	 * @var string
+	 */
 	protected $csv_control = ',';
 
+	/**
+	 * CSV file path
+	 *
+	 * @var string
+	 */
 	protected $file_path = '';
 
+	/**
+	 * CSV charset
+	 *
+	 * @var string
+	 */
 	protected $from_charset = 'sjis-win';
 
+	/**
+	 * DB charset
+	 *
+	 * @var string
+	 */
 	protected $to_charset = 'UTF-8';
 
+	/**
+	 * Start time
+	 *
+	 * @var int
+	 */
 	protected $start_time = 0;
 
+	/**
+	 * Current row number
+	 *
+	 * @var int
+	 */
 	protected $row_num = 0;
 
+	/**
+	 * Current row data
+	 *
+	 * @var array
+	 */
 	protected $row = [];
 
+	/**
+	 * Current row size
+	 *
+	 * @var int
+	 */
 	protected $row_size = 0;
 
+	/**
+	 * Total row number
+	 *
+	 * @var int
+	 */
 	protected $total_rows = 0;
 
+	/**
+	 * Log dir
+	 *
+	 * @var string
+	 */
 	protected $log_dir = '';
 
+	/**
+	 * Current log session
+	 *
+	 * @var string
+	 */
 	protected $log_session = '';
 
+	/**
+	 * Cache clear threshold
+	 *
+	 * @var int
+	 */
 	protected $cache_clear_threshold = 50;
 
 	/**

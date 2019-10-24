@@ -2,6 +2,10 @@
 
 namespace Iwf2b;
 
+/**
+ * Class Http
+ * @package Iwf2b
+ */
 class Http {
 	/**
 	 * @var array

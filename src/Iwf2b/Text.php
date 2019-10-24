@@ -2,6 +2,10 @@
 
 namespace Iwf2b;
 
+/**
+ * Class Text
+ * @package Iwf2b
+ */
 class Text {
 	/**
 	 * @param $text

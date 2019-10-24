@@ -2,7 +2,14 @@
 
 namespace Iwf2b;
 
+/**
+ * Class AbstractHook
+ * @package Iwf2b
+ */
 abstract class AbstractHook extends AbstractSingleton {
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function initialize() {
 		// テーマの初期化
 		add_action( 'init', [ $this, 'init_theme' ] );

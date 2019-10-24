@@ -2,6 +2,10 @@
 
 namespace Iwf2b;
 
+/**
+ * Class Debug
+ * @package Iwf2b
+ */
 class Debug {
 	/**
 	 * @param $_args

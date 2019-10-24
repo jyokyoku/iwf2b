@@ -2,7 +2,16 @@
 
 namespace Iwf2b;
 
+/**
+ * Class App
+ * @package Iwf2b
+ */
 class App {
+	/**
+	 * Instance
+	 *
+	 * @var App
+	 */
 	protected static $instance;
 
 	/**

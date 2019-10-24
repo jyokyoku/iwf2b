@@ -2,13 +2,21 @@
 
 namespace Iwf2b;
 
+/**
+ * Class AbstractSingleton
+ * @package Iwf2b
+ */
 abstract class AbstractSingleton {
 	/**
-	 * @var array
+	 * Instances
+	 *
+	 * @var array AbstractSingleton[]
 	 */
 	private static $instances = [];
 
 	/**
+	 * Allow auto initialize
+	 *
 	 * @var bool
 	 */
 	protected static $auto_init = true;
@@ -35,10 +43,16 @@ abstract class AbstractSingleton {
 		return self::$instances[ $class ];
 	}
 
+	/**
+	 * @return bool
+	 */
 	final public static function auto_init() {
 		return static::$auto_init;
 	}
 
+	/**
+	 * Initialize
+	 */
 	abstract protected function initialize();
 
 	/**
