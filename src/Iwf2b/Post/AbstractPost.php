@@ -21,9 +21,11 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	public function register_post_type() {
-		if ( ! static::$builtin ) {
-			$args = static::$args;
+		$args = wp_parse_args( static::$args, [
+			'supports' => [],
+		] );
 
+		if ( ! static::$builtin ) {
 			if ( empty( $args['labels'] ) ) {
 				$args['labels'] = [
 					'name'                  => $args['label'],
@@ -52,11 +54,16 @@ abstract class AbstractPost extends AbstractSingleton {
 				if ( in_array( 'thumbnail', $args['supports'] ) ) {
 				add_theme_support( 'post-thumbnails', [ static::$post_type ] );
 			}
+
+				if ( in_array( 'block-editor', $args['supports'] ) && empty( $args['show_in_rest'] ) ) {
+					$args['show_in_rest'] = true;
+				}
 			}
 
-			unset( $args['supports']['classic_editor'] );
-
 			register_post_type( static::$post_type, $args );
+
+		} else {
+			add_post_type_support( static::get_post_type(), $args['supports'] );
 		}
 	}
 
@@ -68,7 +75,15 @@ abstract class AbstractPost extends AbstractSingleton {
 	 */
 	public function use_block_editor( $use_block_editor, $post_type ) {
 		if ( static::$post_type && $post_type === static::$post_type ) {
-			return ! ( is_array( static::$args['supports'] ) && in_array( 'classic_editor', static::$args['supports'] ) );
+			$supports = get_all_post_type_supports( $post_type );
+
+			if ( ! empty( $supports['classic-editor'] ) ) {
+				return false;
+			}
+
+			if ( ! empty( $supports['block-editor'] ) ) {
+				return true;
+			}
 		}
 
 		return $use_block_editor;
