@@ -56,23 +56,19 @@ class Util {
 			'postfix'  => null,
 		] );
 
-		$is_empty = function ( $value ) {
-			return $value === '' || $value === [] || $value === false || $value === null;
-		};
-
-		if ( ! $is_empty( $value ) && $args['if_true'] !== null ) {
+		if ( ! static::is_empty( $value ) && $args['if_true'] !== null ) {
 			$value = $args['if_true'];
 		}
 
-		if ( $is_empty( $value ) && $args['if_false'] !== null ) {
+		if ( static::is_empty( $value ) && $args['if_false'] !== null ) {
 			$value = $args['if_false'];
 		}
 
-		if ( $is_empty( $value ) && $args['default'] !== null ) {
+		if ( static::is_empty( $value ) && $args['default'] !== null ) {
 			return $args['default'];
 		}
 
-		if ( ! $is_empty( $value ) ) {
+		if ( ! static::is_empty( $value ) ) {
 			if ( $args['filters'] ) {
 				if ( ! is_array( $args['filters'] ) ) {
 					$args['filters'] = [ $args['filters'] ];
