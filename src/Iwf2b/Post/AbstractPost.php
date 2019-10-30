@@ -352,4 +352,15 @@ abstract class AbstractPost extends AbstractSingleton {
 
 		return $reverse ? $tree : array_reverse( $tree );
 	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return int|\WP_Error
+	 */
+	public static function insert( array $args = [] ) {
+		$args['post_type'] = static::$post_type;
+
+		return wp_insert_post( $args, true );
+	}
 }
