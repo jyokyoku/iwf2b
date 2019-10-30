@@ -156,7 +156,7 @@ abstract class AbstractPost extends AbstractSingleton {
 
 		// convert 'template' keyword to meta_query
 		if ( isset( $args['template'] ) ) {
-			$args['meta_query'][] = [
+			$args['meta_query']['_wp_page_template'] = [
 				'key'   => '_wp_page_template',
 				'value' => $args['template'],
 			];
