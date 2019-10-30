@@ -30,6 +30,6 @@ if ( ! function_exists( 'iwf_thumb' ) ) {
 	 * @return string
 	 */
 	function iwf_thumb( $src, $width = null, $height = null, array $args = [] ) {
-		return Thumb::get_endpoint_url( $src, $width, $height );
+		return Thumb::url( $src, $width, $height, $args );
 	}
 }

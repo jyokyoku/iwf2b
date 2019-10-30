@@ -67,33 +67,9 @@ class Thumb {
 	 *
 	 * @return string
 	 */
-	public static function get_endpoint_url( $src, $width = null, $height = null, array $args = [] ) {
-		$src_key = static::get_instance()->driver->get_source_key();
+	public static function url( $src, $width = null, $height = null, array $args = [] ) {
+		$endpoint = trailingslashit( WP_CONTENT_URL ) . static::get_instance()->endpoint;
 
-		if ( ! $src_key ) {
-			throw new \UnexpectedValueException( sprintf( 'Returns empty value from %s::get_source_key()', get_class( static::get_instance()->driver ) ) );
-		}
-
-		$query     = [ $src_key => $src ];
-		$width_key = static::get_instance()->driver->get_width_key();
-
-		if ( $width && $width_key ) {
-			$query[ $width_key ] = $width;
-		}
-
-		$height_key = static::get_instance()->driver->get_height_key();
-
-		if ( $height && $height_key ) {
-			$query[ $height_key ] = $height;
-		}
-
-		$query    = array_merge( $args, $query );
-		$endpoint = static::get_instance()->endpoint;
-
-		if ( $endpoint ) {
-			$endpoint = trailingslashit( WP_CONTENT_URL ) . $endpoint;
-		}
-
-		return add_query_arg( $query, $endpoint );
+		return static::get_instance()->driver->get_url( $endpoint, $src, $width, $height, $args );
 	}
 }

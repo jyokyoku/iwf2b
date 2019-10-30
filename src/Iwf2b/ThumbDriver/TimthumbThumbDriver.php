@@ -10,21 +10,18 @@ class TimthumbThumbDriver implements ThumbDriverInterface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_source_key() {
-		return 'src';
-	}
+	public function get_url( $endpoint_url, $src, $width = null, $height = null, array $args = [] ) {
+		$query        = $args;
+		$query['src'] = $src;
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function get_width_key() {
-		return 'w';
-	}
+		if ( $width ) {
+			$query['w'] = (int) $width;
+		}
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function get_height_key() {
-		return 'h';
+		if ( $height ) {
+			$query['h'] = (int) $height;
+		}
+
+		return add_query_arg( $query, $endpoint_url );
 	}
 }
