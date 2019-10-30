@@ -12,18 +12,14 @@ class Text {
 	 * @param $vars
 	 * @param string $bounds
 	 *
-	 * @return mixed
+	 * @return string
 	 */
 	public static function replace( $text, $vars, $bounds = '%' ) {
 		$replaces = $searches = [];
 
 		foreach ( $vars as $key => $value ) {
-			if ( ! is_scalar( $value ) ) {
-				continue;
-			}
-
 			$searches[] = $bounds . $key . $bounds;
-			$replaces[] = (string) $value;
+			$replaces[] = static::stringify( $value );
 		}
 
 		return str_replace( $searches, $replaces, $text );
