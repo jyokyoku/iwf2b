@@ -210,4 +210,14 @@ class Util {
 
 		return $result;
 	}
+
+	/**
+	 * @param string $string
+	 * @param string $hash_scheme
+	 *
+	 * @return string
+	 */
+	public static function short_hash( $string, $hash_scheme = 'auth' ) {
+		return strtr( rtrim( base64_encode( pack( 'H*', crc32( wp_hash( $string, $hash_scheme ) ) ) ), '=' ), '+/', '-_' );
+	}
 }
