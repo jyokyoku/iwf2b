@@ -58,7 +58,7 @@ abstract class AbstractTax extends AbstractSingleton {
 	 */
 	public function register_taxonomy() {
 		if ( ! static::$builtin ) {
-			if ( empty( static::$args['labels'] ) ) {
+			if ( ! empty( $args['label'] ) && empty( $args['labels'] ) ) {
 				static::$args['labels'] = [
 					'name'                       => static::$args['label'],
 					'singular_name'              => static::$args['label'],
