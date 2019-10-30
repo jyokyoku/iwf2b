@@ -131,4 +131,29 @@ class Text {
 	public static function convert_eol( $string, $to = "\n" ) {
 		return strtr( $string, [ "\r\n" => $to, "\r" => $to, "\n" => $to ] );
 	}
+
+	/**
+	 * @param mixed $value
+	 * @param string $glue
+	 *
+	 * @return string
+	 */
+	public static function stringify( $value, $glue = ', ' ) {
+		if ( is_object( $value ) ) {
+			if ( method_exists( $value, '__toString' ) ) {
+				$value = (string) $value;
+
+			} else {
+				$value = '(Object)';
+			}
+
+		} else if ( is_array( $value ) ) {
+			$value = Arr::implode( $glue, $value );
+
+		} else {
+			$value = (string) $value;
+		}
+
+		return $value;
+	}
 }
