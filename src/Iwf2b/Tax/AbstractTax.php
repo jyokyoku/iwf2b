@@ -227,24 +227,35 @@ abstract class AbstractTax extends AbstractSingleton {
 	/**
 	 * @param int|string|\WP_Term $term_id
 	 * @param string $key
-	 * @param array $args
+	 * @param mixed $args
 	 *
 	 * @return mixed
 	 */
-	public static function get_meta( $term_id, $key, array $args = [] ) {
+	public static function get_meta( $term_id, $key, $args = [] ) {
 		$term = static::get( $term_id );
 
 		if ( ! $term ) {
 			return null;
 		}
 
-		if ( Arr::get( $args, 'autop' ) === false ) {
+		if ( ! is_array( $args ) ) {
+			$args = [ 'd' => $args ];
+		}
+
+		$acf_options = Arr::merge_intersect_key( [
+			'noautop' => false,
+			'raw'     => false,
+		], (array) Arr::get( $args, 'acf', [] ) );
+
+		unset( $args['acf'] );
+
+		if ( $acf_options['noautop'] ) {
 			remove_filter( 'acf_the_content', 'wpautop' );
 		}
 
-		$value = function_exists( 'get_field' ) ? get_field( $key, $term ) : get_term_meta( $term->term_id, $key, true );
+		$value = function_exists( 'get_field' ) ? get_field( $key, $term, ! $acf_options['raw'] ) : get_term_meta( $term->term_id, $key, true );
 
-		if ( Arr::get( $args, 'autop' ) === false ) {
+		if ( $acf_options['noautop'] ) {
 			add_filter( 'acf_the_content', 'wpautop' );
 		}
 

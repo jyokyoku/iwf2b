@@ -173,24 +173,35 @@ class AbstractUser extends AbstractSingleton {
 	/**
 	 * @param int|string|\WP_User $user_id
 	 * @param string $key
-	 * @param array $args
+	 * @param mixed $args
 	 *
 	 * @return mixed
 	 */
-	public static function get_meta( $user_id, $key, array $args = [] ) {
+	public static function get_meta( $user_id, $key, $args = [] ) {
 		$user = static::get( $user_id );
 
 		if ( ! $user ) {
 			return null;
 		}
 
-		if ( Arr::get( $args, 'autop' ) === false ) {
+		if ( ! is_array( $args ) ) {
+			$args = [ 'd' => $args ];
+		}
+
+		$acf_options = Arr::merge_intersect_key( [
+			'noautop' => false,
+			'raw'     => false,
+		], (array) Arr::get( $args, 'acf', [] ) );
+
+		unset( $args['acf'] );
+
+		if ( $acf_options['noautop'] ) {
 			remove_filter( 'acf_the_content', 'wpautop' );
 		}
 
-		$value = function_exists( 'get_field' ) ? get_field( $key, $user ) : get_user_meta( $user->term_id, $key, true );
+		$value = function_exists( 'get_field' ) ? get_field( $key, $user, ! $acf_options['raw'] ) : get_user_meta( $user->ID, $key, true );
 
-		if ( Arr::get( $args, 'autop' ) === false ) {
+		if ( $acf_options['noautop'] ) {
 			add_filter( 'acf_the_content', 'wpautop' );
 		}
 
