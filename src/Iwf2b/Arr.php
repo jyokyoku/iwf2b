@@ -217,6 +217,9 @@ class Arr {
 		foreach ( $pieces as $key => $piece ) {
 			if ( is_array( $piece ) ) {
 				$pieces[ $key ] = static::implode( $glue, $piece );
+
+			} else {
+				$pieces[ $key ] = Text::stringify( $piece, $glue );
 			}
 		}
 
