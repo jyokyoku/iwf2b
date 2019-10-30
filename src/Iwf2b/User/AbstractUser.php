@@ -78,7 +78,7 @@ class AbstractUser extends AbstractSingleton {
 		if ( $user_id instanceof \WP_User ) {
 			$user = $user_id;
 
-		} else if ( preg_match( '/^[0-9]+?$/', $user_id ) ) {
+		} else if ( is_numeric( $user_id ) && preg_match( '/^[0-9]+?$/', $user_id ) ) {
 			$user = get_user_by( 'id', (int) $user_id );
 
 		} else if ( is_string( $user_id ) ) {
