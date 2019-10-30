@@ -7,6 +7,22 @@ namespace Iwf2b;
  * @package Iwf2b
  */
 class Util {
+	public static function is_empty($value) {
+		if ( $value === null || $value === false ) {
+			return true;
+		}
+
+		if ( is_string( $value ) && trim( $value ) === '' ) {
+			return true;
+		}
+
+		if ( ( is_array( $value ) || $value instanceof \Countable ) && count( $value ) < 1 ) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * @param mixed $value
 	 * @param array $args
