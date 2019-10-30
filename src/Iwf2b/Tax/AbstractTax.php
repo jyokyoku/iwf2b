@@ -251,4 +251,13 @@ abstract class AbstractTax extends AbstractSingleton {
 		return Util::filter( $value, $args );
 	}
 
+	/**
+	 * @param string $name
+	 * @param array $args
+	 *
+	 * @return array|\WP_Error
+	 */
+	public static function insert( $name, array $args = [] ) {
+		return wp_insert_term( $name, static::$taxonomy, $args );
+	}
 }
