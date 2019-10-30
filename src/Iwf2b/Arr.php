@@ -188,7 +188,7 @@ class Arr {
 						$stack[] = [ &$val, &$merges[1][ $key ] ];
 
 					} else if ( $intersect_key ) {
-						if ( isset( $merges[1][ $key ] ) ) {
+						if ( array_key_exists( $key, $merges[1] ) ) {
 							$merges[1][ $key ] = $val;
 						}
 
