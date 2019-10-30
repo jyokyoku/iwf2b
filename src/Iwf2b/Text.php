@@ -115,7 +115,7 @@ class Text {
 		$text = str_replace( [ "<br />", "<br>", "<br/>" ], "\n", $text );
 		$text = str_replace( "</p>", "\n\n", $text );
 
-		return $text;
+		return trim( $text );
 	}
 
 	/**
