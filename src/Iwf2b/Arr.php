@@ -121,7 +121,7 @@ class Arr {
 	 *
 	 * @return bool
 	 */
-	public static function has( array $array, $key ) {
+	public static function exists( array $array, $key ) {
 		$key_parts = explode( '.', $key );
 		$current   = $array;
 
