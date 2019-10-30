@@ -84,10 +84,6 @@ abstract class AbstractPost extends AbstractSingleton {
 				if ( in_array( 'thumbnail', $args['supports'] ) ) {
 					add_theme_support( 'post-thumbnails', [ static::$post_type ] );
 				}
-
-				if ( in_array( 'block-editor', $args['supports'] ) && empty( $args['show_in_rest'] ) ) {
-					$args['show_in_rest'] = true;
-				}
 			}
 
 			register_post_type( static::$post_type, $args );
@@ -109,10 +105,6 @@ abstract class AbstractPost extends AbstractSingleton {
 
 			if ( ! empty( $supports['classic-editor'] ) ) {
 				return false;
-			}
-
-			if ( ! empty( $supports['block-editor'] ) ) {
-				return true;
 			}
 		}
 
