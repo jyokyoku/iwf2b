@@ -105,4 +105,55 @@ class Http {
 
 		exit( $failed_text );
 	}
+
+	/**
+	 * @param array $args
+	 *
+	 * @return string
+	 */
+	public static function current_uri( array $args = [] ) {
+		$args = Arr::merge_intersect_key( [
+			'use_forwarded_host' => false,
+			'remove_query'       => false,
+			'remove_hash'        => false,
+		], $args );
+
+		$url_parts = parse_url( $_SERVER['REQUEST_URI'] );
+
+		if ( empty( $url_parts['path'] ) ) {
+			return '';
+		}
+
+		$is_ssl   = Arr::get( $_SERVER, 'HTTPS' ) && strtolower( Arr::get( $_SERVER, 'HTTPS' ) ) === 'on';
+		$protocol = $is_ssl ? 'https' : 'http';
+
+		$port = Arr::get( $_SERVER, 'SERVER_PORT' );
+
+		if ( ( ! $is_ssl && $port == '80' ) || ( $is_ssl && $port == '443' ) ) {
+			$port = '';
+
+		} else {
+			$port = ':' . $port;
+		}
+
+		if ( $args['use_forwarded_host'] && Arr::exists( $_SERVER, 'HTTP_X_FORWARDED_HOST' ) ) {
+			$host = Arr::get( $_SERVER, 'HTTP_X_FORWARDED_HOST' );
+
+		} else {
+			$host = Arr::get( $_SERVER, 'HTTP_HOST', Arr::get( $_SERVER, 'SERVER_NAME' ) . $port );
+		}
+
+		$full_uri = $protocol . '://' . $host . $url_parts['path'];
+
+		if ( ! $args['remove_query'] && ! empty( $url_parts['query'] ) ) {
+			wp_parse_str( $url_parts['query'], $query );
+			$full_uri .= '?' . http_build_query( $query );
+		}
+
+		if ( ! $args['remove_hash'] && ! empty( $url_parts['fragment'] ) ) {
+			$full_uri .= '#' . $url_parts['fragment'];
+		}
+
+		return $full_uri;
+	}
 }
