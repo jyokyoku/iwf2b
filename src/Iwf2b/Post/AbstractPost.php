@@ -56,7 +56,7 @@ abstract class AbstractPost extends AbstractSingleton {
 		] );
 
 		if ( ! static::$builtin ) {
-			if ( empty( $args['labels'] ) ) {
+			if ( ! empty( $args['label'] ) && empty( $args['labels'] ) ) {
 				$args['labels'] = [
 					'name'                  => $args['label'],
 					'singular_name'         => $args['label'],
