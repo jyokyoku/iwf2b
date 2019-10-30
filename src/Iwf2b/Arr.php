@@ -222,4 +222,24 @@ class Arr {
 
 		return implode( $glue, $pieces );
 	}
+
+	/**
+	 * @param mixed $values
+	 * @param callable $callable
+	 * @param mixed $_args
+	 */
+	public static function apply( &$values, callable $callable, $_args = null ) {
+		$args = array_slice( func_get_args(), 2 );
+
+		if ( is_array( $values ) ) {
+			foreach ( $values as $key => &$value ) {
+				$func_args = array_merge( [ &$value, $callable ], $args );
+				call_user_func_array( 'static::apply', $func_args );
+			}
+
+		} else {
+			$func_args = array_merge( [ &$values ], $args );
+			$values    = call_user_func_array( $callable, $func_args );
+		}
+	}
 }
