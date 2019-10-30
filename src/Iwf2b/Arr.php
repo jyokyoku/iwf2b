@@ -206,4 +206,20 @@ class Arr {
 			unset( $merges );
 		}
 	}
+
+	/**
+	 * @param string $glue
+	 * @param array $pieces
+	 *
+	 * @return string
+	 */
+	public static function implode( $glue, $pieces ) {
+		foreach ( $pieces as $key => $piece ) {
+			if ( is_array( $piece ) ) {
+				$pieces[ $key ] = static::implode( $glue, $piece );
+			}
+		}
+
+		return implode( $glue, $pieces );
+	}
 }
