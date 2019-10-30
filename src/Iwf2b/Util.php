@@ -104,38 +104,25 @@ class Util {
 	}
 
 	/**
-	 * @param $template
-	 * @param $to
-	 * @param $subject
-	 * @param $vars
+	 * @param string|array $to
+	 * @param string $subject
+	 * @param string $mail_body
 	 * @param array $args
 	 *
 	 * @return bool
 	 */
-	public static function mail( $mail_body, $to, $subject, $vars = [], $args = [] ) {
-		$args = wp_parse_args( $args, [
+	public static function mail( $to, $subject, $mail_body, array $args = [] ) {
+		$args = Arr::merge_intersect_key( [
 			'from'        => '',
 			'cc'          => [],
 			'bcc'         => [],
 			'attachments' => [],
-		] );
-
-		if ( ! is_array( $vars ) ) {
-			$vars = (array) $vars;
-		}
-
-		foreach ( $vars as $i => $var ) {
-			if ( is_array( $var ) ) {
-				$vars[ $i ] = array_values( $var );
-			}
-		}
+		], $args );
 
 		$headers = [];
 
-		/**
-		 * "From" address to header format
-		 */
 		if ( $args['from'] ) {
+			// Format "from" address
 			if ( is_array( $args['from'] ) ) {
 				$from_addr = reset( $args['from'] );
 				$from_name = key( $args['from'] );
@@ -146,10 +133,8 @@ class Util {
 			}
 		}
 
-		/**
-		 * "CC" address to header format
-		 */
 		if ( $args['cc'] ) {
+			// Format "cc" addresses
 			if ( ! is_array( $args['cc'] ) ) {
 				$args['cc'] = (array) $args['cc'];
 			}
@@ -163,10 +148,8 @@ class Util {
 			}
 		}
 
-		/**
-		 * "BCC" address to header format
-		 */
 		if ( $args['bcc'] ) {
+			// Format "bcc" addresses
 			if ( ! is_array( $args['bcc'] ) ) {
 				$args['bcc'] = (array) $args['bcc'];
 			}
@@ -180,47 +163,25 @@ class Util {
 			}
 		}
 
-		/**
-		 * "TO" address to array
-		 */
-		if ( strpos( $to, ',' ) !== false ) {
+		if ( is_string( $to ) && strpos( $to, ',' ) !== false ) {
 			$to = array_filter( array_map( 'trim', explode( ',', $to ) ) );
-		}
 
-		if ( ! is_array( $to ) ) {
+		} else if ( ! is_array( $to ) ) {
 			$to = (array) $to;
 		}
 
-		/**
-		 * "TO" address to correct format
-		 */
-		$to_addrs = [];
+		// Format "to" addresses
+		$formatted_to = [];
 
 		foreach ( $to as $to_name => $to_addr ) {
 			if ( ! is_email( $to_addr ) ) {
 				continue;
 			}
 
-			$to_addrs[] = $to_name && ! is_int( $to_name ) ? $to_name . ' <' . $to_addr . '>' : $to_addr;
+			$formatted_to[] = $to_name && ! is_int( $to_name ) ? $to_name . ' <' . $to_addr . '>' : $to_addr;
 		}
 
-		/**
-		 * Create mail body and subject
-		 */
-		$mail_body = Text::replace( $mail_body, $vars, '%' );
-		$subject   = Text::replace( $subject, $vars, '%' );
-
-		/**
-		 * Submit mail
-		 */
-		if ( $result = wp_mail( $to_addrs, $subject, $mail_body, $headers, $args['attachments'] ) ) {
-			static::log( sprintf( 'Email sent success - To: %s, Title: %s, Body: %s', implode( ',', $to_addrs ), $subject, $mail_body ) );
-
-		} else {
-			static::log( sprintf( 'Email sent failure - To: %s, Title: %s, Body: %s', implode( ',', $to_addrs ), $subject, $mail_body ) );
-		}
-
-		return $result;
+		return wp_mail( $formatted_to, $subject, $mail_body, $headers, $args['attachments'] );
 	}
 
 	/**
