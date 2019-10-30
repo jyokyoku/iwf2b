@@ -71,7 +71,7 @@ class Http {
 	 *
 	 * @return string
 	 */
-	public static function get_ip( $proxy = false ) {
+	public static function ip( $proxy = false ) {
 		if ( $proxy && Arr::get( $_SERVER, 'HTTP_X_FORWARDED_FOR' ) ) {
 			$addresses = explode( ',', Arr::get( $_SERVER, 'HTTP_X_FORWARDED_FOR' ) );
 			$ip        = end( $addresses );
