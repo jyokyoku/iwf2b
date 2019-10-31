@@ -207,4 +207,24 @@ class AbstractUser extends AbstractSingleton {
 
 		return Util::filter( $value, $args );
 	}
+
+	/**
+	 * @param string $user_login
+	 * @param string $user_pass
+	 * @param array $userdata
+	 *
+	 * @return int|\WP_Error
+	 */
+	public static function insert( $user_login, $user_pass, array $userdata = [] ) {
+		$userdata['user_login'] = $user_login;
+		$userdata['user_pass']  = $user_pass;
+
+		if ( static::get_role() ) {
+			$userdata['role'] = static::get_role();
+		}
+
+		unset( $userdata['ID'] );
+
+		return wp_insert_user( $userdata );
+	}
 }
