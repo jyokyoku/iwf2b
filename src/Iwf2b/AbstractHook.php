@@ -274,7 +274,7 @@ abstract class AbstractHook extends AbstractSingleton {
 			$json[]                = acf_prepare_field_group_for_export( $field_group );
 		}
 
-		$hash      = Util::short_hash( 'acf_export' );
+		$hash      = Text::short_hash( 'acf_export' );
 		$file_name = 'acf-export-9' . $hash . '.json';
 
 		file_put_contents( trailingslashit( get_stylesheet_directory() ) . $file_name, acf_json_encode( $json ) );
