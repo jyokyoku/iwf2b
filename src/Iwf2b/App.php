@@ -47,14 +47,22 @@ class App {
 				$file_path = $parent_dir . '/' . $file_name;
 
 				if ( is_file( $file_path ) && strrpos( $file_name, '.php' ) !== false && ctype_upper( substr( $file_name, 0, 1 ) ) && $file_path !== __FILE__ ) {
-					$class           = substr( $file_name, 0, - 4 );
-					$namespace_class = $namespace . '\\' . substr( $file_name, 0, - 4 );
+					$class = substr( $file_name, 0, - 4 );
 
 					if ( substr( $class, 0, 8 ) === 'Abstract' || substr( $class, - 9 ) === 'Interface' || substr( $class, - 6 ) === 'Trait' ) {
 						continue;
 					}
 
-					if ( is_subclass_of( $namespace_class, __NAMESPACE__ . '\AbstractSingleton' ) ) {
+					$namespace_class = $namespace . '\\' . substr( $file_name, 0, - 4 );
+
+					try {
+						$ref = new \ReflectionClass( $namespace_class );
+
+					} catch ( \ReflectionException $e ) {
+						continue;
+					}
+
+					if ( $ref->isSubclassOf( __NAMESPACE__ . '\AbstractSingleton' ) ) {
 						if ( $namespace_class::auto_init() ) {
 							$namespace_class::get_instance();
 						}
