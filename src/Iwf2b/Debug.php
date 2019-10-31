@@ -8,6 +8,9 @@ namespace Iwf2b;
  */
 class Debug {
 	/**
+	 * Based on FuelPHP
+	 * Copyright (c) 2010-2016 Fuel Development Team (http://fuelphp.com)
+	 *
 	 * @param $_args
 	 */
 	public static function dump( $_args ) {

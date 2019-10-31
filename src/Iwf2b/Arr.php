@@ -137,6 +137,9 @@ class Arr {
 	}
 
 	/**
+	 * Based on CakePHP
+	 * Copyright (c) 2005-present, Cake Software Foundation, Inc. (https://cakefoundation.org)
+	 *
 	 * @param array $array
 	 * @param mixed $_args
 	 *
@@ -177,6 +180,9 @@ class Arr {
 	}
 
 	/**
+	 * Based on CakePHP
+	 * Copyright (c) 2005-present, Cake Software Foundation, Inc. (https://cakefoundation.org)
+	 *
 	 * @param $stack
 	 * @param bool $intersect_key
 	 */

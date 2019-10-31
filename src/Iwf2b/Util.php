@@ -7,6 +7,14 @@ namespace Iwf2b;
  * @package Iwf2b
  */
 class Util {
+	/**
+	 * Based on Laravel
+	 * Copyright (c) Taylor Otwell (https://laravel.com)
+	 *
+	 * @param $value
+	 *
+	 * @return bool
+	 */
 	public static function is_empty($value) {
 		if ( $value === null || $value === false ) {
 			return true;
