@@ -156,4 +156,25 @@ class Http {
 
 		return $full_uri;
 	}
+
+	/**
+	 * @param string|int $action
+	 * @param string $field
+	 * @param array $request
+	 *
+	 * @return bool|int
+	 */
+	public static function verify_nonce( $action = - 1, $field = '_wpnonce', array $request = [] ) {
+		if ( empty( $request ) ) {
+			$request = $_REQUEST;
+		}
+
+		$nonce = Arr::get( $request, $field );
+
+		if ( ! $nonce ) {
+			return false;
+		}
+
+		return wp_verify_nonce( $nonce, $action );
+	}
 }

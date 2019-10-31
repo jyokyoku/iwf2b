@@ -201,25 +201,4 @@ class Util {
 	public static function short_hash( $string, $hash_scheme = 'auth' ) {
 		return strtr( rtrim( base64_encode( pack( 'H*', crc32( wp_hash( $string, $hash_scheme ) ) ) ), '=' ), '+/', '-_' );
 	}
-
-	/**
-	 * @param string|int $action
-	 * @param string $field
-	 * @param array $request
-	 *
-	 * @return bool|int
-	 */
-	public static function verify_nonce( $action = - 1, $field = '_wpnonce', array $request = [] ) {
-		if ( empty( $request ) ) {
-			$request = $_REQUEST;
-		}
-
-		$nonce = Arr::get( $request, $field );
-
-		if ( ! $nonce ) {
-			return false;
-		}
-
-		return wp_verify_nonce( $nonce, $action );
-	}
 }
