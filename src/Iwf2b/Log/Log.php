@@ -1,6 +1,6 @@
 <?php
 
-namespace Iwf2b;
+namespace Iwf2b\Log;
 
 use Psr\Log\LoggerInterface;
 

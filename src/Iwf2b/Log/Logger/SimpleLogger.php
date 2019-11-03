@@ -1,8 +1,9 @@
 <?php
 
-namespace Iwf2b\Logger;
+namespace Iwf2b\Log\Logger;
 
 use Iwf2b\Arr;
+use Iwf2b\Filesystem;
 use Iwf2b\Text;
 use Psr\Log\LoggerInterface;
 
@@ -49,9 +50,7 @@ class SimpleLogger implements LoggerInterface {
 		}
 
 		if ( ! is_dir( $path ) ) {
-			if ( @mkdir( $path, 0777 ) && ! is_dir( $path ) ) {
-				throw new \InvalidArgumentException( sprintf( 'Invalid log directory path. - %s', $this->path ) );
-			}
+			Filesystem::mkdir( $path );
 		}
 
 		if ( ! is_writable( $path ) ) {
