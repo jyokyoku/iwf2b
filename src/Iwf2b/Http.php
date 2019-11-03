@@ -115,7 +115,7 @@ class Http {
 		$args = Arr::merge_intersect_key( [
 			'use_forwarded_host' => false,
 			'remove_query'       => false,
-			'remove_hash'        => false,
+			'remove_fragment'    => false,
 		], $args );
 
 		$url_parts = parse_url( $_SERVER['REQUEST_URI'] );
@@ -150,7 +150,7 @@ class Http {
 			$full_uri .= '?' . http_build_query( $query );
 		}
 
-		if ( ! $args['remove_hash'] && ! empty( $url_parts['fragment'] ) ) {
+		if ( ! $args['remove_fragment'] && ! empty( $url_parts['fragment'] ) ) {
 			$full_uri .= '#' . $url_parts['fragment'];
 		}
 
