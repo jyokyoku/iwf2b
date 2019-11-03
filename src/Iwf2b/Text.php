@@ -154,12 +154,16 @@ class Text {
 	}
 
 	/**
-	 * @param string $string
+	 * @param string $value
 	 * @param string $hash_scheme
 	 *
 	 * @return string
 	 */
-	public static function short_hash( $string, $hash_scheme = 'auth' ) {
-		return strtr( rtrim( base64_encode( pack( 'H*', crc32( wp_hash( $string, $hash_scheme ) ) ) ), '=' ), '+/', '-_' );
+	public static function short_hash( $value, $hash_scheme = 'auth' ) {
+		if ( ! is_string( $value ) ) {
+			$value = serialize( $value );
+		}
+
+		return strtr( rtrim( base64_encode( pack( 'H*', crc32( wp_hash( $value, $hash_scheme ) ) ) ), '=' ), '+/', '-_' );
 	}
 }
