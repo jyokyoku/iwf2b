@@ -1,12 +1,12 @@
 <?php
 
-namespace Iwf2b\ThumbDriver;
+namespace Iwf2b\Thumb\Driver;
 
 /**
- * Interface ThumbDriverInterface
- * @package Iwf2b\ThumbDriver
+ * Interface DriverInterface
+ * @package Iwf2b\Thumb\Driver
  */
-interface ThumbDriverInterface {
+interface DriverInterface {
 	/**
 	 * @param string $endpoint_url
 	 * @param string $src

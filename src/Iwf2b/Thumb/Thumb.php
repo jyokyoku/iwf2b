@@ -1,8 +1,8 @@
 <?php
 
-namespace Iwf2b;
+namespace Iwf2b\Thumb;
 
-use Iwf2b\ThumbDriver\ThumbDriverInterface;
+use Iwf2b\Thumb\Driver\DriverInterface;
 
 /**
  * Class Thumb
@@ -12,7 +12,7 @@ class Thumb {
 	/**
 	 * Thumbnail driver
 	 *
-	 * @var ThumbDriverInterface
+	 * @var DriverInterface
 	 */
 	protected $driver;
 
@@ -45,7 +45,7 @@ class Thumb {
 	/**
 	 * @param string $endpoint
 	 */
-	public static function set_driver( ThumbDriverInterface $driver, $endpoint ) {
+	public static function set_driver( DriverInterface $driver, $endpoint ) {
 		static::get_instance()->driver = $driver;
 
 		if ( ! file_exists( $endpoint ) ) {

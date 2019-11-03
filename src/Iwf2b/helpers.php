@@ -1,6 +1,6 @@
 <?php
-use Iwf2b\Thumb;
 use Iwf2b\Log\Log;
+use Iwf2b\Thumb\Thumb;
 
 if ( ! function_exists( 'iwf_dump' ) ) {
 	/**

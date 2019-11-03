@@ -1,12 +1,12 @@
 <?php
 
-namespace Iwf2b\ThumbDriver;
+namespace Iwf2b\Thumb\Driver;
 
 /**
- * Class TimthumbThumbDriver
- * @package Iwf2b\ThumbDriver
+ * Class TimthumbDriver
+ * @package Iwf2b\Thumb\Driver
  */
-class TimthumbThumbDriver implements ThumbDriverInterface {
+class TimthumbDriver implements DriverInterface {
 	/**
 	 * {@inheritdoc}
 	 */
