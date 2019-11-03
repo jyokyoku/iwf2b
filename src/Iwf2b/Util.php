@@ -11,17 +11,24 @@ class Util {
 	 * Based on Laravel
 	 * Copyright (c) Taylor Otwell (https://laravel.com)
 	 *
-	 * @param $value
+	 * @param mixed $value
+	 * @param bool $check_empty_string
 	 *
 	 * @return bool
 	 */
-	public static function is_empty($value) {
+	public static function is_empty( $value, $check_empty_string = false ) {
 		if ( $value === null || $value === false ) {
 			return true;
 		}
 
-		if ( is_string( $value ) && trim( $value ) === '' ) {
+		if ( is_string( $value ) ) {
+			if ( $check_empty_string && trim( $value ) === '' ) {
 			return true;
+		}
+
+			if ( $value === '' ) {
+				return true;
+			}
 		}
 
 		if ( ( is_array( $value ) || $value instanceof \Countable ) && count( $value ) < 1 ) {
