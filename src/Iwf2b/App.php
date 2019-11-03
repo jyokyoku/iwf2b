@@ -55,41 +55,48 @@ class App {
 	}
 
 	/**
-	 * @param string $parent_directory
+	 * @param string $directory
 	 * @param string $namespace
 	 */
-	private function load_recursive( $parent_dir, $namespace ) {
-		foreach ( scandir( $parent_dir ) as $file_name ) {
-			if ( $file_name === '.' || $file_name === '..' ) {
+	private function load_recursive( $directory, $namespace ) {
+		$directory = untrailingslashit( $directory );
+		$namespace = rtrim( $namespace, '\\' );
+
+		$files = new \RegexIterator(
+			new \RecursiveIteratorIterator(
+				new \RecursiveDirectoryIterator(
+					$directory,
+					\FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::SKIP_DOTS
+				)
+			),
+			'/\.php$/i',
+			\RegexIterator::MATCH
+		);
+
+		foreach ( $files as $file ) {
+			if ( $file->isDir() ) {
 				continue;
 			}
 
-			$file_path = $parent_dir . '/' . $file_name;
+			$relative_directory = str_replace( $directory, '', $file->getPath() );
+			$class              = substr( $file->getFilename(), 0, - 4 );
+			$namespace_class    = $namespace . str_replace( '/', '\\', rtrim( $relative_directory, '/' ) ) . '\\' . $class;
 
-			if ( is_file( $file_path ) && strrpos( $file_name, '.php' ) !== false && ctype_upper( substr( $file_name, 0, 1 ) ) && $file_path !== __FILE__ ) {
-				$class = substr( $file_name, 0, - 4 );
+			try {
+				$ref = new \ReflectionClass( $namespace_class );
 
-				if ( substr( $class, 0, 8 ) === 'Abstract' || substr( $class, - 9 ) === 'Interface' || substr( $class, - 6 ) === 'Trait' ) {
-					continue;
+			} catch ( \ReflectionException $e ) {
+				continue;
+			}
+
+			if ( $ref->isAbstract() || $ref->isInterface() || $ref->isTrait() ) {
+				continue;
+			}
+
+			if ( $ref->isSubclassOf( __NAMESPACE__ . '\AbstractSingleton' ) ) {
+				if ( $namespace_class::auto_init() ) {
+					$namespace_class::get_instance();
 				}
-
-				$namespace_class = $namespace . '\\' . substr( $file_name, 0, - 4 );
-
-				try {
-					$ref = new \ReflectionClass( $namespace_class );
-
-				} catch ( \ReflectionException $e ) {
-					continue;
-				}
-
-				if ( $ref->isSubclassOf( __NAMESPACE__ . '\AbstractSingleton' ) ) {
-					if ( $namespace_class::auto_init() ) {
-						$namespace_class::get_instance();
-					}
-				}
-
-			} else if ( is_dir( $file_path ) ) {
-				$this->load_recursive( $file_path, $namespace . '\\' . basename( $file_path ) );
 			}
 		}
 	}
