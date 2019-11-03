@@ -23,8 +23,8 @@ class Util {
 
 		if ( is_string( $value ) ) {
 			if ( $check_empty_string && trim( $value ) === '' ) {
-			return true;
-		}
+				return true;
+			}
 
 			if ( $value === '' ) {
 				return true;
@@ -71,11 +71,11 @@ class Util {
 			'postfix'  => null,
 		] );
 
-		if ( ! static::is_empty( $value ) && $args['if_true'] !== null ) {
+		if ( ! empty( $value ) && $args['if_true'] !== null ) {
 			$value = $args['if_true'];
 		}
 
-		if ( static::is_empty( $value ) && $args['if_false'] !== null ) {
+		if ( empty( $value ) && $args['if_false'] !== null ) {
 			$value = $args['if_false'];
 		}
 
@@ -110,7 +110,7 @@ class Util {
 				}
 			}
 
-			if ( is_scalar( $value ) && ( $args['prefix'] !== null || $args['postfix'] !== null ) ) {
+			if ( ( is_string( $value ) || is_numeric( $value ) ) && ( $args['prefix'] !== null || $args['postfix'] !== null ) ) {
 				$value = $args['prefix'] . $value . $args['postfix'];
 			}
 		}
