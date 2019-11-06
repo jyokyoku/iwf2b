@@ -50,6 +50,10 @@ abstract class AbstractTax extends AbstractSingleton {
 	 * {@inheritdoc}
 	 */
 	protected function initialize() {
+		if ( ! static::$taxonomy ) {
+			throw new \RuntimeException( sprintf( 'The variable "%s::$taxonomy" must be not empty.', get_class( $this ) ) );
+		}
+
 		add_action( 'init', [ $this, 'register_taxonomy' ] );
 	}
 
