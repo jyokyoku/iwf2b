@@ -22,6 +22,13 @@ abstract class AbstractSingleton {
 	protected static $auto_init = true;
 
 	/**
+	 * Dependency class names
+	 *
+	 * @var array
+	 */
+	protected static $dependencies = [];
+
+	/**
 	 * AbstractSingleton constructor.
 	 */
 	final private function __construct() {
@@ -48,6 +55,13 @@ abstract class AbstractSingleton {
 	 */
 	final public static function auto_init() {
 		return static::$auto_init;
+	}
+
+	/**
+	 * @return array
+	 */
+	final public static function get_dependencies() {
+		return static::$dependencies;
 	}
 
 	/**

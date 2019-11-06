@@ -15,6 +15,20 @@ class App {
 	protected static $instance;
 
 	/**
+	 * Auto initialize classes
+	 *
+	 * @var array
+	 */
+	protected $auto_init_classes = [];
+
+	/**
+	 * Already initialized classes
+	 *
+	 * @var array
+	 */
+	protected $initialized_classes = [];
+
+	/**
 	 * @return App
 	 */
 	public static function get_instance() {
@@ -50,7 +64,11 @@ class App {
 		}
 
 		foreach ( $class_maps as $_base_directory => $_base_namespace ) {
-			$this->load_recursive( $_base_directory, $_base_namespace );
+			$this->parse_auto_init_classes( $_base_directory, $_base_namespace );
+		}
+
+		foreach ( $this->auto_init_classes as $class ) {
+			$this->load_dependencies( $class );
 		}
 	}
 
@@ -58,7 +76,7 @@ class App {
 	 * @param string $directory
 	 * @param string $namespace
 	 */
-	private function load_recursive( $directory, $namespace ) {
+	private function parse_auto_init_classes( $directory, $namespace ) {
 		$directory = untrailingslashit( $directory );
 		$namespace = rtrim( $namespace, '\\' );
 
@@ -95,9 +113,44 @@ class App {
 
 			if ( $ref->isSubclassOf( __NAMESPACE__ . '\AbstractSingleton' ) ) {
 				if ( $namespace_class::auto_init() ) {
-					$namespace_class::get_instance();
+					$this->auto_init_classes[] = $namespace_class;
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param $class
+	 *
+	 * @return bool
+	 */
+	private function load_dependencies( $class ) {
+		$dependencies = $class::get_dependencies();
+
+		if ( $dependencies ) {
+			if ( in_array( $class, $dependencies ) ) {
+				throw new \UnexpectedValueException( sprintf( 'The class "%s" recursively depends on itself.', $class ) );
+			}
+
+			foreach ( $dependencies as $dependency_class ) {
+				if ( ! in_array( $dependency_class, $this->initialized_classes ) ) {
+					if ( ! in_array( $dependency_class, $this->auto_init_classes ) ) {
+						return false;
+					}
+
+					if ( ! $this->load_dependencies( $dependency_class ) ) {
+						return false;
+					}
+				}
+			}
+		}
+
+		if ( ! in_array( $class, $this->initialized_classes ) ) {
+			$class::get_instance();
+
+			$this->initialized_classes[] = $class;
+		}
+
+		return true;
 	}
 }
