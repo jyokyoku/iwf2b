@@ -92,11 +92,11 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 		}
 
 		static::$args = Arr::merge_intersect_key( [
-			'parent'     => '',
-			'page_title' => static::$menu_title,
-			'capability' => 'manage_options',
-			'icon'       => '',
-			'position'   => null,
+			'parent'                   => '',
+			'page_title'               => static::$menu_title,
+			'capability'               => 'manage_options',
+			'icon'                     => '',
+			'position'                 => null,
 			'remove_duplicate_submenu' => true,
 		], static::$args );
 

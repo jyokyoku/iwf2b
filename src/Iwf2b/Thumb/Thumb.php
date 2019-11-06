@@ -2,6 +2,7 @@
 
 namespace Iwf2b\Thumb;
 
+use Iwf2b\Filesystem;
 use Iwf2b\Thumb\Driver\DriverInterface;
 
 /**
@@ -26,7 +27,7 @@ class Thumb {
 	/**
 	 * Thumb constructor.
 	 */
-	protected function __construct() {
+	final private function __construct() {
 	}
 
 	/**
@@ -52,7 +53,7 @@ class Thumb {
 			throw new \InvalidArgumentException( sprintf( 'Thumbnail endpoint is not found. - %s', $endpoint ) );
 		}
 
-		if ( strpos( $endpoint, WP_CONTENT_DIR ) !== 0 ) {
+		if ( ! Filesystem::is_child_path( $endpoint, WP_CONTENT_DIR ) ) {
 			throw new \InvalidArgumentException( sprintf( 'Place the endpoint under the WP_CONTENT directory. - %s', $endpoint ) );
 		}
 

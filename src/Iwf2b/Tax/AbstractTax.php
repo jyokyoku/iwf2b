@@ -12,18 +12,18 @@ use Iwf2b\Util;
  */
 abstract class AbstractTax extends AbstractSingleton {
 	/**
+	 * Taxonomy slug
+	 *
+	 * @var string
+	 */
+	protected static $taxonomy;
+
+	/**
 	 * Assoc object slug
 	 *
 	 * @var string
 	 */
 	protected static $object_type = '';
-
-	/**
-	 * Taxonomy slug
-	 *
-	 * @var string
-	 */
-	protected static $taxonomy = '';
 
 	/**
 	 * Params for registration
