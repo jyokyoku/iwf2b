@@ -16,7 +16,7 @@ abstract class AbstractPost extends AbstractSingleton {
 	 *
 	 * @var string
 	 */
-	protected static $post_type = '';
+	protected static $post_type;
 
 	/**
 	 * Args for registration
