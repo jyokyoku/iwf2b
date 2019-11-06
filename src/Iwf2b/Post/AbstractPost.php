@@ -43,6 +43,10 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * {@inheritdoc}
 	 */
 	protected function initialize() {
+		if ( ! static::$post_type ) {
+			throw new \RuntimeException( sprintf( 'The variable "%s::$post_type" must be not empty.', get_class( $this ) ) );
+		}
+
 		add_action( 'init', [ $this, 'register_post_type' ] );
 		add_action( 'use_block_editor_for_post_type', [ $this, 'use_block_editor' ], 10, 2 );
 	}
