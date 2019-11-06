@@ -97,7 +97,14 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 			'capability' => 'manage_options',
 			'icon'       => '',
 			'position'   => null,
+			'remove_duplicate_submenu' => true,
 		], static::$args );
+
+		if ( static::$menu_slug && static::$args['remove_duplicate_submenu'] ) {
+			add_action( 'admin_init', function () {
+				remove_submenu_page( static::$menu_slug, static::$menu_slug );
+			} );
+		}
 
 		static::$view = new View();
 	}
