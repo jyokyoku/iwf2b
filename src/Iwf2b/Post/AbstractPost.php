@@ -168,6 +168,23 @@ abstract class AbstractPost extends AbstractSingleton {
 			unset( $args['template'] );
 		}
 
+		// convert 'thumbnail' keyword to meta_query
+		if ( isset( $args['thumbnail'] ) ) {
+			if ( $args['thumbnail'] === true ) {
+				$args['meta_query'][] = [
+					'key' => '_thumbnail_id',
+				];
+
+			} else if ( preg_match( '#^[\d]+?$#', $args['thumbnail'] ) ) {
+				$args['meta_query']['_thumbnail_id'] = [
+					'key'   => '_thumbnail_id',
+					'value' => (int) $args['thumbnail'],
+				];
+			}
+
+			unset( $args['thumbnail'] );
+		}
+
 		return $args;
 	}
 
