@@ -63,6 +63,14 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 	 * {@inheritdoc}
 	 */
 	protected function initialize() {
+		if ( ! static::$menu_slug ) {
+			throw new \RuntimeException( sprintf( 'The variable "%s::$menu_slug" must be not empty.', get_class( $this ) ) );
+		}
+
+		if ( ! static::$menu_title ) {
+			throw new \RuntimeException( sprintf( 'The variable "%s::$menu_title" must be not empty.', get_class( $this ) ) );
+		}
+
 		add_action( 'admin_menu', [ $this, 'register' ] );
 
 		add_action( '_admin_menu', [ $this, 'action' ] );
