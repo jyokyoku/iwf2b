@@ -76,6 +76,7 @@ class FormRenderer implements FormRendererInterface {
 	 * @return $this
 	 */
 	public function set_attrs( array $attrs ) {
+		ksort($attrs);
 		$this->attrs = $attrs;
 
 		return $this;
