@@ -2,6 +2,8 @@
 
 namespace Iwf2b\Form;
 
+use Iwf2b\Util;
+
 /**
  * Class Form
  * @package Iwf2b\Form
@@ -227,11 +229,13 @@ class Form {
 		return static::input( $name, 'radio', $attrs )->set_before_render( function ( FormRenderer $form ) {
 			$attrs = $form->get_attrs();
 
-			if ( $form->get_value() ) {
-				$attrs['value'] = $form->get_value();
+			if ( isset( $attrs['value'] ) ) {
+				if ( Util::is_empty( $attrs['value'] ) ) {
+					unset ( $attrs['value'] );
 
-			} else {
-				$attrs['value'] = '';
+				} else if ( $attrs['value'] == $form->get_value() ) {
+					$attrs['checked'] = true;
+				}
 			}
 
 			$form->set_attrs( $attrs );
@@ -248,11 +252,13 @@ class Form {
 		return static::input( $name, 'checkbox', $attrs )->set_before_render( function ( FormRenderer $form ) {
 			$attrs = $form->get_attrs();
 
-			if ( $form->get_value() ) {
-				$attrs['value'] = $form->get_value();
+			if ( isset( $attrs['value'] ) ) {
+				if ( Util::is_empty( $attrs['value'] ) ) {
+					unset ( $attrs['value'] );
 
-			} else {
-				$attrs['value'] = '';
+				} else if ( $attrs['value'] == $form->get_value() ) {
+					$attrs['checked'] = true;
+				}
 			}
 
 			$form->set_attrs( $attrs );
