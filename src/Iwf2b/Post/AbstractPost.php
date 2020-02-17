@@ -402,4 +402,11 @@ abstract class AbstractPost extends AbstractSingleton {
 	public static function get_archive_link() {
 		return get_post_type_archive_link( static::$post_type );
 	}
+
+	/**
+	 * @return \WP_Post_Type|null
+	 */
+	public static function get_object() {
+		return get_post_type_object( static::$post_type );
+	}
 }
