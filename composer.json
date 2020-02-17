@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": "~5.4||~7.0",
+        "php": "~5.5||~7.0",
         "psr/log": "~1.0"
     },
     "autoload": {
@@ -18,5 +18,8 @@
         "files": [
             "src/Iwf2b/helpers.php"
         ]
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.3"
     }
 }
