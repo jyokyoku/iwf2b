@@ -93,7 +93,7 @@ abstract class AbstractPost extends AbstractSingleton {
 			register_post_type( static::$post_type, $args );
 
 		} else {
-			add_post_type_support( static::get_post_type(), $args['supports'] );
+			add_post_type_support( static::$post_type, $args['supports'] );
 		}
 	}
 

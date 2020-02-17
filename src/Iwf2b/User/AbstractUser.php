@@ -219,8 +219,8 @@ class AbstractUser extends AbstractSingleton {
 		$userdata['user_login'] = $user_login;
 		$userdata['user_pass']  = $user_pass;
 
-		if ( static::get_role() ) {
-			$userdata['role'] = static::get_role();
+		if ( static::$role ) {
+			$userdata['role'] = static::$role;
 		}
 
 		unset( $userdata['ID'] );
