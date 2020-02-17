@@ -94,8 +94,17 @@ abstract class AbstractTax extends AbstractSingleton {
 	/**
 	 * @return string
 	 */
-	public static function get_slug() {
+	public static function get_taxonomy() {
 		return static::$taxonomy;
+	}
+
+	/**
+	 * Alias of static::get_taxonomy()
+	 *
+	 * @return string
+	 */
+	public static function get_slug() {
+		return static::get_taxonomy();
 	}
 
 	/**

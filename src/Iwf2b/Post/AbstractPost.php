@@ -138,6 +138,15 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	/**
+	 * Alias of static::get_post_type()
+	 *
+	 * @return string
+	 */
+	public static function get_slug() {
+		return static::get_post_type();
+	}
+
+	/**
 	 * @param $post_id
 	 *
 	 * @return bool
