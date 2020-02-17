@@ -395,4 +395,11 @@ abstract class AbstractPost extends AbstractSingleton {
 
 		return wp_insert_post( $args, true );
 	}
+
+	/**
+	 * @return false|string
+	 */
+	public static function get_archive_link() {
+		return get_post_type_archive_link( static::$post_type );
+	}
 }
