@@ -48,6 +48,32 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 	}
 
 	/**
+	 * @param $name
+	 */
+	public static function destroy( $name ) {
+		if ( $name instanceof FieldSet ) {
+			$instance = $name;
+			$name     = array_search( $name, static::$instances );
+
+			if ( $name === false ) {
+				throw new \InvalidArgumentException( "Specified instance does not exists in the instance list." );
+			}
+
+		} else if ( isset( static::$instances[ $name ] ) ) {
+			$instance = static::$instances[ $name ];
+
+		} else {
+			throw new \InvalidArgumentException( "Specified '{$name}' does not exists in the instance list." );
+		}
+
+		foreach ( $instance as $i => $field ) {
+			unset( $instance[ $i ] );
+		}
+
+		unset( static::$instances[ $name ] );
+	}
+
+	/**
 	 * @param FieldInterface $field
 	 *
 	 * @return FieldInterface
