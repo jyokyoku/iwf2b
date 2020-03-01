@@ -415,7 +415,7 @@ abstract class AbstractPost extends AbstractSingleton {
 	/**
 	 * @return \WP_Post_Type|null
 	 */
-	public static function get_object() {
+	public static function get_post_type_object() {
 		return get_post_type_object( static::$post_type );
 	}
 }

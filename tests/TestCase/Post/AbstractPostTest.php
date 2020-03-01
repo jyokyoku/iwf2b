@@ -69,12 +69,12 @@ class AbstractPostTest extends \WP_UnitTestCase {
 		$this->assertEquals( get_post_type_archive_link( 'test_post' ), $post_class::get_archive_link() );
 	}
 
-	public function get_get_object() {
+	public function test_get_post_type_object() {
 		$post_class = $this->make_post_class( 'TestPost', 'test_post', [
 			'supports'    => [ 'title', 'editor' ],
 			'has_archive' => true,
 		], true );
 
-		$this->assertEquals( get_post_type_object( 'test_post' ), $post_class::get_get_object() );
+		$this->assertEquals( get_post_type_object( 'test_post' ), $post_class::get_post_type_object() );
 	}
 }
