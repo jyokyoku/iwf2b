@@ -285,46 +285,93 @@ abstract class AbstractPost extends AbstractSingleton {
 	 *
 	 * @return array
 	 */
-	public static function get_thumbnail( $post_id, $search_post_key = false, $dummy_image = '' ) {
+	public static function get_thumbnail( $post_id, $args = [], $deprecated = '' ) {
 		$post = static::get( $post_id );
 
 		if ( ! $post ) {
 			return [];
 		}
 
-		$data['src'] = $dummy_image;
+		if ( ! is_array( $args ) ) {
+			$args = [
+				'search_post_key' => $args,
+				'dummy_image'     => $deprecated,
+				'thumbnail_size'  => '',
+				'alt'             => '',
+			];
+
+		} else {
+			$args = wp_parse_args( $args, [
+				'search_post_key' => false,
+				'dummy_image'     => '',
+				'thumbnail_size'  => '',
+				'alt'             => '',
+			] );
+		}
+
+		$data['src']    = $args['dummy_image'];
+		$data['alt']    = $args['alt'];
+		$data['width']  = null;
+		$data['height'] = null;
 
 		if ( has_post_thumbnail( $post->ID ) ) {
 			$attachment_id = get_post_thumbnail_id( $post->ID );
 			$attachment    = get_post( $attachment_id );
 
 			if ( $attachment ) {
-				$image_src   = wp_get_attachment_image_src( $attachment->ID, '' );
-				$data['src'] = isset( $image_src[0] ) ? $image_src[0] : '';
+				$image_src = wp_get_attachment_image_src( $attachment->ID, $args['thumbnail_size'] );
 
-				$alt = get_post_meta( $attachment->ID, '_wp_attachment_image_alt', true );
+				if ( $image_src ) {
+					$data['src']    = $image_src[0];
+					$data['width']  = $image_src[1];
+					$data['height'] = $image_src[2];
 
-				if ( empty( $alt ) ) {
-					$alt = $attachment->post_excerpt;
+					if ( ! $data['alt'] ) {
+						$alt = get_post_meta( $attachment->ID, '_wp_attachment_image_alt', true );
+
+						if ( empty( $alt ) ) {
+							$alt = $attachment->post_excerpt;
+						}
+
+						if ( empty( $alt ) ) {
+							$alt = $attachment->post_title;
+						}
+
+						$data['alt'] = trim( wp_strip_all_tags( $alt, true ) );
+					}
 				}
-
-				if ( empty( $alt ) ) {
-					$alt = $attachment->post_title;
-				}
-
-				$data['alt'] = trim( wp_strip_all_tags( $alt, true ) );
 			}
 
-		} else if ( $search_post_key && isset( $post->{$search_post_key} )
-		            && preg_match( '/<img[^>]*?src\s*=\s*["\']([^"\']+)["\'].*?\/?>/i', $post->{$search_post_key}, $matches ) ) {
-			$data['src'] = $matches[1];
+		} else if (
+			$args['search_post_key']
+			&& isset( $post->{$args['search_post_key']} )
+			&& preg_match( '|<img[^>]*?src\s*=\s*["\']([^"\']+)["\'].*?>|i', $post->{$args['search_post_key']}, $src )
+		) {
+			$data['src'] = $src[1];
+			$sizes       = @getimagesize( $data['src'] );
+
+			if ( isset( $sizes[0], $sizes[1] ) ) {
+				$data['width']  = $sizes[0];
+				$data['height'] = $sizes[1];
+			}
+
+			if ( ! $data['alt'] && preg_match( '|\s*alt\s*=\s*["\']([^"\']+)["\']|i', $src[0], $alt ) ) {
+				$data['alt'] = $alt[1];
+			}
+
+		} else if ( $data['src'] ) {
+			$sizes = @getimagesize( $data['src'] );
+
+			if ( isset( $sizes[0], $sizes[1] ) ) {
+				$data['width']  = $sizes[0];
+				$data['height'] = $sizes[1];
+			}
+
+		} else {
+			return [];
 		}
 
-		if ( $data['src'] && empty( $data['alt'] ) ) {
-			$data['alt'] = get_the_title( $post );
-		}
-
-		return array_filter( $data );
+		return $data;
 	}
 
 	/**
