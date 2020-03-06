@@ -198,4 +198,38 @@ class Util {
 
 		return wp_mail( $formatted_to, $subject, $mail_body, $headers, $args['attachments'] );
 	}
+
+	/**
+	 * @param \ReflectionFunctionAbstract|\ReflectionClass|\ReflectionProperty $reflection
+	 * @param array|string $search
+	 *
+	 * @return array
+	 */
+	public static function parse_phpdoc_tags( $reflection, $search = [] ) {
+		if ( ! $reflection instanceof \ReflectionClass
+		     && ! $reflection instanceof \ReflectionFunctionAbstract
+		     && ! $reflection instanceof \ReflectionProperty
+		) {
+			throw new \InvalidArgumentException( 'Invalid variable type of $target. The $target required the instance of ReflectionClass or ReflectionFunctionAbstract or ReflectionProperty.' );
+		}
+
+		if ( $search && ! is_array( $search ) ) {
+			$search = [ $search ];
+		}
+
+		$tags    = [];
+		$comment = Text::convert_eol( $reflection->getDocComment() );
+
+		if ( preg_match_all( "/@(.+?)(?:\s+(.*))?[\n*]/u", $comment, $matches ) ) {
+			foreach ( $matches[1] as $i => $tag ) {
+				if ( $search && ! in_array( $tag, $search ) ) {
+					continue;
+				}
+
+				$tags[ $tag ] = trim( $matches[2][ $i ] );
+			}
+		}
+
+		return $tags;
+	}
 }
