@@ -45,7 +45,7 @@ abstract class AbstractRule implements RuleInterface {
 
 		if ( $config ) {
 			foreach ( $config as $key => $value ) {
-				if ( in_array( $key, $var_names ) && ! Util::is_empty( $value ) ) {
+				if ( in_array( $key, $var_names ) ) {
 					if ( array_key_exists( $key, $param_types ) ) {
 						$types      = (array) $param_types[ $key ];
 						$valid_type = false;
