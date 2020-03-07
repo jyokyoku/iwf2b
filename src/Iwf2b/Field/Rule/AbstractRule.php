@@ -121,7 +121,7 @@ abstract class AbstractRule implements RuleInterface {
 	 * @return string
 	 */
 	protected function get_default_message() {
-		return preg_replace( '|^' . preg_quote( __NAMESPACE__ . '\\', '|' ) . '(.+?)Rule$|i', '$1', get_class( $this ) );
+		return preg_replace( '|^(?:.+\\\)?(.+?)Rule$|i', '$1', get_class( $this ) );
 	}
 
 	/**
