@@ -118,7 +118,7 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 			$errors[ $field->get_name() ] = $field->get_errors();
 		}
 
-		return $errors;
+		return array_filter( $errors );
 	}
 
 	/**
