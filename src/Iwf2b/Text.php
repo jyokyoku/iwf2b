@@ -135,7 +135,20 @@ class Text {
 	 * @return string
 	 */
 	public static function stringify( $value, $glue = ', ' ) {
-		if ( is_object( $value ) ) {
+		if ( $value instanceof \Traversable ) {
+			$value = iterator_to_array( $value, false );
+		}
+
+		if ( is_array( $value ) ) {
+			$converted = [];
+
+			foreach ( $value as $key => $_value ) {
+				$converted[ $key ] = static::stringify( $_value, $glue );
+			}
+
+			$value = implode( $glue, $converted );
+
+		} else if ( is_object( $value ) ) {
 			if ( method_exists( $value, '__toString' ) ) {
 				$value = (string) $value;
 
@@ -143,8 +156,11 @@ class Text {
 				$value = '(Object)';
 			}
 
-		} else if ( is_array( $value ) ) {
-			$value = Arr::implode( $glue, $value );
+		} else if ( $value === true ) {
+			$value = 'true';
+
+		} else if ( $value === false ) {
+			$value = 'false';
 
 		} else {
 			$value = (string) $value;

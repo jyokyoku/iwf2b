@@ -215,21 +215,13 @@ class Arr {
 
 	/**
 	 * @param string $glue
-	 * @param array $pieces
+	 * @param array|\Traversable $pieces
 	 *
 	 * @return string
+	 * @see Text::stringify()
 	 */
 	public static function implode( $glue, $pieces ) {
-		foreach ( $pieces as $key => $piece ) {
-			if ( is_array( $piece ) ) {
-				$pieces[ $key ] = static::implode( $glue, $piece );
-
-			} else {
-				$pieces[ $key ] = Text::stringify( $piece, $glue );
-			}
-		}
-
-		return implode( $glue, $pieces );
+		return Text::stringify( $pieces, $glue );
 	}
 
 	/**
