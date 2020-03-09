@@ -53,7 +53,7 @@ abstract class AbstractRule implements RuleInterface {
 						foreach ( $types as $type ) {
 							if ( ( function_exists( 'is_' . $type ) && call_user_func( 'is_' . $type, $value ) )
 							     || ( function_exists( 'ctype_' . $type ) && call_user_func( 'ctype_' . $type, $value ) )
-							     || ( class_exists( $type ) && $value instanceof $type )
+							     || $value instanceof $type
 							) {
 								$valid_type = true;
 								break;

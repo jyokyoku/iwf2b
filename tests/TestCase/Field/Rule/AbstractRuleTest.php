@@ -101,21 +101,28 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 		$rule->dummy_var_1 = null;
 		$rule->dummy_var_2 = null;
 		$rule->dummy_var_3 = null;
+		$rule->dummy_var_4 = null;
+		$rule->dummy_var_6 = null;
 
 		$rule->shouldReceive( 'get_param_types' )->andReturn( [
 			'dummy_var_1'    => 'int', // check is_int
 			'dummy_var_2'    => 'lower', // check ctype_lower
-			'dummy_var_3'    => 'not_defined_type', // check must be error
-			'no_defined_var' => 'alpha' // pass-through
+			'dummy_var_3'    => TestDummyInterface::class, // check implements interface
+			'dummy_var_4'    => TestImplementsDummyInterfaceClass::class, // check the class
+			'dummy_var_5'    => 'through_type', // skip because the value is not defined
+			'dummy_var_6'    => 'not_defined_type', // check must be error
 		] );
 
 		$this->expectException( \InvalidArgumentException::class );
-		$this->expectExceptionMessage( 'The param "dummy_var_3" must be "not_defined_type" type' );
+		$this->expectExceptionMessage( 'The param "dummy_var_6" must be "not_defined_type" type' );
 
 		$constructor( [
 			'dummy_var_1' => 10,
 			'dummy_var_2' => 'lowerstrings',
-			'dummy_var_3' => 'invalid value',
+			'dummy_var_3' => new TestImplementsDummyInterfaceClass(),
+			'dummy_var_4' => new TestImplementsDummyInterfaceClass(),
+			'dummy_var_5' => 'invalid value 1',
+			'dummy_var_6' => 'invalid value 2',
 		] );
 	}
 
@@ -202,4 +209,10 @@ class TestNamespacedRule extends AbstractRule {
 	protected function do_validate() {
 		return false;
 	}
+}
+
+interface TestDummyInterface {
+}
+
+class TestImplementsDummyInterfaceClass implements TestDummyInterface {
 }
