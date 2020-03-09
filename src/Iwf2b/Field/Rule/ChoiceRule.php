@@ -31,7 +31,7 @@ class ChoiceRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		if ( $this->multiple ) {
 			if ( ! is_array( $this->value ) ) {
 				throw new \UnexpectedValueException( 'The value must be an array.' );

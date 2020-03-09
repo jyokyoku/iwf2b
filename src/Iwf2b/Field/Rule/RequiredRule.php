@@ -10,7 +10,7 @@ class RequiredRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		return ! $this->is_empty( $this->value );
 	}
 

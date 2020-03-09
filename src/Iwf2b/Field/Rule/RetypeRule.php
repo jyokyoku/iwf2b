@@ -24,7 +24,7 @@ class RetypeRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		if ( $this->field instanceof FieldInterface ) {
 			$expected_value = $this->field->get_value();
 

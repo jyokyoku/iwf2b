@@ -19,7 +19,7 @@ class MinFileSizeRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		if ( $this->value instanceof FileData ) {
 			return $this->byte <= $this->value->get_size();
 		}

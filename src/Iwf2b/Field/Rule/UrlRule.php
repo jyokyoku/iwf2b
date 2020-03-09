@@ -10,7 +10,7 @@ class UrlRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		return false !== filter_var( $this->value, FILTER_VALIDATE_URL ) && preg_match( '@^https?+://@i', $this->value );
 	}
 

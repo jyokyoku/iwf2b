@@ -13,7 +13,7 @@ class UploadFileRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		if ( $this->value instanceof UploadFileData ) {
 			return $this->value->is_valid();
 		}

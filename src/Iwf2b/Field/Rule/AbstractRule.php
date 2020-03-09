@@ -85,7 +85,7 @@ abstract class AbstractRule implements RuleInterface {
 			return true;
 		}
 
-		return $this->do_validate();
+		return $this->do_validation();
 	}
 
 	/**
@@ -115,7 +115,7 @@ abstract class AbstractRule implements RuleInterface {
 	/**
 	 * @return bool
 	 */
-	abstract protected function do_validate();
+	abstract protected function do_validation();
 
 	/**
 	 * @return string

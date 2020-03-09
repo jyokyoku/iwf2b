@@ -17,7 +17,7 @@ class TypeRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		if ( function_exists( 'is_' . $this->type ) && call_user_func( 'is_' . $this->type, $this->value ) ) {
 			return true;
 		}

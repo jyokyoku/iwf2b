@@ -167,7 +167,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 		$rule = $this->get_mock_rule( 'TestRule' );
 
 		$rule->shouldReceive( 'through_if_empty' )->andReturn( false );
-		$rule->shouldReceive( 'do_validate' )->andReturn( false );
+		$rule->shouldReceive( 'do_validation' )->andReturn( false );
 
 		$this->assertFalse( $rule->validate() );
 	}
@@ -176,7 +176,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 		$rule = $this->get_mock_rule( 'TestRule' );
 
 		$rule->shouldReceive( 'through_if_empty' )->andReturn( true );
-		$rule->shouldReceive( 'do_validate' )->andReturn( false );
+		$rule->shouldReceive( 'do_validation' )->andReturn( false );
 
 		$this->assertTrue( $rule->validate() );
 
@@ -206,7 +206,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 }
 
 class TestNamespacedRule extends AbstractRule {
-	protected function do_validate() {
+	protected function do_validation() {
 		return false;
 	}
 }

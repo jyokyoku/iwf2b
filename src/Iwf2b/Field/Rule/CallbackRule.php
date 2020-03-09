@@ -26,7 +26,7 @@ class CallbackRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		return (bool) call_user_func( $this->callback, $this->value );
 	}
 

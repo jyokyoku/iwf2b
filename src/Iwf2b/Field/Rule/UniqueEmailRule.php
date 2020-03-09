@@ -26,7 +26,7 @@ class UniqueEmailRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function do_validate() {
+	public function do_validation() {
 		if ( ! empty( $this->exclude ) && in_array( $this->value, $this->exclude ) ) {
 			return true;
 		}

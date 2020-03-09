@@ -17,7 +17,7 @@ class MaxLengthRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		$length = mb_strlen( $this->value );
 
 		return $this->length >= $length;

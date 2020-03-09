@@ -17,7 +17,7 @@ class LessThanOrEqualRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		return $this->comparison >= $this->value;
 	}
 

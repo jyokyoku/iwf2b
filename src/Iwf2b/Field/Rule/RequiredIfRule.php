@@ -26,7 +26,7 @@ class RequiredIfRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		$compare_value = $this->field->get_value();
 
 		if ( $this->is_empty( $compare_value ) ) {

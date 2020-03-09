@@ -17,7 +17,7 @@ class RegexRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		$result = @preg_match( $this->pattern, $this->value );
 
 		if ( preg_last_error() !== PREG_NO_ERROR ) {

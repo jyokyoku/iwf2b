@@ -28,7 +28,7 @@ class FileExtensionRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function do_validate() {
+	public function do_validation() {
 		if ( $this->value instanceof UploadFileData ) {
 			return in_array( $this->value->get_client_extension(), $this->extension );
 		}

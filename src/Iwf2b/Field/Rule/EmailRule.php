@@ -10,7 +10,7 @@ class EmailRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		return false !== filter_var( $this->value, FILTER_VALIDATE_EMAIL ) && ']' !== substr( $this->value, - 1 );
 	}
 

@@ -24,7 +24,7 @@ class RangeRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function do_validate() {
+	protected function do_validation() {
 		if ( $this->max < $this->value ) {
 			return false;
 		}
