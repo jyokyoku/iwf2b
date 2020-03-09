@@ -34,6 +34,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 
 		$this->expectException( Notice::class );
 		$this->expectExceptionMessage( 'Undefined property: TestRule::$not_defined_var' );
+
 		$rule->not_defined_var;
 	}
 
@@ -116,6 +117,26 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 			'dummy_var_2' => 'lowerstrings',
 			'dummy_var_3' => 'invalid value',
 		] );
+	}
+
+	public function test_constructor_set_param_types_multiple() {
+		$rule = $this->get_mock_rule( 'TestRule' );
+
+		$constructor = $this->get_object_method( $rule, '__construct' );
+
+		$rule->dummy_var = null;
+
+		$rule->shouldReceive( 'get_param_types' )->andReturn( [
+			'dummy_var' => [ 'int', 'float' ],
+		] );
+
+		$constructor( [ 'dummy_var' => 10 ] );
+		$constructor( [ 'dummy_var' => 0.123 ] );
+
+		$this->expectException( \InvalidArgumentException::class );
+		$this->expectExceptionMessage( 'The param "dummy_var" must be "int" or "float" type' );
+
+		$constructor( [ 'dummy_var' => '10' ] );
 	}
 
 	public function test_is_empty() {
