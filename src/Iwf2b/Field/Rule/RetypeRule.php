@@ -24,6 +24,17 @@ class RetypeRule extends AbstractRule {
 	/**
 	 * {@inheritdoc}
 	 */
+	public function __construct( $config = null ) {
+		parent::__construct( $config );
+
+		if ( ! $this->field instanceof FieldInterface && ! $this->fieldset ) {
+			throw new \UnexpectedValueException( "The 'fieldset' property must be required if the 'field' property is not instance of Iwf2b\Field\FieldInterface." );
+		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	protected function do_validation() {
 		if ( $this->field instanceof FieldInterface ) {
 			$expected_value = $this->field->get_value();
@@ -32,7 +43,7 @@ class RetypeRule extends AbstractRule {
 			$expected_value = $this->fieldset[ $this->field ]->get_value();
 
 		} else {
-			throw new \UnexpectedValueException( 'The field must be the registered field or field name.' );
+			throw new \UnexpectedValueException( "The 'field' property must be the registered field or field name." );
 		}
 
 		return $this->strict ? $this->value === $expected_value : $this->value == $expected_value;
@@ -42,7 +53,7 @@ class RetypeRule extends AbstractRule {
 	 * {@inheritdoc}
 	 */
 	protected function get_required_params() {
-		return [ 'fieldset', 'field' ];
+		return [ 'field' ];
 	}
 
 	/**

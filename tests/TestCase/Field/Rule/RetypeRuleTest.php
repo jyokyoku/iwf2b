@@ -2,7 +2,6 @@
 
 namespace Theme\Field\Rule;
 
-use Iwf2b\Field\Field;
 use Iwf2b\Field\FieldInterface;
 use Iwf2b\Field\FieldSet;
 use Iwf2b\Field\Rule\Exception\MissingRequiredParamsException;
@@ -17,7 +16,7 @@ class RetypeRuleTest extends \WP_UnitTestCase {
 
 	public function test_constructor_required_params() {
 		$this->expectException( MissingRequiredParamsException::class );
-		$this->expectExceptionMessage( 'The params "fieldset", "field" must be set for ' . RetypeRule::class );
+		$this->expectExceptionMessage( 'The params "field" must be set for ' . RetypeRule::class );
 
 		new RetypeRule();
 	}
@@ -36,7 +35,14 @@ class RetypeRuleTest extends \WP_UnitTestCase {
 		new RetypeRule( [ 'field' => 10 ] );
 	}
 
-	public function test_do_validate_with_field_object() {
+	public function test_constructor_set_field_name_with_string() {
+		$this->expectException( \UnexpectedValueException::class );
+		$this->expectExceptionMessage( "The 'fieldset' property must be required if the 'field' property is not instance of Iwf2b\Field\FieldInterface" );
+
+		new RetypeRule( [ 'field' => 'field_name' ] );
+	}
+
+	public function test_do_validation_with_field_object() {
 		$fieldset = \Mockery::mock( FieldSet::class )->makePartial();
 		$field    = \Mockery::mock( FieldInterface::class );
 
@@ -54,40 +60,39 @@ class RetypeRuleTest extends \WP_UnitTestCase {
 		$this->assertFalse( $rule->validate() );
 	}
 
-	public function test_do_validate_with_field_name() {
+	public function test_do_validation_with_field_name() {
 		$fieldset = \Mockery::mock( FieldSet::class )->makePartial();
 		$field    = \Mockery::mock( FieldInterface::class );
 
 		$fieldset->shouldReceive( 'offsetExists' )->andReturnUsing( function ( $index ) {
-			return $index === 'test_field';
+			return $index === 'field';
 		} );
 
 		$fieldset->shouldReceive( 'offsetGet' )->andReturnUsing( function ( $index ) use ( $field ) {
-			return $index === 'test_field' ? $field : null;
+			return $index === 'field' ? $field : null;
 		} );
 
-		$field->shouldReceive( 'get_value' )->andReturn( 'same value' );
+		$field->shouldReceive( 'get_value' )->andReturn( 'value' );
 
 		// Check field exists
-		$rule = new RetypeRule( [ 'fieldset' => $fieldset, 'field' => 'test_field' ] );
-		$rule->set_value( 'same value' );
+		$rule_1 = new RetypeRule( [ 'fieldset' => $fieldset, 'field' => 'field' ] );
+		$rule_1->set_value( 'value' );
 
-		$this->assertTrue( $rule->validate() );
+		$this->assertTrue( $rule_1->validate() );
 
-		// Check field not exists
+		// Check set unregistered field name
 		$this->expectException( \UnexpectedValueException::class );
-		$this->expectExceptionMessage( 'The field must be the registered field or field name.' );
+		$this->expectExceptionMessage( "The 'field' property must be the registered field or field name" );
 
-		$rule = new RetypeRule( [ 'fieldset' => $fieldset, 'field' => 'test_field_2' ] );
-		$rule->set_value( 'dummy value' );
-
-		$this->assertTrue( $rule->validate() );
+		$rule_2 = new RetypeRule( [ 'fieldset' => $fieldset, 'field' => 'unregistered_field' ] );
+		$rule_2->set_value( 'dummy value' );
+		$rule_2->validate();
 	}
 
 	/**
-	 * @depends test_do_validate_with_field_object
+	 * @depends test_do_validation_with_field_object
 	 */
-	public function test_do_validate_strict_value() {
+	public function test_do_validation_strict() {
 		$fieldset = \Mockery::mock( FieldSet::class )->makePartial();
 		$field    = \Mockery::mock( FieldInterface::class );
 
