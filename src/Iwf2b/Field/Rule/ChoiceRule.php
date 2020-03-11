@@ -22,13 +22,20 @@ class ChoiceRule implements RuleInterface {
 	protected $multiple = false;
 
 	/**
+	 * Strict mode
+	 *
+	 * @var bool
+	 */
+	protected $strict = false;
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function __construct( $config = null ) {
 		$this->rule_construct( $config );
 
 		if ( is_string( $this->choices ) ) {
-			$this->extension = wp_parse_list( $this->choices );
+			$this->choices = wp_parse_list( $this->choices );
 		}
 	}
 
@@ -42,7 +49,7 @@ class ChoiceRule implements RuleInterface {
 			}
 
 			foreach ( $this->value as $value ) {
-				if ( ! in_array( $value, $this->choices ) ) {
+				if ( ! in_array( $value, $this->choices, $this->strict ) ) {
 					return false;
 				}
 			}
@@ -50,7 +57,7 @@ class ChoiceRule implements RuleInterface {
 			return true;
 		}
 
-		return in_array( $this->value, $this->choices );
+		return in_array( $this->value, $this->choices, $this->strict );
 	}
 
 	/**
