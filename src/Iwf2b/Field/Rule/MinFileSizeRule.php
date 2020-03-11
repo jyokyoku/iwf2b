@@ -8,7 +8,9 @@ use Iwf2b\Field\Data\FileData;
  * Class MinFileSizeRule
  * @package Iwf2b\Field\Rule
  */
-class MinFileSizeRule extends AbstractRule {
+class MinFileSizeRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Min byte
 	 *

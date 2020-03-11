@@ -3,11 +3,12 @@
 namespace Theme\Field\Rule;
 
 use Iwf2b\Field\Data\FileData;
-use Iwf2b\Field\Rule\AbstractRule;
 use Iwf2b\Field\Rule\Exception\MissingRequiredParamsException;
+use Iwf2b\Field\Rule\RuleInterface;
+use Iwf2b\Field\Rule\RuleTrait;
 use PHPUnit\Framework\Error\Notice;
 
-class AbstractRuleTest extends \WP_UnitTestCase {
+class RuleTraitTest extends \WP_UnitTestCase {
 	public function tearDown() {
 		parent::tearDown();
 
@@ -15,7 +16,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 	}
 
 	public function test_constructor_set_config_value() {
-		$rule        = $this->get_mock_rule( 'TestRule' );
+		$rule        = $this->get_mock_rule( 'MockRule' );
 		$constructor = $this->get_object_method( $rule, '__construct' );
 
 		$rule->dummy_var_1 = null;
@@ -33,30 +34,30 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 		$this->assertEquals( 'dummy content 2', $rule->dummy_var_2 );
 
 		$this->expectException( Notice::class );
-		$this->expectExceptionMessage( 'Undefined property: TestRule::$not_defined_var' );
+		$this->expectExceptionMessage( 'Undefined property: MockRule::$not_defined_var' );
 
 		$rule->not_defined_var;
 	}
 
 	public function test_constructor_get_default_message() {
-		$rule        = $this->get_mock_rule( 'TestRule' );
+		$rule        = $this->get_mock_rule( 'MockRule' );
 		$constructor = $this->get_object_method( $rule, '__construct' );
 
 		// Check not namespaced rule
-		$this->assertEquals( 'Test', $rule->get_message() );
+		$this->assertEquals( 'Mock', $rule->get_message() );
 
 		$constructor( [ 'message' => 'test message' ] );
 
 		$this->assertEquals( 'test message', $rule->get_message() );
 
 		// Check namespaced rule
-		$rule = new TestNamespacedRule();
+		$rule = new TestRule();
 
-		$this->assertEquals( 'TestNamespaced', $rule->get_message() );
+		$this->assertEquals( 'Test', $rule->get_message() );
 	}
 
 	public function test_constructor_set_required_property() {
-		$rule        = $this->get_mock_rule( 'TestRule' );
+		$rule        = $this->get_mock_rule( 'MockRule' );
 		$constructor = $this->get_object_method( $rule, '__construct' );
 
 		$rule->dummy_var_1 = null;
@@ -65,7 +66,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 		$rule->shouldReceive( 'get_required_params' )->andReturn( [ 'dummy_var_1' ] );
 
 		$this->expectException( MissingRequiredParamsException::class );
-		$this->expectExceptionMessage( 'The params "dummy_var_1" must be set for TestRule' );
+		$this->expectExceptionMessage( 'The params "dummy_var_1" must be set for MockRule' );
 
 		$constructor( [
 			'message'     => 'test message',
@@ -74,7 +75,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 	}
 
 	public function test_constructor_set_default_param_property() {
-		$rule        = $this->get_mock_rule( 'TestRule' );
+		$rule        = $this->get_mock_rule( 'MockRule' );
 		$constructor = $this->get_object_method( $rule, '__construct' );
 
 		$rule->dummy_var_1 = null;
@@ -94,7 +95,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 	}
 
 	public function test_constructor_set_param_types() {
-		$rule = $this->get_mock_rule( 'TestRule' );
+		$rule = $this->get_mock_rule( 'MockRule' );
 
 		$constructor = $this->get_object_method( $rule, '__construct' );
 
@@ -127,7 +128,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 	}
 
 	public function test_constructor_set_param_types_multiple() {
-		$rule = $this->get_mock_rule( 'TestRule' );
+		$rule = $this->get_mock_rule( 'MockRule' );
 
 		$constructor = $this->get_object_method( $rule, '__construct' );
 
@@ -147,7 +148,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 	}
 
 	public function test_is_empty() {
-		$rule = $this->get_mock_rule( 'TestRule' );
+		$rule = $this->get_mock_rule( 'MockRule' );
 
 		$this->assertTrue( $rule->is_empty( null ) );
 		$this->assertTrue( $rule->is_empty( false ) );
@@ -164,7 +165,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 	}
 
 	public function test_validate() {
-		$rule = $this->get_mock_rule( 'TestRule' );
+		$rule = $this->get_mock_rule( 'MockRule' );
 
 		$rule->shouldReceive( 'through_if_empty' )->andReturn( false );
 		$rule->shouldReceive( 'do_validation' )->andReturn( false );
@@ -173,7 +174,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 	}
 
 	public function test_validate_through_if_empty() {
-		$rule = $this->get_mock_rule( 'TestRule' );
+		$rule = $this->get_mock_rule( 'MockRule' );
 
 		$rule->shouldReceive( 'through_if_empty' )->andReturn( true );
 		$rule->shouldReceive( 'do_validation' )->andReturn( false );
@@ -187,7 +188,7 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 	}
 
 	protected function get_mock_rule( $class_name ) {
-		return \Mockery::namedMock( $class_name, AbstractRule::class )
+		return \Mockery::namedMock( $class_name, TestRule::class )
 		               ->makePartial()
 		               ->shouldAllowMockingProtectedMethods();
 	}
@@ -205,7 +206,9 @@ class AbstractRuleTest extends \WP_UnitTestCase {
 	}
 }
 
-class TestNamespacedRule extends AbstractRule {
+class TestRule implements RuleInterface {
+	use RuleTrait;
+
 	protected function do_validation() {
 		return false;
 	}

@@ -8,13 +8,13 @@ use Iwf2b\Text;
 use Iwf2b\Util;
 
 /**
- * Class AbstractRule
+ * Trait RuleTrait
  * @package Iwf2b\Field\
  *
  * Based on Symfony
  * Copyright (c) 2004-2019 Fabien Potencier (https://symfony.com)
  */
-abstract class AbstractRule implements RuleInterface {
+trait RuleTrait {
 	/**
 	 * Error message
 	 *
@@ -30,7 +30,7 @@ abstract class AbstractRule implements RuleInterface {
 	protected $value;
 
 	/**
-	 * AbstractRule constructor.
+	 * RuleTrait constructor.
 	 *
 	 * @param mixed $config
 	 */
@@ -78,7 +78,7 @@ abstract class AbstractRule implements RuleInterface {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @return bool
 	 */
 	final public function validate() {
 		if ( $this->is_empty( $this->value ) && $this->through_if_empty() ) {
@@ -89,14 +89,14 @@ abstract class AbstractRule implements RuleInterface {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @param mixed $value
 	 */
 	public function set_value( $value ) {
 		$this->value = $value;
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @return string
 	 */
 	public function get_message() {
 		$message  = $this->message ?: $this->get_default_message();

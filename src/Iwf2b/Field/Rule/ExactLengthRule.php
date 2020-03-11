@@ -6,22 +6,15 @@ namespace Iwf2b\Field\Rule;
  * Class ExactLengthRule
  * @package Iwf2b\Field\Rule
  */
-class ExactLengthRule extends AbstractRule {
+class ExactLengthRule  implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Exact length
 	 *
 	 * @var int
 	 */
 	public $length;
-
-	/**
-	 * ExactLengthRule constructor.
-	 *
-	 * @param null $config
-	 */
-	public function __construct( $config = null ) {
-		parent::__construct( $config );
-	}
 
 	/**
 	 * {@inheritdoc}

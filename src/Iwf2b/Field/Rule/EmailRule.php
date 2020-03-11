@@ -6,7 +6,9 @@ namespace Iwf2b\Field\Rule;
  * Class EmailRule
  * @package Iwf2b\Field\Rule
  */
-class EmailRule extends AbstractRule {
+class EmailRule  implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * {@inheritdoc}
 	 */

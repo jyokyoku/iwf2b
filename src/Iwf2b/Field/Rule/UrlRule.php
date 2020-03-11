@@ -6,7 +6,9 @@ namespace Iwf2b\Field\Rule;
  * Class UrlRule
  * @package Iwf2b\Field\Rule
  */
-class UrlRule extends AbstractRule {
+class UrlRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * {@inheritdoc}
 	 */

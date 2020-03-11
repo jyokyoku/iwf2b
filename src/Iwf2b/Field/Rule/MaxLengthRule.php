@@ -6,7 +6,9 @@ namespace Iwf2b\Field\Rule;
  * Class MaxLengthRule
  * @package Iwf2b\Field\Rule
  */
-class MaxLengthRule extends AbstractRule {
+class MaxLengthRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Max length
 	 *

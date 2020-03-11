@@ -2,7 +2,11 @@
 
 namespace Iwf2b\Field\Rule;
 
-class ChoiceRule extends AbstractRule {
+class ChoiceRule implements RuleInterface {
+	use RuleTrait {
+		RuleTrait::__construct as rule_construct;
+	}
+
 	/**
 	 * Choices
 	 *
@@ -21,7 +25,7 @@ class ChoiceRule extends AbstractRule {
 	 * {@inheritdoc}
 	 */
 	public function __construct( $config = null ) {
-		parent::__construct( $config );
+		$this->rule_construct( $config );
 
 		if ( is_string( $this->choices ) ) {
 			$this->extension = wp_parse_list( $this->choices );

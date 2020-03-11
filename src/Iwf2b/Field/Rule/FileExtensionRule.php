@@ -6,7 +6,11 @@ use Iwf2b\Arr;
 use Iwf2b\Field\Data\FileData;
 use Iwf2b\Field\Data\UploadFileData;
 
-class FileExtensionRule extends AbstractRule {
+class FileExtensionRule implements RuleInterface {
+	use RuleTrait {
+		RuleTrait::__construct as rule_construct;
+	}
+
 	/**
 	 * @var array
 	 */
@@ -16,7 +20,7 @@ class FileExtensionRule extends AbstractRule {
 	 * {@inheritdoc}
 	 */
 	public function __construct( $config = null ) {
-		parent::__construct( $config );
+		$this->rule_construct( $config );
 
 		if ( is_string( $this->extension ) ) {
 			$this->extension = wp_parse_list( $this->extension );
@@ -38,15 +42,6 @@ class FileExtensionRule extends AbstractRule {
 		}
 
 		return true;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function get_message() {
-		$this->extension = implode( ' | ', $this->extension );
-
-		return parent::get_message();
 	}
 
 	/**

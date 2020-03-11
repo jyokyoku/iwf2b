@@ -9,7 +9,9 @@ use Iwf2b\Field\Data\UploadFileData;
  * Class UploadFileRule
  * @package Iwf2b\Field\Rule
  */
-class UploadFileRule extends AbstractRule {
+class UploadFileRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * {@inheritdoc}
 	 */
