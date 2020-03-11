@@ -3,6 +3,7 @@
 namespace Iwf2b\Field\Rule;
 
 use Iwf2b\Field\FieldInterface;
+use Iwf2b\Field\FieldSet;
 
 /**
  * Class RequiredUnlessRule
@@ -10,31 +11,60 @@ use Iwf2b\Field\FieldInterface;
  */
 class RequiredUnlessRule extends AbstractRule {
 	/**
-	 * Comparison field instance
-	 *
-	 * @var FieldInterface
+	 * @var FieldSet
 	 */
-	public $field;
+	protected $fieldset;
+
+	/**
+	 * @var FieldInterface|mixed
+	 */
+	protected $field;
+
+	/**
+	 * @var boolean
+	 */
+	protected $strict;
 
 	/**
 	 * Expected value
 	 *
 	 * @var mixed
 	 */
-	public $expected;
+	protected $expected;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function __construct( $config = null ) {
+		parent::__construct( $config );
+
+		if ( ! $this->field instanceof FieldInterface && ! $this->fieldset ) {
+			throw new \UnexpectedValueException( "The 'fieldset' property must be required if the 'field' property is not instance of Iwf2b\Field\FieldInterface." );
+		}
+	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	protected function do_validation() {
-		$compare_value = $this->field->get_value();
+		if ( $this->field instanceof FieldInterface ) {
+			$compare_value = $this->field->get_value();
 
-		if ( ! $this->is_empty( $compare_value ) ) {
+		} else if ( isset( $this->fieldset[ $this->field ] ) ) {
+			$compare_value = $this->fieldset[ $this->field ]->get_value();
+
+		} else {
+			throw new \UnexpectedValueException( "The 'field' property must be the registered field or field name." );
+		}
+
+		if ( ! $this->is_empty( $compare_value ) && $this->is_empty( $this->expected ) ) {
 			return true;
 		}
 
-		if ( ! $this->is_empty( $this->expected ) && $this->expected == $compare_value ) {
-			return true;
+		if ( ! $this->is_empty( $this->expected ) ) {
+			if ( ( $this->strict && $this->expected === $compare_value ) || ( ! $this->strict && $this->expected == $compare_value ) ) {
+				return true;
+			}
 		}
 
 		return ! $this->is_empty( $this->value );
@@ -58,7 +88,10 @@ class RequiredUnlessRule extends AbstractRule {
 	 * {@inheritdoc}
 	 */
 	protected function get_param_types() {
-		return [ 'field' => 'Iwf2b\Field\Field' ];
+		return [
+			'fieldset' => 'Iwf2b\Field\FieldSet',
+			'field'    => [ 'string', 'Iwf2b\Field\FieldInterface' ],
+		];
 	}
 
 	/**
