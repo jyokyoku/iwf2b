@@ -6,7 +6,9 @@ namespace Iwf2b\Field\Rule;
  * Class TypeRule
  * @package Iwf2b\Field\Rule
  */
-class TypeRule extends AbstractRule {
+class TypeRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Value type
 	 *

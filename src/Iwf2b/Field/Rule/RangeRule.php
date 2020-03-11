@@ -6,7 +6,9 @@ namespace Iwf2b\Field\Rule;
  * Class RangeRule
  * @package Iwf2b\Field\Rule
  */
-class RangeRule extends AbstractRule {
+class RangeRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Max value
 	 *

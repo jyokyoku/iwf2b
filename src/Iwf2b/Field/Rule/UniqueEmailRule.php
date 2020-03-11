@@ -6,7 +6,11 @@ namespace Iwf2b\Field\Rule;
  * Class UniqueEmailRule
  * @package Iwf2b\Field\Rule
  */
-class UniqueEmailRule extends AbstractRule {
+class UniqueEmailRule implements RuleInterface {
+	use RuleTrait {
+		RuleTrait::__construct as rule_construct;
+	}
+
 	/**
 	 * @var array
 	 */
@@ -16,7 +20,7 @@ class UniqueEmailRule extends AbstractRule {
 	 * {@inheritdoc}
 	 */
 	public function __construct( $config = null ) {
-		parent::__construct( $config );
+		$this->rule_construct( $config );
 
 		if ( is_string( $this->exclude ) ) {
 			$this->exclude = wp_parse_list( $this->exclude );

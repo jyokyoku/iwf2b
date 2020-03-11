@@ -6,7 +6,9 @@ namespace Iwf2b\Field\Rule;
  * Class RegexRule
  * @package Iwf2b\Field\Rule
  */
-class RegexRule extends AbstractRule {
+class RegexRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Regex pattern
 	 *

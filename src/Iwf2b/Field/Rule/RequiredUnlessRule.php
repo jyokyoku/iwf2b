@@ -9,7 +9,11 @@ use Iwf2b\Field\FieldSet;
  * Class RequiredUnlessRule
  * @package Iwf2b\Field\Rule
  */
-class RequiredUnlessRule extends AbstractRule {
+class RequiredUnlessRule implements RuleInterface {
+	use RuleTrait {
+		RuleTrait::__construct as rule_construct;
+	}
+
 	/**
 	 * @var FieldSet
 	 */
@@ -36,7 +40,7 @@ class RequiredUnlessRule extends AbstractRule {
 	 * {@inheritdoc}
 	 */
 	public function __construct( $config = null ) {
-		parent::__construct( $config );
+		$this->rule_construct( $config );
 
 		if ( ! $this->field instanceof FieldInterface && ! $this->fieldset ) {
 			throw new \UnexpectedValueException( "The 'fieldset' property must be required if the 'field' property is not instance of Iwf2b\Field\FieldInterface." );

@@ -8,7 +8,9 @@ use Iwf2b\Field\Data\FileData;
  * Class MaxFileSizeRule
  * @package Iwf2b\Field\Rule
  */
-class MaxFileSizeRule extends AbstractRule {
+class MaxFileSizeRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Max byte
 	 *

@@ -6,7 +6,9 @@ namespace Iwf2b\Field\Rule;
  * Class RequiredRule
  * @package Iwf2b\Field\Rule
  */
-class RequiredRule extends AbstractRule {
+class RequiredRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * {@inheritdoc}
 	 */

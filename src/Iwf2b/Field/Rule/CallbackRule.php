@@ -6,22 +6,15 @@ namespace Iwf2b\Field\Rule;
  * Class CallbackRule
  * @package Iwf2b\Field\Rule
  */
-class CallbackRule extends AbstractRule {
+class CallbackRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Callback
 	 *
 	 * @var callable
 	 */
 	public $callback;
-
-	/**
-	 * CallbackRule constructor.
-	 *
-	 * @param mixed $config
-	 */
-	public function __construct( $config = null ) {
-		parent::__construct( $config );
-	}
 
 	/**
 	 * {@inheritdoc}

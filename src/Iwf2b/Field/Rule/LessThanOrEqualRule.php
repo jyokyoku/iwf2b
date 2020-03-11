@@ -6,7 +6,9 @@ namespace Iwf2b\Field\Rule;
  * Class LessThanOrEqualRule
  * @package Iwf2b\Field\Rule
  */
-class LessThanOrEqualRule extends AbstractRule {
+class LessThanOrEqualRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Comparison value
 	 *

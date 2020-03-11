@@ -5,7 +5,11 @@ namespace Iwf2b\Field\Rule;
 use Iwf2b\Field\FieldInterface;
 use Iwf2b\Field\FieldSet;
 
-class RetypeRule extends AbstractRule {
+class RetypeRule implements RuleInterface {
+	use RuleTrait {
+		RuleTrait::__construct as rule_construct;
+	}
+
 	/**
 	 * @var FieldSet
 	 */
@@ -25,7 +29,7 @@ class RetypeRule extends AbstractRule {
 	 * {@inheritdoc}
 	 */
 	public function __construct( $config = null ) {
-		parent::__construct( $config );
+		$this->rule_construct( $config );
 
 		if ( ! $this->field instanceof FieldInterface && ! $this->fieldset ) {
 			throw new \UnexpectedValueException( "The 'fieldset' property must be required if the 'field' property is not instance of Iwf2b\Field\FieldInterface." );

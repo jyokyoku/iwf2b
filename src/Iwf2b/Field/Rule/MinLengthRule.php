@@ -6,7 +6,9 @@ namespace Iwf2b\Field\Rule;
  * Class MinLengthRule
  * @package Iwf2b\Field\Rule
  */
-class MinLengthRule extends AbstractRule {
+class MinLengthRule implements RuleInterface {
+	use RuleTrait;
+
 	/**
 	 * Min length
 	 *
