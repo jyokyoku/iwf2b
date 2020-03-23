@@ -76,7 +76,6 @@ class FormRenderer implements FormRendererInterface {
 	 * @return $this
 	 */
 	public function set_attrs( array $attrs ) {
-		ksort($attrs);
 		$this->attrs = $attrs;
 
 		return $this;
@@ -191,7 +190,10 @@ class FormRenderer implements FormRendererInterface {
 			call_user_func( $this->before_render, $this );
 		}
 
-		$html = $callback ? call_user_func( $callback, $this ) : Html::tag( $this->tag, $this->attrs, $this->content, [ 'escape' => false ] );
+		$attrs = $this->attrs;
+		ksort( $attrs );
+
+		$html = $callback ? call_user_func( $callback, $this ) : Html::tag( $this->tag, $attrs, $this->content, [ 'escape' => false ] );
 
 		if ( $this->after_render ) {
 			call_user_func_array( $this->after_render, [ &$html, $this ] );
