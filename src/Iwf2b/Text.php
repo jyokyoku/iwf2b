@@ -171,15 +171,16 @@ class Text {
 
 	/**
 	 * @param string $value
-	 * @param string $hash_scheme
+	 * @param string $algo
+	 * @param string $salt
 	 *
 	 * @return string
 	 */
-	public static function short_hash( $value, $hash_scheme = 'auth' ) {
+	public static function short_hash( $value, $algo = 'crc32b', $salt = '' ) {
 		if ( ! is_string( $value ) ) {
 			$value = serialize( $value );
 		}
 
-		return strtr( rtrim( base64_encode( pack( 'H*', crc32( wp_hash( $value, $hash_scheme ) ) ) ), '=' ), '+/', '-_' );
+		return strtr( rtrim( base64_encode( pack( 'H*', hash( $algo, $value . $salt ) ) ), '=' ), '+/', '-_' );
 	}
 }
