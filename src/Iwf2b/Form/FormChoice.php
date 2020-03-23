@@ -4,6 +4,7 @@ namespace Iwf2b\Form;
 
 use Iwf2b\Arr;
 use Iwf2b\Html\Html;
+use Iwf2b\Util;
 
 /**
  * Class FormChoice
@@ -26,16 +27,30 @@ class FormChoice {
 		$between_text = Arr::get( $attrs, 'between_text' );
 		unset( $attrs['wrapper'], $attrs['wrapper_attr'], $attrs['separator'] );
 
-		$value_only = $choices === array_values( $choices );
-		$forms[]    = Form::hidden( $name ); // Add hidden input
+		$value_only   = $choices === array_values( $choices );
+		$hidden_attrs = [ 'value' => '' ];
+
+		if ( isset( $attrs['id'] ) ) {
+			$hidden_attrs['id'] = $attrs['id'] . '-0';
+		}
+
+		$forms[] = Form::hidden( $name, $hidden_attrs ); // Add hidden input
+		$count   = 1;
 
 		foreach ( $choices as $choice_value => $choice_key ) {
+			$_attrs = $attrs;
+
 			if ( $value_only ) {
 				$choice_value = $choice_key;
 			}
 
-			$forms[] = Form::checkbox( $name . '[]', $attrs )
-			               ->set_value( $choice_value )
+			$_attrs['value'] = $choice_value;
+
+			if ( isset( $attrs['id'] ) ) {
+				$_attrs['id'] = $attrs['id'] . '-' . $count;
+			}
+
+			$forms[] = Form::checkbox( $name . '[]', $_attrs )
 			               ->set_after_render( function ( &$html ) use ( $wrapper, $wrapper_attr, $between_text, $choice_key ) {
 				               if ( $wrapper ) {
 					               $html = Html::tag( $wrapper, $wrapper_attr, $html . $between_text . $choice_key, [ 'escape' => false ] );
@@ -44,16 +59,24 @@ class FormChoice {
 					               $html = $html . $between_text . $choice_key;
 				               }
 			               } );
+
+			$count ++;
 		}
 
 		$forms->set_before_render( function ( FormRendererCollection $forms ) {
-			if ( $forms->get_value() ) {
-				$values = array_filter( (array) $forms->get_value() );
+			$values = array_filter( (array) $forms->get_value() );
 
-				foreach ( $forms as $form ) {
-					$attrs            = $form->get_attrs();
-					$attrs['checked'] = in_array( $form->get_value(), $values );
-					$form->set_attrs( $attrs );
+			if ( ! Util::is_empty( $values ) ) {
+				foreach ( $forms as $i => $form ) {
+					if ( $i === 0 ) {
+						continue; // Skip hidden input
+					}
+
+					$attrs = $form->get_attrs();
+
+					if ( in_array( $attrs['value'], $values ) ) {
+						$form->set_value( $attrs['value'] );
+					}
 				}
 			}
 		} );
@@ -77,16 +100,30 @@ class FormChoice {
 		$between_text = Arr::get( $attrs, 'between_text' );
 		unset( $attrs['wrapper'], $attrs['wrapper_attr'], $attrs['separator'] );
 
-		$value_only = $choices === array_values( $choices );
-		$forms[]    = Form::hidden( $name ); // Add hidden input
+		$value_only   = $choices === array_values( $choices );
+		$hidden_attrs = [ 'value' => '' ];
+
+		if ( isset( $attrs['id'] ) ) {
+			$hidden_attrs['id'] = $attrs['id'] . '-0';
+		}
+
+		$forms[] = Form::hidden( $name, $hidden_attrs ); // Add hidden input
+		$count   = 1;
 
 		foreach ( $choices as $choice_value => $choice_key ) {
+			$_attrs = $attrs;
+
 			if ( $value_only ) {
 				$choice_value = $choice_key;
 			}
 
-			$forms[] = Form::radio( $name, $attrs )
-			               ->set_value( $choice_value )
+			$_attrs['value'] = $choice_value;
+
+			if ( isset( $attrs['id'] ) ) {
+				$_attrs['id'] = $attrs['id'] . '-' . $count;
+			}
+
+			$forms[] = Form::radio( $name, $_attrs )
 			               ->set_after_render( function ( &$html ) use ( $wrapper, $wrapper_attr, $between_text, $choice_key ) {
 				               if ( $wrapper ) {
 					               $html = Html::tag( $wrapper, $wrapper_attr, $html . $between_text . $choice_key, [ 'escape' => false ] );
@@ -95,15 +132,17 @@ class FormChoice {
 					               $html = $html . $between_text . $choice_key;
 				               }
 			               } );
+
+			$count ++;
 		}
 
 		$forms->set_before_render( function ( FormRendererCollection $forms ) {
-			if ( $forms->get_value() ) {
-				foreach ( $forms as $form ) {
-					$attrs            = $form->get_attrs();
-					$attrs['checked'] = $form->get_value() == $forms->get_value();
-					$form->set_attrs( $attrs );
+			foreach ( $forms as $i => $form ) {
+				if ( $i === 0 ) {
+					continue;
 				}
+
+				$form->set_value( $forms->get_value() );
 			}
 		} );
 
