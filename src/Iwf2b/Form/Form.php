@@ -22,9 +22,11 @@ class Form {
 		return ( new FormRenderer( 'input', $name ) )
 			->set_attrs( $attrs )
 			->set_before_render( function ( FormRenderer $form ) {
-				if ( $form->get_value() ) {
+				$value = $form->get_value();
+
+				if ( ! Util::is_empty( $value ) ) {
 					$attrs          = $form->get_attrs();
-					$attrs['value'] = $form->get_value();
+					$attrs['value'] = $value;
 					$form->set_attrs( $attrs );
 				}
 			} );
