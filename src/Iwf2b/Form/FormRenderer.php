@@ -213,6 +213,6 @@ class FormRenderer implements FormRendererInterface {
 	 * @return string
 	 */
 	protected function generate_id() {
-		return '_' . str_replace( [ '[', ']' ], '', Text::short_hash( $this->name . serialize( $this->attrs ) ) );
+		return '_' . Text::short_hash( $this->name . serialize( $this->value ) . serialize( $this->attrs ) );
 	}
 }
