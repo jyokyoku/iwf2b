@@ -6,8 +6,16 @@ use Iwf2b\Field\Field;
 use Iwf2b\Field\FieldSet;
 
 class FieldSetTest extends \WP_UnitTestCase {
+	public function tearDown() {
+		parent::tearDown();
+
+		$instances = new \ReflectionProperty( FieldSet::class, 'instances' );
+		$instances->setAccessible( true );
+		$instances->setValue( [] );
+	}
+
 	public function test_get_instance() {
-		$fieldset  = FieldSet::get_instance( 'test_fieldset' );
+		$fieldset = FieldSet::get_instance( 'test_fieldset' );
 
 		$this->assertInstanceOf( FieldSet::class, $fieldset );
 	}
@@ -32,6 +40,14 @@ class FieldSetTest extends \WP_UnitTestCase {
 		$this->assertNotEmpty( $fieldset );
 		$this->assertTrue( isset( $fieldset['test_field'] ) );
 		$this->assertInstanceOf( Field::class, $fieldset['test_field'] );
+	}
+
+	public function test_exists() {
+		$this->assertFalse( FieldSet::exists( 'test_fieldset' ) );
+
+		FieldSet::get_instance( 'test_fieldset' );
+
+		$this->assertTrue( FieldSet::exists( 'test_fieldset' ) );
 	}
 
 	/**
