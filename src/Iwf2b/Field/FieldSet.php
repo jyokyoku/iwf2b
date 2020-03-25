@@ -48,6 +48,15 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 	}
 
 	/**
+	 * @param string $name
+	 *
+	 * @return bool
+	 */
+	public static function exists( $name ) {
+		return isset( static::$instances[ $name ] );
+	}
+
+	/**
 	 * @param $name
 	 */
 	public static function destroy( $name ) {
