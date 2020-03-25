@@ -106,12 +106,12 @@ class RuleTraitTest extends \WP_UnitTestCase {
 		$rule->dummy_var_6 = null;
 
 		$rule->shouldReceive( 'get_param_types' )->andReturn( [
-			'dummy_var_1'    => 'int', // check is_int
-			'dummy_var_2'    => 'lower', // check ctype_lower
-			'dummy_var_3'    => TestDummyInterface::class, // check implements interface
-			'dummy_var_4'    => TestImplementsDummyInterfaceClass::class, // check the class
-			'dummy_var_5'    => 'through_type', // skip because the value is not defined
-			'dummy_var_6'    => 'not_defined_type', // check must be error
+			'dummy_var_1' => 'int', // check is_int
+			'dummy_var_2' => 'lower', // check ctype_lower
+			'dummy_var_3' => TestDummyInterface::class, // check implements interface
+			'dummy_var_4' => TestImplementsDummyInterfaceClass::class, // check the class
+			'dummy_var_5' => 'through_type', // skip because the value is not defined
+			'dummy_var_6' => 'not_defined_type', // check must be error
 		] );
 
 		$this->expectException( \InvalidArgumentException::class );
@@ -138,6 +138,7 @@ class RuleTraitTest extends \WP_UnitTestCase {
 			'dummy_var' => [ 'int', 'float' ],
 		] );
 
+		$constructor();
 		$constructor( [ 'dummy_var' => 10 ] );
 		$constructor( [ 'dummy_var' => 0.123 ] );
 
