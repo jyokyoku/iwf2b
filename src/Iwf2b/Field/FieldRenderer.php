@@ -69,13 +69,23 @@ class FieldRenderer {
 
 	/**
 	 * @param string $field_name
-	 * @param bool $first_only
+	 * @param array|bool $args
 	 *
 	 * @return string
 	 */
-	public function errors( $field_name, $first_only = true ) {
+	public function errors( $field_name, $args = [] ) {
 		$field        = $this->get_field( $field_name );
 		$field_errors = $field->get_errors();
+
+		if ( is_bool( $args ) ) {
+			$args = [ 'first_only' => $args ];
+		}
+
+		$args = wp_parse_args( $args, [
+			'first_only' => false,
+			'prefix'     => '',
+			'suffix'     => '',
+		] );
 
 		if ( ! $field_errors ) {
 			return '';
@@ -84,9 +94,10 @@ class FieldRenderer {
 		$errors = [];
 
 		foreach ( $field_errors as $field_error ) {
-			$errors[] = $this->error_html ? sprintf( $this->error_html, $field_error ) : $field_error;
+			$field_error = $args['prefix'] . $field_error . $args['suffix'];
+			$errors[]    = $this->error_html ? sprintf( $this->error_html, $field_error ) : $field_error;
 
-			if ( $first_only ) {
+			if ( $args['first_only'] ) {
 				break;
 			}
 		}
@@ -95,12 +106,22 @@ class FieldRenderer {
 	}
 
 	/**
-	 * @param bool $first_only
+	 * @param array|bool $args
 	 *
 	 * @return string
 	 */
-	public function all_errors( $first_only = true ) {
+	public function all_errors( $args = [] ) {
 		$errors = [];
+
+		if ( is_bool( $args ) ) {
+			$args = [ 'first_only' => $args ];
+		}
+
+		$args = wp_parse_args( $args, [
+			'first_only' => false,
+			'prefix'     => '',
+			'suffix'     => '',
+		] );
 
 		foreach ( $this->field_set as $field ) {
 			$field_errors = $field->get_errors();
@@ -110,9 +131,10 @@ class FieldRenderer {
 			}
 
 			foreach ( $field_errors as $field_error ) {
-				$errors[] = $this->error_html ? sprintf( $this->error_html, $field_error ) : $field_error;
+				$field_error = $args['prefix'] . $field_error . $args['suffix'];
+				$errors[]    = $this->error_html ? sprintf( $this->error_html, $field_error ) : $field_error;
 
-				if ( $first_only ) {
+				if ( $args['first_only'] ) {
 					break;
 				}
 			}
