@@ -35,7 +35,7 @@ trait RuleTrait {
 	 * @param mixed $config
 	 */
 	public function __construct( $config = null ) {
-		if ( ! is_array( $config ) && $this->get_default_param() ) {
+		if ( $config !== null && ! is_array( $config ) && $this->get_default_param() ) {
 			$config = [ $this->get_default_param() => $config ];
 		}
 
