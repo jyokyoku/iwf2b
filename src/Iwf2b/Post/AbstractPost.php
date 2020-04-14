@@ -389,7 +389,7 @@ abstract class AbstractPost extends AbstractSingleton {
 		}
 
 		if ( ! is_array( $args ) ) {
-			$args = [ 'd' => $args ];
+			$args = [ 'default' => $args ];
 		}
 
 		$acf_options = Arr::merge_intersect_key( [

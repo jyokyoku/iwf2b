@@ -45,38 +45,21 @@ class Util {
 	 * @return mixed
 	 */
 	public static function filter( $value, array $args = [] ) {
-		$synonym = [
-			'ift'  => 'if_true',
-			'iff'  => 'if_false',
-			'd'    => 'default',
-			'f'    => 'filters',
-			'pre'  => 'prefix',
-			'post' => 'postfix',
-		];
-
-		foreach ( $synonym as $synonym_key => $arg_key ) {
-			if ( isset( $args[ $synonym_key ] ) && ! isset( $args[ $arg_key ] ) ) {
-				$args[ $arg_key ] = $args[ $synonym_key ];
-			}
-
-			unset( $args[ $synonym_key ] );
-		}
-
 		$args = wp_parse_args( $args, [
-			'if_true'  => null,
-			'if_false' => null,
+			'empty'    => null,
+			'nonempty' => null,
 			'default'  => null,
 			'filters'  => [],
 			'prefix'   => null,
-			'postfix'  => null,
+			'suffix'   => null,
 		] );
 
-		if ( ! empty( $value ) && $args['if_true'] !== null ) {
-			$value = $args['if_true'];
+		if ( empty( $value ) && $args['empty'] !== null ) {
+			return $args['empty'];
 		}
 
-		if ( empty( $value ) && $args['if_false'] !== null ) {
-			$value = $args['if_false'];
+		if ( ! empty( $value ) && $args['nonempty'] !== null ) {
+			return $args['nonempty'];
 		}
 
 		if ( static::is_empty( $value ) && $args['default'] !== null ) {
@@ -110,8 +93,14 @@ class Util {
 				}
 			}
 
-			if ( ( is_string( $value ) || is_numeric( $value ) ) && ( $args['prefix'] !== null || $args['postfix'] !== null ) ) {
-				$value = $args['prefix'] . $value . $args['postfix'];
+			if ( ( is_string( $value ) || is_numeric( $value ) ) ) {
+				if ( $args['prefix'] !== null ) {
+					$value = $args['prefix'] . $value;
+				}
+
+				if ( $args['suffix'] !== null ) {
+					$value .= $args['suffix'];
+				}
 			}
 		}
 
