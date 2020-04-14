@@ -252,7 +252,7 @@ abstract class AbstractTax extends AbstractSingleton {
 		}
 
 		if ( ! is_array( $args ) ) {
-			$args = [ 'd' => $args ];
+			$args = [ 'default' => $args ];
 		}
 
 		$acf_options = Arr::merge_intersect_key( [
