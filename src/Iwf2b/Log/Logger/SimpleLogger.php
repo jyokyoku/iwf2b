@@ -17,14 +17,14 @@ class SimpleLogger implements LoggerInterface {
 	 *
 	 * @var string
 	 */
-	protected $path = '';
+	protected $dir = '';
 
 	/**
 	 * Log file name template
 	 *
 	 * @var string
 	 */
-	protected $file_format = '';
+	protected $file_name_format = '';
 
 	/**
 	 * Log date format
@@ -34,30 +34,29 @@ class SimpleLogger implements LoggerInterface {
 	protected $date_format = '';
 
 	/**
+	 * @var bool
+	 */
+	protected $split_dir = false;
+
+	/**
 	 * SimpleLogger constructor.
 	 *
-	 * @param string $path
+	 * @param string $dir
 	 * @param array $args
 	 */
-	public function __construct( $path = null, array $args = [] ) {
+	public function __construct( $dir = null, array $args = [] ) {
 		$args = Arr::merge_intersect_key( [
-			'file_format' => '%date%.log',
-			'date_format' => 'Y-m-d H:i:s',
+			'file_name_format' => '%date%.log',
+			'date_format'      => 'Y-m-d H:i:s',
+			'split_dir'        => false,
 		], $args );
 
-		if ( empty( $path ) ) {
-			$path = WP_CONTENT_DIR . '/iwf2b-log/';
+		if ( empty( $dir ) ) {
+			$dir = WP_CONTENT_DIR . '/iwf2b-log/';
 		}
 
-		if ( ! is_dir( $path ) ) {
-			Filesystem::mkdir( $path );
-		}
-
-		if ( ! is_writable( $path ) ) {
-			throw new \InvalidArgumentException( sprintf( 'The log directory is not writable. - %s', $this->path ) );
-		}
-
-		$this->path = $path;
+		Filesystem::mkdir( $dir );
+		$this->dir = trailingslashit( $dir );
 
 		foreach ( $args as $arg_key => $arg_value ) {
 			$this->{$arg_key} = $arg_value;
@@ -69,7 +68,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param array $context
 	 */
 	public function emergency( $message, array $context = array() ) {
-		$this->white_log( __FUNCTION__, $message, $context );
+		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
 	/**
@@ -77,7 +76,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param array $context
 	 */
 	public function alert( $message, array $context = array() ) {
-		$this->white_log( __FUNCTION__, $message, $context );
+		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
 	/**
@@ -85,7 +84,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param array $context
 	 */
 	public function critical( $message, array $context = array() ) {
-		$this->white_log( __FUNCTION__, $message, $context );
+		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
 	/**
@@ -93,7 +92,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param array $context
 	 */
 	public function error( $message, array $context = array() ) {
-		$this->white_log( __FUNCTION__, $message, $context );
+		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
 	/**
@@ -101,7 +100,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param array $context
 	 */
 	public function warning( $message, array $context = array() ) {
-		$this->white_log( __FUNCTION__, $message, $context );
+		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
 	/**
@@ -109,7 +108,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param array $context
 	 */
 	public function notice( $message, array $context = array() ) {
-		$this->white_log( __FUNCTION__, $message, $context );
+		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
 	/**
@@ -117,7 +116,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param array $context
 	 */
 	public function info( $message, array $context = array() ) {
-		$this->white_log( __FUNCTION__, $message, $context );
+		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
 	/**
@@ -125,7 +124,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param array $context
 	 */
 	public function debug( $message, array $context = array() ) {
-		$this->white_log( __FUNCTION__, $message, $context );
+		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
 	/**
@@ -134,7 +133,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param array $context
 	 */
 	public function log( $level, $message, array $context = array() ) {
-		$this->white_log( $level, $message, $context );
+		$this->write_log( $level, $message, $context );
 	}
 
 	/**
@@ -142,21 +141,31 @@ class SimpleLogger implements LoggerInterface {
 	 * @param $message
 	 * @param array $context
 	 */
-	protected function white_log( $level, $message, array $context = array() ) {
-		$message = sprintf( '%s [%s] %s', current_time( $this->date_format ), strtoupper( $level ), $this->format( $message ) ) . "\n";
+	protected function write_log( $level, $message, array $context = array() ) {
+		$time    = current_time( $this->date_format );
+		$message = $this->format( $message );
 
-		error_log( $message, 3, trailingslashit( $this->path ) . $this->get_file_name() );
-	}
+		if ( $context ) {
+			$message = sprintf( '%s [%s] %s %s', $time, strtoupper( $level ), $message, json_encode( $context, JSON_UNESCAPED_UNICODE ) ) . "\n";
 
-	/**
-	 * @return string
-	 */
-	protected function get_file_name() {
-		$replaces = [
-			'date' => current_time( 'Ymd' ),
-		];
+		} else {
+			$message = sprintf( '%s [%s] %s', $time, strtoupper( $level ), $message ) . "\n";
+		}
 
-		return Text::replace( $this->file_format, $replaces );
+		if ( $this->split_dir ) {
+			$dir = trailingslashit( $this->dir . $level );
+			Filesystem::mkdir( $dir );
+
+		} else {
+			$dir = $this->dir;
+		}
+
+		$file_name = Text::replace( $this->file_name_format, [
+			'date'  => current_time( 'Ymd' ),
+			'level' => $level,
+		] );
+
+		error_log( $message, 3, $dir . $file_name );
 	}
 
 	/**
