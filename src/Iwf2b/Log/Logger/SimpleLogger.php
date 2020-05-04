@@ -67,7 +67,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param string $message
 	 * @param array $context
 	 */
-	public function emergency( $message, array $context = array() ) {
+	public function emergency( $message, array $context = [] ) {
 		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
@@ -75,7 +75,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param string $message
 	 * @param array $context
 	 */
-	public function alert( $message, array $context = array() ) {
+	public function alert( $message, array $context = [] ) {
 		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
@@ -83,7 +83,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param string $message
 	 * @param array $context
 	 */
-	public function critical( $message, array $context = array() ) {
+	public function critical( $message, array $context = [] ) {
 		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
@@ -91,7 +91,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param string $message
 	 * @param array $context
 	 */
-	public function error( $message, array $context = array() ) {
+	public function error( $message, array $context = [] ) {
 		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
@@ -99,7 +99,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param string $message
 	 * @param array $context
 	 */
-	public function warning( $message, array $context = array() ) {
+	public function warning( $message, array $context = [] ) {
 		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
@@ -107,7 +107,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param string $message
 	 * @param array $context
 	 */
-	public function notice( $message, array $context = array() ) {
+	public function notice( $message, array $context = [] ) {
 		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
@@ -115,7 +115,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param string $message
 	 * @param array $context
 	 */
-	public function info( $message, array $context = array() ) {
+	public function info( $message, array $context = [] ) {
 		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
@@ -123,7 +123,7 @@ class SimpleLogger implements LoggerInterface {
 	 * @param string $message
 	 * @param array $context
 	 */
-	public function debug( $message, array $context = array() ) {
+	public function debug( $message, array $context = [] ) {
 		$this->write_log( __FUNCTION__, $message, $context );
 	}
 
@@ -132,16 +132,16 @@ class SimpleLogger implements LoggerInterface {
 	 * @param string $message
 	 * @param array $context
 	 */
-	public function log( $level, $message, array $context = array() ) {
+	public function log( $level, $message, array $context = [] ) {
 		$this->write_log( $level, $message, $context );
 	}
 
 	/**
-	 * @param $level
-	 * @param $message
+	 * @param string $level
+	 * @param string $message
 	 * @param array $context
 	 */
-	protected function write_log( $level, $message, array $context = array() ) {
+	protected function write_log( $level, $message, array $context = [] ) {
 		$time    = current_time( $this->date_format );
 		$message = $this->format( $message );
 

@@ -29,14 +29,14 @@ class Log {
 	/**
 	 * Log scope
 	 *
-	 * @var
+	 * @var string
 	 */
 	protected $scope;
 
 	/**
 	 * Log scope once
 	 *
-	 * @var
+	 * @var string
 	 */
 	protected $scope_once;
 
@@ -63,12 +63,12 @@ class Log {
 	}
 
 	/**
-	 * @param $name
-	 * @param $arguments
+	 * @param string $name
+	 * @param array $arguments
 	 *
 	 * @return mixed
 	 */
-	public static function __callStatic( $name, $arguments ) {
+	public static function __callStatic( $name, array $arguments ) {
 		array_unshift( $arguments, $name );
 
 		return call_user_func_array( [ static::get_instance(), 'write_log' ], $arguments );
@@ -129,7 +129,7 @@ class Log {
 	/**
 	 * Get the logger
 	 *
-	 * @param $channel
+	 * @param string $channel
 	 *
 	 * @return LoggerInterface
 	 */
