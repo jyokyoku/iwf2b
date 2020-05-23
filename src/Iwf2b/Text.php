@@ -183,4 +183,32 @@ class Text {
 
 		return strtr( rtrim( base64_encode( pack( 'H*', hash( $algo, $value . $salt ) ) ), '=' ), '+/', '-_' );
 	}
+
+	/**
+	 * Convert case style
+	 *
+	 * @param string $text
+	 * @param string $to_case
+	 */
+	public static function convert_case( $text, $to_case = 'snake' ) {
+		switch ( $to_case ) {
+			case 'snake':
+				$text = ltrim( preg_replace( '/[\-_]+/', '_', strtolower( preg_replace( '/[A-Z]/', '_\0', $text ) ) ), '_' );
+				break;
+
+			case 'kebab':
+				$text = ltrim( preg_replace( '/[_\-]+/', '-', strtolower( preg_replace( '/[A-Z]/', '-\0', $text ) ) ), '-' );
+				break;
+
+			case 'pascal':
+				$text = strtr( ucwords( strtr( $text, [ '_' => ' ', '-' => ' ' ] ) ), [ ' ' => '' ] );
+				break;
+
+			case 'camel':
+				$text = lcfirst( strtr( ucwords( strtr( $text, [ '_' => ' ', '-' => ' ' ] ) ), [ ' ' => '' ] ) );
+				break;
+		}
+
+		return $text;
+	}
 }
