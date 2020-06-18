@@ -2,13 +2,23 @@
 
 namespace Iwf2b\Log;
 
+use Iwf2b\Arr;
 use Psr\Log\LoggerInterface;
 
 /**
  * Class Log
  * @package Iwf2b
+ *
+ * @method static debug( mixed $message, array $context = [] )
+ * @method static info( mixed $message, array $context = [] )
+ * @method static notice( mixed $message, array $context = [] )
+ * @method static warning( mixed $message, array $context = [] )
+ * @method static error( mixed $message, array $context = [] )
+ * @method static critical( mixed $message, array $context = [] )
+ * @method static alert( mixed $message, array $context = [] )
+ * @method static emergency( mixed $message, array $context = [] )
  */
-class Log implements LoggerInterface {
+class Log {
 	/**
 	 * Logger instances
 	 *
@@ -17,35 +27,33 @@ class Log implements LoggerInterface {
 	protected $loggers = [];
 
 	/**
+	 * Log scope
+	 *
+	 * @var string
+	 */
+	protected $scope;
+
+	/**
+	 * Log scope once
+	 *
+	 * @var string
+	 */
+	protected $scope_once;
+
+	/**
+	 * @var Log
+	 */
+	private static $instance;
+
+	/**
 	 * @return Log
 	 */
 	public static function get_instance() {
-		static $instance;
-
-		if ( ! $instance ) {
-			$instance = new static();
+		if ( ! static::$instance ) {
+			static::$instance = new static();
 		}
 
-		return $instance;
-	}
-
-	/**
-	 * @param LoggerInterface $logger
-	 * @param string $key
-	 * @param array $levels
-	 */
-	public static function set_logger( LoggerInterface $logger, $key = 'default', array $levels = [] ) {
-		static::get_instance()->loggers[ $key ] = compact( 'logger', 'levels' );
-	}
-
-	/**
-	 * @param $name
-	 * @param $arguments
-	 *
-	 * @return mixed
-	 */
-	public static function __callStatic( $name, $arguments ) {
-		return call_user_func_array( [ static::get_instance(), $name ], $arguments );
+		return static::$instance;
 	}
 
 	/**
@@ -55,76 +63,84 @@ class Log implements LoggerInterface {
 	}
 
 	/**
-	 * @param mixed $message
-	 * @param array $context
+	 * @param string $name
+	 * @param array $arguments
+	 *
+	 * @return mixed
 	 */
-	public function emergency( $message, array $context = array() ) {
-		$this->write_log( __FUNCTION__, $message, $context );
+	public static function __callStatic( $name, array $arguments ) {
+		array_unshift( $arguments, $name );
+
+		return call_user_func_array( [ static::get_instance(), 'write_log' ], $arguments );
 	}
 
 	/**
-	 * @param mixed $message
-	 * @param array $context
+	 * Set the logger
+	 *
+	 * @param LoggerInterface $logger
+	 * @param string $channel
+	 * @param array $levels
+	 *
+	 * @return Log
 	 */
-	public function alert( $message, array $context = array() ) {
-		$this->write_log( __FUNCTION__, $message, $context );
+	public static function set_logger( LoggerInterface $logger, $channel, array $args = [] ) {
+		$instance = static::get_instance();
+
+		$args = Arr::merge_intersect_key( [
+			'levels' => [],
+			'scopes' => [],
+		], $args );
+
+		$instance->loggers[ $channel ] = [
+			'logger' => $logger,
+			'levels' => (array) $args['levels'],
+			'scopes' => (array) $args['scopes'],
+		];
+
+		return $instance;
 	}
 
 	/**
-	 * @param mixed $message
-	 * @param array $context
+	 * @param string|bool|null $scope
+	 *
+	 * @return Log
 	 */
-	public function critical( $message, array $context = array() ) {
-		$this->write_log( __FUNCTION__, $message, $context );
+	public static function scope( $scope ) {
+		$instance = static::get_instance();
+
+		$instance->scope = $scope;
+
+		return $instance;
 	}
 
 	/**
-	 * @param mixed $message
-	 * @param array $context
+	 * @param string|bool|null $scope
+	 *
+	 * @return Log
 	 */
-	public function error( $message, array $context = array() ) {
-		$this->write_log( __FUNCTION__, $message, $context );
+	public static function scope_once( $scope ) {
+		$instance = static::get_instance();
+
+		$instance->scope_once = $scope;
+
+		return $instance;
 	}
 
 	/**
-	 * @param mixed $message
-	 * @param array $context
+	 * Get the logger
+	 *
+	 * @param string $channel
+	 *
+	 * @return LoggerInterface
 	 */
-	public function warning( $message, array $context = array() ) {
-		$this->write_log( __FUNCTION__, $message, $context );
-	}
+	public static function channel( $channel ) {
+		$instance = static::get_instance();
 
-	/**
-	 * @param mixed $message
-	 * @param array $context
-	 */
-	public function notice( $message, array $context = array() ) {
-		$this->write_log( __FUNCTION__, $message, $context );
-	}
+		if ( ! isset( $instance->loggers[ $channel ] ) ) {
+			throw new \OutOfBoundsException( sprintf( 'Unregistered channel name: %s', $channel ) );
+		}
 
-	/**
-	 * @param string $message
-	 * @param array $context
-	 */
-	public function info( $message, array $context = array() ) {
-		$this->write_log( __FUNCTION__, $message, $context );
-	}
-
-	/**
-	 * @param mixed $message
-	 * @param array $context
-	 */
-	public function debug( $message, array $context = array() ) {
-		$this->write_log( __FUNCTION__, $message, $context );
-	}
-
-	/***
-	 * @param mixed $level
-	 * @param mixed $message
-	 * @param array $context
-	 */
-	public function log( $level, $message, array $context = array() ) {
-		$this->write_log( $level, $message, $context );
+		return $instance->loggers[ $channel ]['logger'];
 	}
 
 	/**
@@ -133,20 +149,19 @@ class Log implements LoggerInterface {
 	 * @param array $context
 	 */
 	protected function write_log( $level, $message, array $context = [] ) {
-		$use_loggers = [];
+		$scope = $this->scope_once ?: $this->scope;
 
-		if ( isset( $context['logger'] ) ) {
-			$use_loggers = (array) $context['logger'];
-			unset( $context['logger'] );
-		}
-
-		foreach ( $this->loggers as $key => $config ) {
-			$in_use      = empty( $use_loggers ) || in_array( $key, $use_loggers );
+		foreach ( $this->loggers as $name => $config ) {
+			$match_scope = empty( $config['scopes'] ) || empty( $scope ) || in_array( $scope, $config['scopes'] );
 			$match_level = empty( $config['levels'] ) || in_array( $level, $config['levels'] );
 
-			if ( $in_use && $match_level ) {
+			if ( $match_scope && $match_level ) {
 				$config['logger']->{$level}( $message, $context );
 			}
+		}
+
+		if ( $this->scope_once ) {
+			$this->scope_once = '';
 		}
 	}
 }
