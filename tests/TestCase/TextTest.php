@@ -20,6 +20,28 @@ class TextTest extends \WP_UnitTestCase {
 	public function test_stringify_glue() {
 		$this->assertEquals( 'test%%%test_2%%%test_3', Text::stringify( [ 'key' => 'test', 'key_2' => 'test_2', 'key_3' => 'test_3' ], '%%%' ) );
 	}
+
+	public function test_convert_case() {
+		$this->assertEquals( 'pascal_case_to_snake_case', Text::convert_case( 'PascalCaseToSnakeCase', 'snake' ) );
+		$this->assertEquals( 'camel_case_to_snake_case', Text::convert_case( 'camelCaseToSnakeCase', 'snake' ) );
+		$this->assertEquals( 'kebab_case_to_snake_case', Text::convert_case( 'kebab-case-to-snake-case', 'snake' ) );
+		$this->assertEquals( 'mixed_case_to_snake_case', Text::convert_case( 'Mixed__case--To_SnakeCase', 'snake' ) );
+
+		$this->assertEquals( 'pascal-case-to-kebab-case', Text::convert_case( 'PascalCaseToKebabCase', 'kebab' ) );
+		$this->assertEquals( 'camel-case-to-kebab-case', Text::convert_case( 'camelCaseToKebabCase', 'kebab' ) );
+		$this->assertEquals( 'snake-case-to-kebab-case', Text::convert_case( 'snake_case_to_kebab_case', 'kebab' ) );
+		$this->assertEquals( 'mixed-case-to-kebab-case', Text::convert_case( 'Mixed__case--To_KebabCase', 'kebab' ) );
+
+		$this->assertEquals( 'CamelCaseToPascalCase', Text::convert_case( 'camelCaseToPascalCase', 'pascal' ) );
+		$this->assertEquals( 'KebabCaseToPascalCase', Text::convert_case( 'kebab-case-to-pascal-case', 'pascal' ) );
+		$this->assertEquals( 'SnakeCaseToPascalCase', Text::convert_case( 'snake_case_to_pascal_case', 'pascal' ) );
+		$this->assertEquals( 'MixedCaseToPascalCase', Text::convert_case( 'Mixed__case--To_PascalCase-', 'pascal' ) );
+
+		$this->assertEquals( 'pascalCaseToCamelCase', Text::convert_case( 'PascalCaseToCamelCase', 'camel' ) );
+		$this->assertEquals( 'kebabCaseToCamelCase', Text::convert_case( 'kebab-case-to-camel-case', 'camel' ) );
+		$this->assertEquals( 'snakeCaseToCamelCase', Text::convert_case( 'snake_case_to_camel_case', 'camel' ) );
+		$this->assertEquals( 'mixedCaseToCamelCase', Text::convert_case( 'Mixed__case--To_CamelCase', 'camel' ) );
+	}
 }
 
 class TestToStringClass {
