@@ -78,6 +78,11 @@ interface FieldInterface {
 	public function clear_rules();
 
 	/**
+	 * @return $this
+	 */
+	public function clear_errors();
+
+	/**
 	 * @param bool $break_on_first_error
 	 *
 	 * @return bool
