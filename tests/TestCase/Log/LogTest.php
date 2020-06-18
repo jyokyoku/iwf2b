@@ -136,6 +136,52 @@ class LogTest extends \WP_UnitTestCase {
 		$this->assertEquals( '[emergency] test emergency log', file_get_contents( $this->root->url() . '/emergency.log' ) );
 	}
 
+	public function test_write_log_from_instance() {
+		$logger = new TestWritableLogger( $this->root );
+
+		Log::set_logger( $logger, 'writable' );
+
+		Log::get_instance()->debug( 'test debug log' );
+
+		$this->assertTrue( file_exists( $this->root->url() . '/debug.log' ) );
+		$this->assertEquals( '[debug] test debug log', file_get_contents( $this->root->url() . '/debug.log' ) );
+
+		Log::get_instance()->info( 'test info log' );
+
+		$this->assertTrue( file_exists( $this->root->url() . '/info.log' ) );
+		$this->assertEquals( '[info] test info log', file_get_contents( $this->root->url() . '/info.log' ) );
+
+		Log::get_instance()->notice( 'test notice log' );
+
+		$this->assertTrue( file_exists( $this->root->url() . '/notice.log' ) );
+		$this->assertEquals( '[notice] test notice log', file_get_contents( $this->root->url() . '/notice.log' ) );
+
+		Log::get_instance()->warning( 'test warning log' );
+
+		$this->assertTrue( file_exists( $this->root->url() . '/warning.log' ) );
+		$this->assertEquals( '[warning] test warning log', file_get_contents( $this->root->url() . '/warning.log' ) );
+
+		Log::get_instance()->error( 'test error log' );
+
+		$this->assertTrue( file_exists( $this->root->url() . '/error.log' ) );
+		$this->assertEquals( '[error] test error log', file_get_contents( $this->root->url() . '/error.log' ) );
+
+		Log::get_instance()->critical( 'test critical log' );
+
+		$this->assertTrue( file_exists( $this->root->url() . '/critical.log' ) );
+		$this->assertEquals( '[critical] test critical log', file_get_contents( $this->root->url() . '/critical.log' ) );
+
+		Log::get_instance()->alert( 'test alert log' );
+
+		$this->assertTrue( file_exists( $this->root->url() . '/alert.log' ) );
+		$this->assertEquals( '[alert] test alert log', file_get_contents( $this->root->url() . '/alert.log' ) );
+
+		Log::get_instance()->emergency( 'test emergency log' );
+
+		$this->assertTrue( file_exists( $this->root->url() . '/emergency.log' ) );
+		$this->assertEquals( '[emergency] test emergency log', file_get_contents( $this->root->url() . '/emergency.log' ) );
+	}
+
 	public function test_scope() {
 		$logger1 = new TestWritableLogger( $this->root, 'scope1' );
 		$logger2 = new TestWritableLogger( $this->root, 'scope2' );

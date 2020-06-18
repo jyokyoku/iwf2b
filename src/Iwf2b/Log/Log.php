@@ -68,6 +68,18 @@ class Log {
 	 *
 	 * @return mixed
 	 */
+	public function __call( $name, array $arguments ) {
+		array_unshift( $arguments, $name );
+
+		return call_user_func_array( [ $this, 'write_log' ], $arguments );
+	}
+
+	/**
+	 * @param string $name
+	 * @param array $arguments
+	 *
+	 * @return mixed
+	 */
 	public static function __callStatic( $name, array $arguments ) {
 		array_unshift( $arguments, $name );
 
