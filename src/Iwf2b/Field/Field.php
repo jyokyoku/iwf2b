@@ -162,6 +162,15 @@ class Field implements FieldInterface {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public function clear_errors() {
+		$this->errors = [];
+
+		return $this;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function validate( $break_on_first_error = true ) {
