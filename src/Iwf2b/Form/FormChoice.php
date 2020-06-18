@@ -37,26 +37,27 @@ class FormChoice {
 		$forms[] = Form::hidden( $name, $hidden_attrs ); // Add hidden input
 		$count   = 1;
 
-		foreach ( $choices as $choice_value => $choice_key ) {
+		foreach ( $choices as $choice_value => $choice_label ) {
 			$_attrs = $attrs;
 
 			if ( $value_only ) {
-				$choice_value = $choice_key;
+				$choice_value = $choice_label;
 			}
 
-			$_attrs['value'] = $choice_value;
+			$_attrs['value']      = $choice_value;
+			$_attrs['data-label'] = $choice_label;
 
 			if ( isset( $attrs['id'] ) ) {
 				$_attrs['id'] = $attrs['id'] . '-' . $count;
 			}
 
 			$forms[] = Form::checkbox( $name . '[]', $_attrs )
-			               ->set_after_render( function ( &$html ) use ( $wrapper, $wrapper_attr, $between_text, $choice_key ) {
+			               ->set_after_render( function ( &$html ) use ( $wrapper, $wrapper_attr, $between_text, $choice_label ) {
 				               if ( $wrapper ) {
-					               $html = Html::tag( $wrapper, $wrapper_attr, $html . $between_text . $choice_key, [ 'escape' => false ] );
+					               $html = Html::tag( $wrapper, $wrapper_attr, $html . $between_text . $choice_label, [ 'escape' => false ] );
 
 				               } else {
-					               $html = $html . $between_text . $choice_key;
+					               $html = $html . $between_text . $choice_label;
 				               }
 			               } );
 
@@ -110,26 +111,27 @@ class FormChoice {
 		$forms[] = Form::hidden( $name, $hidden_attrs ); // Add hidden input
 		$count   = 1;
 
-		foreach ( $choices as $choice_value => $choice_key ) {
+		foreach ( $choices as $choice_value => $choice_label ) {
 			$_attrs = $attrs;
 
 			if ( $value_only ) {
-				$choice_value = $choice_key;
+				$choice_value = $choice_label;
 			}
 
-			$_attrs['value'] = $choice_value;
+			$_attrs['value']      = $choice_value;
+			$_attrs['data-label'] = $choice_label;
 
 			if ( isset( $attrs['id'] ) ) {
 				$_attrs['id'] = $attrs['id'] . '-' . $count;
 			}
 
 			$forms[] = Form::radio( $name, $_attrs )
-			               ->set_after_render( function ( &$html ) use ( $wrapper, $wrapper_attr, $between_text, $choice_key ) {
+			               ->set_after_render( function ( &$html ) use ( $wrapper, $wrapper_attr, $between_text, $choice_label ) {
 				               if ( $wrapper ) {
-					               $html = Html::tag( $wrapper, $wrapper_attr, $html . $between_text . $choice_key, [ 'escape' => false ] );
+					               $html = Html::tag( $wrapper, $wrapper_attr, $html . $between_text . $choice_label, [ 'escape' => false ] );
 
 				               } else {
-					               $html = $html . $between_text . $choice_key;
+					               $html = $html . $between_text . $choice_label;
 				               }
 			               } );
 
