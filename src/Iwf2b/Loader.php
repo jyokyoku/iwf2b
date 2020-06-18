@@ -3,14 +3,14 @@
 namespace Iwf2b;
 
 /**
- * Class App
+ * Class Loader
  * @package Iwf2b
  */
-class App {
+class Loader {
 	/**
 	 * Instance
 	 *
-	 * @var App
+	 * @var Loader
 	 */
 	protected static $instance;
 
@@ -29,7 +29,7 @@ class App {
 	protected $initialized_classes = [];
 
 	/**
-	 * @return App
+	 * @return Loader
 	 */
 	public static function get_instance() {
 		if ( ! static::$instance ) {
