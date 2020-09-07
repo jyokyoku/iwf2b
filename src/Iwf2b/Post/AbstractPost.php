@@ -131,6 +131,21 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	/**
+	 * @param $post_id
+	 *
+	 * @return int
+	 */
+	public static function get_id( $post_id ) {
+		$post = static::get( $post_id );
+
+		if ( ! $post ) {
+			return 0;
+		}
+
+		return $post->ID;
+	}
+
+	/**
 	 * @return string
 	 */
 	public static function get_post_type() {

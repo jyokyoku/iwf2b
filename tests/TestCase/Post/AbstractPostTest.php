@@ -28,6 +28,16 @@ class AbstractPostTest extends \WP_UnitTestCase {
 		$this->assertEquals( TestPost::get( $post_id ), get_post( $post_id ) );
 	}
 
+	public function test_get_id() {
+		$post_id = $this->factory->post->create( [
+			'post_type'  => 'test_post',
+			'post_title' => 'Test',
+		] );
+
+		$this->assertEquals( 0, TestPost::get_id( 1000 ) );
+		$this->assertEquals( $post_id, TestPost::get_id( $post_id ) );
+	}
+
 	public function test_is_valid() {
 		$post_id = $this->factory->post->create( [
 			'post_type'  => 'test_post',
@@ -119,7 +129,7 @@ class AbstractPostTest extends \WP_UnitTestCase {
 
 		// Test the featured image have priority over the dummy image.
 		$test_img_path_2 = $this->create_virtual_image( 'test_2.png', 'png', [ 'width' => 180, 'height' => 280 ] );
-		$attachment_id = $this->factory->attachment->create_upload_object( $test_img_path_2, $post_id );
+		$attachment_id   = $this->factory->attachment->create_upload_object( $test_img_path_2, $post_id );
 		update_post_meta( $attachment_id, '_wp_attachment_image_alt', 'Image alt text 2' );
 		set_post_thumbnail( $post_id, $attachment_id );
 
@@ -198,6 +208,6 @@ class TestPost extends AbstractPost {
 
 	protected static $args = [
 		'has_archive' => true,
-		'supports' => ['title', 'editor']
+		'supports'    => [ 'title', 'editor' ],
 	];
 }
