@@ -116,18 +116,45 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	/**
-	 * @param int|\WP_Post $post_id
+	 * @param $post_id
 	 *
 	 * @return \WP_Post|null
 	 */
 	public static function get( $post_id ) {
-		$post = get_post( $post_id );
+		if ( $post_id instanceof \WP_Post ) {
+			$post = $post_id;
+
+		} else if ( is_numeric( $post_id ) && preg_match( '/^[0-9]+?$/', $post_id ) ) {
+			$post = get_post( $post_id );
+
+		} else if ( is_string( $post_id ) ) {
+			$post = get_page_by_path( $post_id, OBJECT, static::$post_type );
+
+			if ( ! $post ) {
+				$post = get_page_by_title( $post_id, OBJECT, static::$post_type );
+			}
+		}
 
 		if ( ! $post || ( static::$post_type && $post->post_type !== static::$post_type ) ) {
 			return null;
 		}
 
 		return $post;
+	}
+
+	/**
+	 * @param $post_id
+	 *
+	 * @return int
+	 */
+	public static function get_id( $post_id ) {
+		$post = static::get( $post_id );
+
+		if ( ! $post ) {
+			return 0;
+		}
+
+		return $post->ID;
 	}
 
 	/**
