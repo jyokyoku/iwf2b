@@ -102,6 +102,21 @@ class AbstractUser extends AbstractSingleton {
 	}
 
 	/**
+	 * @param $user_id
+	 *
+	 * @return int
+	 */
+	public static function get_id( $user_id = null ) {
+		$user = static::get( $user_id );
+
+		if ( ! $user ) {
+			return 0;
+		}
+
+		return $user->ID;
+	}
+
+	/**
 	 * @param array $args
 	 *
 	 * @return array
