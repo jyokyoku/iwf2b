@@ -151,6 +151,21 @@ abstract class AbstractTax extends AbstractSingleton {
 	}
 
 	/**
+	 * @param $term_id
+	 *
+	 * @return int
+	 */
+	public static function get_id( $term_id ) {
+		$term = static::get( $term_id );
+
+		if ( ! $term ) {
+			return 0;
+		}
+
+		return $term->term_id;
+	}
+
+	/**
 	 * @param array $args
 	 *
 	 * @return array
