@@ -21,21 +21,33 @@ class AbstractPostTest extends \WP_UnitTestCase {
 	public function test_get() {
 		$post_id = $this->factory->post->create( [
 			'post_type'  => 'test_post',
+			'post_name'  => 'test_post_path',
 			'post_title' => 'Test',
 		] );
 
+		$post_data = get_post( $post_id );
+
 		$this->assertEmpty( TestPost::get( 0 ) );
-		$this->assertEquals( TestPost::get( $post_id ), get_post( $post_id ) );
+		$this->assertEquals( $post_data, TestPost::get( $post_id ) );
+		$this->assertEquals( $post_data, TestPost::get( 'test_post_path' ) );
+		$this->assertEquals( $post_data, TestPost::get( 'Test' ) );
+
+		$this->assertEmpty( TestPost2::get( $post_id ) );
+		$this->assertEmpty( TestPost2::get( 'test_post_path' ) );
+		$this->assertEmpty( TestPost2::get( 'Test' ) );
 	}
 
 	public function test_get_id() {
 		$post_id = $this->factory->post->create( [
 			'post_type'  => 'test_post',
+			'post_name'  => 'test_post_path',
 			'post_title' => 'Test',
 		] );
 
 		$this->assertEquals( 0, TestPost::get_id( 1000 ) );
 		$this->assertEquals( $post_id, TestPost::get_id( $post_id ) );
+		$this->assertEquals( $post_id, TestPost::get_id( 'test_post_path' ) );
+		$this->assertEquals( $post_id, TestPost::get_id( 'Test' ) );
 	}
 
 	public function test_is_valid() {
@@ -205,6 +217,15 @@ class AbstractPostTest extends \WP_UnitTestCase {
 
 class TestPost extends AbstractPost {
 	protected static $post_type = 'test_post';
+
+	protected static $args = [
+		'has_archive' => true,
+		'supports'    => [ 'title', 'editor' ],
+	];
+}
+
+class TestPost2 extends AbstractPost {
+	protected static $post_type = 'test_post2';
 
 	protected static $args = [
 		'has_archive' => true,
