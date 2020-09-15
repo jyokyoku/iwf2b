@@ -221,4 +221,19 @@ class Util {
 
 		return $tags;
 	}
+
+	/**
+	 * @param $class
+	 *
+	 * @return array
+	 */
+	public static function namespace_split( $class ) {
+		$pos = strrpos( $class, '\\' );
+
+		if ( $pos === false ) {
+			return [ '', $class ];
+		}
+
+		return [ substr( $class, 0, $pos ), substr( $class, $pos + 1 ) ];
+	}
 }
