@@ -127,6 +127,12 @@ class UtilTest extends \WP_UnitTestCase {
 		$this->assertEquals( 'default value', Util::filter( '', [ 'default' => 'default value', 'prefix' => 'pre', 'suffix' => 'post' ] ) );
 		$this->assertEquals( 'preTRIpost', Util::filter( 'string', [ 'filters' => [ 'strtoupper', 'substr' => [ 1, 3 ] ], 'prefix' => 'pre', 'suffix' => 'post' ] ) );
 	}
+
+	public function test_namespace_split() {
+		$this->assertEquals( [ 'Namespace', 'Class' ], Util::namespace_split( 'Namespace\\Class' ) );
+		$this->assertEquals( [ 'Namespace\\NamespaceChild', 'Class' ], Util::namespace_split( 'Namespace\\NamespaceChild\\Class' ) );
+		$this->assertEquals( [ '', 'Class' ], Util::namespace_split( 'Class' ) );
+	}
 }
 
 /**
