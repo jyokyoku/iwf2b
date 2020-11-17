@@ -8,6 +8,7 @@ use Iwf2b\Util;
 
 /**
  * Class AbstractPost
+ *
  * @package Iwf2b\Post
  */
 abstract class AbstractPost extends AbstractSingleton {
@@ -124,10 +125,10 @@ abstract class AbstractPost extends AbstractSingleton {
 		if ( $post_id instanceof \WP_Post ) {
 			$post = $post_id;
 
-		} else if ( is_numeric( $post_id ) && preg_match( '/^[0-9]+?$/', $post_id ) ) {
+		} elseif ( is_numeric( $post_id ) && preg_match( '/^[0-9]+?$/', $post_id ) ) {
 			$post = get_post( $post_id );
 
-		} else if ( is_string( $post_id ) ) {
+		} elseif ( is_string( $post_id ) ) {
 			$post = get_page_by_path( $post_id, OBJECT, static::$post_type );
 
 			if ( ! $post ) {
@@ -211,7 +212,7 @@ abstract class AbstractPost extends AbstractSingleton {
 					'key' => '_thumbnail_id',
 				];
 
-			} else if ( preg_match( '#^[\d]+?$#', $args['thumbnail'] ) ) {
+			} elseif ( preg_match( '#^[\d]+?$#', $args['thumbnail'] ) ) {
 				$args['meta_query']['_thumbnail_id'] = [
 					'key'   => '_thumbnail_id',
 					'value' => (int) $args['thumbnail'],
@@ -260,8 +261,8 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	/**
 	 * @param int|\WP_Post $post_id
-	 * @param string $taxonomy
-	 * @param array $args
+	 * @param string       $taxonomy
+	 * @param array        $args
 	 *
 	 * @return array
 	 */
@@ -290,8 +291,8 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	/**
 	 * @param int|\WP_Post $post_id
-	 * @param string $taxonomy
-	 * @param array $args
+	 * @param string       $taxonomy
+	 * @param array        $args
 	 *
 	 * @return null|\WP_Term
 	 */
@@ -307,8 +308,8 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	/**
 	 * @param int|\WP_Post $post_id
-	 * @param bool|string $search_post_key
-	 * @param string $dummy_image
+	 * @param bool|string  $search_post_key
+	 * @param string       $dummy_image
 	 *
 	 * @return array
 	 */
@@ -325,6 +326,7 @@ abstract class AbstractPost extends AbstractSingleton {
 				'dummy_image'     => $deprecated,
 				'thumbnail_size'  => '',
 				'alt'             => '',
+				'get_size'        => false,
 			];
 
 		} else {
@@ -333,6 +335,7 @@ abstract class AbstractPost extends AbstractSingleton {
 				'dummy_image'     => '',
 				'thumbnail_size'  => '',
 				'alt'             => '',
+				'get_size'        => false,
 			] );
 		}
 
@@ -369,29 +372,34 @@ abstract class AbstractPost extends AbstractSingleton {
 				}
 			}
 
-		} else if (
+		} elseif (
 			$args['search_post_key']
 			&& isset( $post->{$args['search_post_key']} )
 			&& preg_match( '|<img[^>]*?src\s*=\s*["\']([^"\']+)["\'].*?>|i', $post->{$args['search_post_key']}, $src )
 		) {
 			$data['src'] = $src[1];
-			$sizes       = @getimagesize( $data['src'] );
 
-			if ( isset( $sizes[0], $sizes[1] ) ) {
-				$data['width']  = $sizes[0];
-				$data['height'] = $sizes[1];
+			if ( $args['get_size'] ) {
+				$sizes = @getimagesize( $data['src'] );
+
+				if ( isset( $sizes[0], $sizes[1] ) ) {
+					$data['width']  = $sizes[0];
+					$data['height'] = $sizes[1];
+				}
 			}
 
 			if ( ! $data['alt'] && preg_match( '|\s*alt\s*=\s*["\']([^"\']+)["\']|i', $src[0], $alt ) ) {
 				$data['alt'] = $alt[1];
 			}
 
-		} else if ( $data['src'] ) {
-			$sizes = @getimagesize( $data['src'] );
+		} elseif ( $data['src'] ) {
+			if ( $args['get_size'] ) {
+				$sizes = @getimagesize( $data['src'] );
 
-			if ( isset( $sizes[0], $sizes[1] ) ) {
-				$data['width']  = $sizes[0];
-				$data['height'] = $sizes[1];
+				if ( isset( $sizes[0], $sizes[1] ) ) {
+					$data['width']  = $sizes[0];
+					$data['height'] = $sizes[1];
+				}
 			}
 
 		} else {
@@ -403,8 +411,8 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	/**
 	 * @param int|\WP_Post $post
-	 * @param string $key
-	 * @param mixed $args
+	 * @param string       $key
+	 * @param mixed        $args
 	 *
 	 * @return mixed
 	 */
@@ -441,8 +449,8 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	/**
 	 * @param int|\WP_Post $post_id
-	 * @param bool $include_current
-	 * @param bool $reverse
+	 * @param bool         $include_current
+	 * @param bool         $reverse
 	 *
 	 * @return \WP_Post[]
 	 */

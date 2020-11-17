@@ -127,12 +127,20 @@ class AbstractPostTest extends \WP_UnitTestCase {
 		$thumbnail = TestPost::get_thumbnail( $post_id, [ 'dummy_image' => $test_img_path, 'alt' => '' ] );
 
 		$this->assertNotEmpty( $thumbnail['src'] );
-		$this->assertEquals( 320, $thumbnail['width'] );
-		$this->assertEquals( 240, $thumbnail['height'] );
+		$this->assertEquals( null, $thumbnail['width'] );
+		$this->assertEquals( null, $thumbnail['height'] );
 		$this->assertEquals( '', $thumbnail['alt'] );
 
 		// Test overwrite alt keyword
 		$thumbnail = TestPost::get_thumbnail( $post_id, [ 'dummy_image' => $test_img_path, 'alt' => 'Image alt text' ] );
+
+		$this->assertNotEmpty( $thumbnail['src'] );
+		$this->assertEquals( null, $thumbnail['width'] );
+		$this->assertEquals( null, $thumbnail['height'] );
+		$this->assertEquals( 'Image alt text', $thumbnail['alt'] );
+
+		// Test overwrite alt keyword
+		$thumbnail = TestPost::get_thumbnail( $post_id, [ 'dummy_image' => $test_img_path, 'alt' => 'Image alt text', 'get_size' => true  ] );
 
 		$this->assertNotEmpty( $thumbnail['src'] );
 		$this->assertEquals( 320, $thumbnail['width'] );
@@ -173,12 +181,20 @@ class AbstractPostTest extends \WP_UnitTestCase {
 		$thumbnail = TestPost::get_thumbnail( $post_id, [ 'search_post_key' => 'post_content' ] );
 
 		$this->assertNotEmpty( $thumbnail['src'] );
-		$this->assertEquals( 280, $thumbnail['width'] );
-		$this->assertEquals( 190, $thumbnail['height'] );
+		$this->assertEquals( null, $thumbnail['width'] );
+		$this->assertEquals( null, $thumbnail['height'] );
 		$this->assertEquals( 'Image alt text', $thumbnail['alt'] );
 
 		// Test overwrite alt keyword
 		$thumbnail = TestPost::get_thumbnail( $post_id, [ 'search_post_key' => 'post_content', 'alt' => 'Overwrite alt text' ] );
+
+		$this->assertNotEmpty( $thumbnail['src'] );
+		$this->assertEquals( null, $thumbnail['width'] );
+		$this->assertEquals( null, $thumbnail['height'] );
+		$this->assertEquals( 'Overwrite alt text', $thumbnail['alt'] );
+
+		// Test overwrite alt keyword
+		$thumbnail = TestPost::get_thumbnail( $post_id, [ 'search_post_key' => 'post_content', 'alt' => 'Overwrite alt text', 'get_size' => true ] );
 
 		$this->assertNotEmpty( $thumbnail['src'] );
 		$this->assertEquals( 280, $thumbnail['width'] );
