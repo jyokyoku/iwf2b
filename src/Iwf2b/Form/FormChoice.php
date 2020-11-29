@@ -172,8 +172,9 @@ class FormChoice {
 					}
 
 					$option_attrs = [ 'value' => $choice_value ];
+					$selected     = $form->get_value();
 
-					if ( $form->get_value() == $choice_value ) {
+					if ( ! Util::is_empty( $selected ) && $selected == $choice_value ) {
 						$option_attrs['selected'] = true;
 					}
 
