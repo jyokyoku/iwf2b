@@ -7,6 +7,7 @@ use Iwf2b\Text;
 
 /**
  * Class AbstractModel
+ *
  * @package Iwf2b\Model
  */
 abstract class AbstractModel extends AbstractSingleton {
@@ -44,10 +45,14 @@ abstract class AbstractModel extends AbstractSingleton {
 	protected function initialize() {
 		global $wpdb;
 
-		static::$db = $wpdb;
+		$this->migrate_table();
 
+		static::$db = $wpdb;
+	}
+
+	protected function migrate_table() {
 		if ( ! static::$table_name || ! static::$sql ) {
-			return false;
+			return;
 		}
 
 		$sql_config_name = static::$table_name . '_db_version';
@@ -66,21 +71,17 @@ abstract class AbstractModel extends AbstractSingleton {
 				update_option( $sql_config_name, static::$sql_version );
 			}
 		}
-
-		return true;
 	}
 
 	/**
 	 * @return string
 	 */
 	public static function table_name() {
-		global $wpdb;
-
-		return $wpdb->prefix . static::$table_name;
+		return static::$db->prefix . static::$table_name;
 	}
 
 	/**
-	 * @param array $data
+	 * @param array        $data
 	 * @param array|string $format
 	 *
 	 * @return false|int
@@ -90,7 +91,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
-	 * @param array $data
+	 * @param array        $data
 	 * @param array|string $format
 	 *
 	 * @return false|int
@@ -100,8 +101,8 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
-	 * @param array $data
-	 * @param array $where
+	 * @param array        $data
+	 * @param array        $where
 	 * @param array|string $format
 	 * @param array|string $where_format
 	 *
@@ -112,7 +113,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
-	 * @param array $where
+	 * @param array        $where
 	 * @param array|string $where_format
 	 *
 	 * @return false|int
@@ -122,7 +123,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
-	 * @param $code
+	 * @param       $code
 	 * @param array $args
 	 *
 	 * @return array|null
@@ -182,7 +183,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
-	 * @param $code
+	 * @param       $code
 	 * @param array $args
 	 *
 	 * @return object|null
@@ -196,7 +197,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
-	 * @param $key_values
+	 * @param        $key_values
 	 * @param string $association
 	 *
 	 * @return string
