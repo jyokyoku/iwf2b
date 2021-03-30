@@ -4,6 +4,7 @@ namespace Iwf2b;
 
 /**
  * Class AbstractHook
+ *
  * @package Iwf2b
  */
 abstract class AbstractHook extends AbstractSingleton {
@@ -93,7 +94,6 @@ abstract class AbstractHook extends AbstractSingleton {
 		remove_filter( 'comment_text', 'wptexturize' );
 
 		// プレビューにもメタデータを保存する
-		add_filter( 'get_post_metadata', [ $this, 'get_preview_post_meta_data' ], 10, 4 );
 		add_action( 'wp_insert_post', [ $this, 'save_preview_post' ] );
 
 		if ( class_exists( 'ACF' ) ) {
@@ -110,14 +110,6 @@ abstract class AbstractHook extends AbstractSingleton {
 				add_filter( 'acf/settings/show_admin', '__return_false' );
 			}
 		}
-
-		// アップデート通知をOFF
-		//remove_action( 'wp_version_check', 'wp_version_check' );
-		//remove_action( 'admin_init', '_maybe_update_core' );
-		//remove_action( 'admin_init', '_maybe_update_plugins' );
-		//remove_action( 'admin_init', '_maybe_update_themes' );
-		//add_filter( 'pre_site_transient_update_core', '__return_zero' );
-		//add_filter( 'pre_site_transient_update_plugins', '__return_zero' );
 	}
 
 	/**
@@ -131,9 +123,9 @@ abstract class AbstractHook extends AbstractSingleton {
 
 	/**
 	 * @param string $slug
-	 * @param int $post_ID
-	 * @param $post_status
-	 * @param $post_type
+	 * @param int    $post_ID
+	 * @param        $post_status
+	 * @param        $post_type
 	 *
 	 * @return string
 	 */
@@ -168,7 +160,7 @@ abstract class AbstractHook extends AbstractSingleton {
 		if ( isset( $_GET['show_acf'] ) ) {
 			setcookie( 'show_acf', 1, 0, $path );
 
-		} else if ( isset( $_GET['hide_acf'] ) ) {
+		} elseif ( isset( $_GET['hide_acf'] ) ) {
 			setcookie( 'show_acf', 0, time() - 3600, $path );
 		}
 	}
@@ -290,44 +282,23 @@ abstract class AbstractHook extends AbstractSingleton {
 			return;
 		}
 
-		if ( isset( $_POST['acf'] ) && is_array( $_POST['acf'] ) ) {
-			foreach ( $_POST['acf'] as $key => $value ) {
-				$field = get_field_object( $key );
+		if ( ! empty( $_POST['acf'] ) && is_array( $_POST['acf'] ) ) {
+			if ( function_exists( 'acf_update_values' ) ) {
+				acf_update_values( $_POST['acf'], $post_id );
 
-				if ( empty( $field['name'] ) || empty( $field['key'] ) ) {
-					continue;
-				}
+			} else {
+				foreach ( $_POST['acf'] as $key => $value ) {
+					$field = get_field_object( $key );
 
-				update_metadata( 'post', $post_id, $field['name'], $value );
-				update_metadata( 'post', $post_id, "_" . $field['name'], $field['key'] );
-			}
-		}
-	}
+					if ( empty( $field['name'] ) || empty( $field['key'] ) ) {
+						continue;
+					}
 
-	/**
-	 * プレビューのメタ情報を取得する
-	 *
-	 * @param $meta_value
-	 * @param $post_id
-	 * @param $meta_key
-	 * @param $single
-	 *
-	 * @return mixed
-	 */
-	public function get_preview_post_meta_data( $meta_value, $post_id, $meta_key, $single ) {
-		global $post;
-
-		if ( ! empty( $_GET['preview'] ) && $post->ID == $post_id && url_to_postid( $_SERVER['REQUEST_URI'] ) == $post_id ) {
-			$preview = wp_get_post_autosave( $post_id );
-
-			if ( $preview ) {
-				if ( $post_id != $preview->ID ) {
-					$meta_value = get_post_meta( $preview->ID, $meta_key, $single );
+					update_metadata( 'post', $post_id, $field['name'], $value );
+					update_metadata( 'post', $post_id, "_" . $field['name'], $field['key'] );
 				}
 			}
 		}
-
-		return $meta_value;
 	}
 
 	/**
@@ -387,7 +358,7 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * チェックされたタクソノミーが一番上にこないようにする
 	 *
 	 * @param array $args
-	 * @param int $post_id
+	 * @param int   $post_id
 	 *
 	 * @return array
 	 */
@@ -433,7 +404,7 @@ abstract class AbstractHook extends AbstractSingleton {
 	/**
 	 * SQLフィルター
 	 *
-	 * @param array $sql
+	 * @param array     $sql
 	 * @param \WP_Query $the_query
 	 *
 	 * @return array
