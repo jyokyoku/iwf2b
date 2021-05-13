@@ -45,9 +45,9 @@ abstract class AbstractModel extends AbstractSingleton {
 	protected function initialize() {
 		global $wpdb;
 
-		$this->migrate_table();
-
 		static::$db = $wpdb;
+
+		$this->migrate_table();
 	}
 
 	protected function migrate_table() {
