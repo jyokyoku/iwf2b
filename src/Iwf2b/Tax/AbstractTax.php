@@ -4,10 +4,12 @@ namespace Iwf2b\Tax;
 
 use Iwf2b\AbstractSingleton;
 use Iwf2b\Arr;
+use Iwf2b\Post\AbstractPost;
 use Iwf2b\Util;
 
 /**
  * Class AbstractTax
+ *
  * @package Iwf2b\Tax
  */
 abstract class AbstractTax extends AbstractSingleton {
@@ -62,6 +64,17 @@ abstract class AbstractTax extends AbstractSingleton {
 	 */
 	public function register_taxonomy() {
 		if ( ! static::$builtin ) {
+			if ( class_exists( static::$object_type ) ) {
+				if ( ! is_subclass_of( static::$object_type, AbstractPost::class ) ) {
+					throw new \InvalidArgumentException( sprintf( 'The variable "%s::$object_type" must be child class of AbstractPost.', get_class( $this ) ) );
+				}
+
+				$object_type = call_user_func( [ static::$object_type, 'get_slug' ] );
+
+			} else {
+				$object_type = static::$object_type;
+			}
+
 			if ( ! empty( static::$args['label'] ) && empty( static::$args['labels'] ) ) {
 				static::$args['labels'] = [
 					'name'                       => static::$args['label'],
@@ -87,7 +100,7 @@ abstract class AbstractTax extends AbstractSingleton {
 				];
 			}
 
-			register_taxonomy( static::$taxonomy, static::$object_type, static::$args );
+			register_taxonomy( static::$taxonomy, $object_type, static::$args );
 		}
 	}
 
@@ -134,10 +147,10 @@ abstract class AbstractTax extends AbstractSingleton {
 		if ( $term_id instanceof \WP_Term ) {
 			$term_object = $term_id;
 
-		} else if ( is_numeric( $term_id ) && preg_match( '/^[0-9]+?$/', $term_id ) ) {
+		} elseif ( is_numeric( $term_id ) && preg_match( '/^[0-9]+?$/', $term_id ) ) {
 			$term_object = get_term( (int) $term_id );
 
-		} else if ( is_string( $term_id ) ) {
+		} elseif ( is_string( $term_id ) ) {
 			$term_object = get_term_by( 'slug', $term_id, static::$taxonomy );
 
 			if ( ! $term_object ) {
@@ -222,7 +235,7 @@ abstract class AbstractTax extends AbstractSingleton {
 	}
 
 	/**
-	 * @param $term_id
+	 * @param      $term_id
 	 * @param bool $include_current
 	 * @param bool $reverse
 	 *
@@ -256,8 +269,8 @@ abstract class AbstractTax extends AbstractSingleton {
 
 	/**
 	 * @param int|string|\WP_Term $term_id
-	 * @param string $key
-	 * @param mixed $args
+	 * @param string              $key
+	 * @param mixed               $args
 	 *
 	 * @return mixed
 	 */
@@ -294,7 +307,7 @@ abstract class AbstractTax extends AbstractSingleton {
 
 	/**
 	 * @param string $name
-	 * @param array $args
+	 * @param array  $args
 	 *
 	 * @return array|\WP_Error
 	 */
