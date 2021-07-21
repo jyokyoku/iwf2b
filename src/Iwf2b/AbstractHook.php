@@ -8,6 +8,8 @@ namespace Iwf2b;
  * @package Iwf2b
  */
 abstract class AbstractHook extends AbstractSingleton {
+	protected static $ACF_BASE_PATH = '/advanced-custom-fields-pro';
+
 	/**
 	 * {@inheritdoc}
 	 */
@@ -199,13 +201,13 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * ACF Path
 	 */
 	public function acf_settings_path( $path ) {
-		$new_path = get_stylesheet_directory() . '/vendor/advanced-custom-fields-pro/';
+		$new_path = get_stylesheet_directory() . static::$ACF_BASE_PATH;
 
 		if ( is_dir( $new_path ) ) {
 			$path = $new_path;
 
 		} else {
-			$new_path = get_template_directory() . '/vendor/advanced-custom-fields-pro/';
+			$new_path = get_template_directory() . static::$ACF_BASE_PATH;
 
 			if ( is_dir( $new_path ) ) {
 				$path = $new_path;
@@ -219,16 +221,16 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * ACF Dir
 	 */
 	public function acf_settings_dir( $dir ) {
-		$new_dir = get_stylesheet_directory() . '/vendor/advanced-custom-fields-pro/';
+		$new_dir = get_stylesheet_directory() . static::$ACF_BASE_PATH;
 
 		if ( is_dir( $new_dir ) ) {
-			$dir = get_stylesheet_directory_uri() . '/vendor/advanced-custom-fields-pro/';
+			$dir = get_stylesheet_directory_uri() . static::$ACF_BASE_PATH;
 
 		} else {
-			$new_dir = get_template_directory() . '/vendor/advanced-custom-fields-pro/';
+			$new_dir = get_template_directory() . static::$ACF_BASE_PATH;
 
 			if ( is_dir( $new_dir ) ) {
-				$dir = get_template_directory_uri() . '/vendor/advanced-custom-fields-pro/';
+				$dir = get_template_directory_uri() . static::$ACF_BASE_PATH;
 			}
 		}
 
