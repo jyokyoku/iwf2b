@@ -2,6 +2,7 @@
 
 namespace Iwf2b\Tests\TestCase\Tax;
 
+use Iwf2b\Post\AbstractPost;
 use Iwf2b\Tax\AbstractTax;
 
 class AbstractTaxTest extends \WP_UnitTestCase {
@@ -9,6 +10,23 @@ class AbstractTaxTest extends \WP_UnitTestCase {
 		parent::setUpBeforeClass();
 
 		TestTax::get_instance()->register_taxonomy();
+	}
+
+	public function test_register() {
+		global $wp_taxonomies;
+
+		RegisterTextTax1::get_instance()->register_taxonomy();
+
+		$this->assertTrue( isset( $wp_taxonomies['register_test_tax_1'] ) );
+		$this->assertTrue( in_array( 'dummy_post', $wp_taxonomies['register_test_tax_1']->object_type ) );
+
+		RegisterTextTax2::get_instance()->register_taxonomy();
+
+		$this->assertTrue( isset( $wp_taxonomies['register_test_tax_2'] ) );
+		$this->assertTrue( in_array( 'test_post', $wp_taxonomies['register_test_tax_2']->object_type ) );
+
+		$this->expectException( \InvalidArgumentException::class );
+		RegisterTextTax3::get_instance()->register_taxonomy();
 	}
 
 	public function test_get() {
@@ -43,4 +61,29 @@ class AbstractTaxTest extends \WP_UnitTestCase {
 
 class TestTax extends AbstractTax {
 	protected static $taxonomy = 'test_tax';
+}
+
+class RegisterTextTax1 extends AbstractTax {
+	protected static $taxonomy = 'register_test_tax_1';
+
+	protected static $object_type = 'dummy_post';
+}
+
+class RegisterTextTax2 extends AbstractTax {
+	protected static $taxonomy = 'register_test_tax_2';
+
+	protected static $object_type = TestPost::class;
+}
+
+class RegisterTextTax3 extends AbstractTax {
+	protected static $taxonomy = 'register_test_tax_3';
+
+	protected static $object_type = DummyObject::class;
+}
+
+class TestPost extends AbstractPost {
+	protected static $post_type = 'test_post';
+}
+
+class DummyObject {
 }
