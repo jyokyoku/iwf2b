@@ -201,13 +201,13 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * ACF Path
 	 */
 	public function acf_settings_path( $path ) {
-		$new_path = get_stylesheet_directory() . static::$ACF_BASE_PATH;
+		$new_path = get_stylesheet_directory() . trailingslashit( static::$ACF_BASE_PATH );
 
 		if ( is_dir( $new_path ) ) {
 			$path = $new_path;
 
 		} else {
-			$new_path = get_template_directory() . static::$ACF_BASE_PATH;
+			$new_path = get_template_directory() . trailingslashit( static::$ACF_BASE_PATH );
 
 			if ( is_dir( $new_path ) ) {
 				$path = $new_path;
@@ -221,16 +221,16 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * ACF Dir
 	 */
 	public function acf_settings_dir( $dir ) {
-		$new_dir = get_stylesheet_directory() . static::$ACF_BASE_PATH;
+		$new_dir = get_stylesheet_directory() . trailingslashit( static::$ACF_BASE_PATH );
 
 		if ( is_dir( $new_dir ) ) {
-			$dir = get_stylesheet_directory_uri() . static::$ACF_BASE_PATH;
+			$dir = get_stylesheet_directory_uri() . trailingslashit( static::$ACF_BASE_PATH );
 
 		} else {
-			$new_dir = get_template_directory() . static::$ACF_BASE_PATH;
+			$new_dir = get_template_directory() . trailingslashit( static::$ACF_BASE_PATH );
 
 			if ( is_dir( $new_dir ) ) {
-				$dir = get_template_directory_uri() . static::$ACF_BASE_PATH;
+				$dir = get_template_directory_uri() . trailingslashit( static::$ACF_BASE_PATH );
 			}
 		}
 
