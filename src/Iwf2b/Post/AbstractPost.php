@@ -50,6 +50,7 @@ abstract class AbstractPost extends AbstractSingleton {
 
 		add_action( 'init', [ $this, 'register_post_type' ] );
 		add_action( 'use_block_editor_for_post_type', [ $this, 'use_block_editor' ], 10, 2 );
+		add_action( 'save_post_' . static::get_slug(), [ $this, 'insert_default_meta' ], 10, 3 );
 	}
 
 	/**
@@ -114,6 +115,26 @@ abstract class AbstractPost extends AbstractSingleton {
 		}
 
 		return $use_block_editor;
+	}
+
+	/**
+	 * @param int      $post_id
+	 * @param \WP_Post $post
+	 * @param bool     $update
+	 */
+	public function insert_default_meta( $post_id, $post, $update ) {
+		if ( $update ) {
+			return;
+		}
+
+		$ref       = new \ReflectionClass( $this );
+		$constants = $ref->getConstants();
+
+		foreach ( $constants as $constant_name => $meta_key ) {
+			if ( strpos( $constant_name, 'MK_' ) === 0 ) {
+				update_post_meta( $post_id, $meta_key, '' );
+			}
+		}
 	}
 
 	/**

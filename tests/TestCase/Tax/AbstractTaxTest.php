@@ -27,6 +27,17 @@ class AbstractTaxTest extends \WP_UnitTestCase {
 
 		$this->expectException( \InvalidArgumentException::class );
 		RegisterTextTax3::get_instance()->register_taxonomy();
+
+		RegisterTextTax4::get_instance();
+
+		$term_id = $this->factory->term->create( [
+			'taxonomy' => 'register_test_tax_4',
+			'name'     => 'test_term',
+			'slug'     => 'test_term_slug',
+		] );
+
+		$this->assertTrue( metadata_exists( 'term', $term_id, 'defined_var' ) );
+		$this->assertFalse( metadata_exists( 'term', $term_id, 'undefined_var' ) );
 	}
 
 	public function test_get() {
@@ -79,6 +90,12 @@ class RegisterTextTax3 extends AbstractTax {
 	protected static $taxonomy = 'register_test_tax_3';
 
 	protected static $object_type = DummyObject::class;
+}
+
+class RegisterTextTax4 extends AbstractTax {
+	const MK_DEFINED_VAR = 'defined_var';
+
+	protected static $taxonomy = 'register_test_tax_4';
 }
 
 class TestPost extends AbstractPost {

@@ -18,6 +18,17 @@ class AbstractPostTest extends \WP_UnitTestCase {
 		$this->root = vfsStream::setup();
 	}
 
+	public function test_insert_default_meta() {
+		TestPost3::get_instance();
+
+		$post_id = $this->factory->post->create( [
+			'post_type' => 'test_post3',
+		] );
+
+		$this->assertTrue( metadata_exists( 'post', $post_id, 'defined_var' ) );
+		$this->assertFalse( metadata_exists( 'post', $post_id, 'not_defined_var' ) );
+	}
+
 	public function test_get() {
 		$post_id = $this->factory->post->create( [
 			'post_type'  => 'test_post',
@@ -140,7 +151,7 @@ class AbstractPostTest extends \WP_UnitTestCase {
 		$this->assertEquals( 'Image alt text', $thumbnail['alt'] );
 
 		// Test overwrite alt keyword
-		$thumbnail = TestPost::get_thumbnail( $post_id, [ 'dummy_image' => $test_img_path, 'alt' => 'Image alt text', 'get_size' => true  ] );
+		$thumbnail = TestPost::get_thumbnail( $post_id, [ 'dummy_image' => $test_img_path, 'alt' => 'Image alt text', 'get_size' => true ] );
 
 		$this->assertNotEmpty( $thumbnail['src'] );
 		$this->assertEquals( 320, $thumbnail['width'] );
@@ -247,4 +258,10 @@ class TestPost2 extends AbstractPost {
 		'has_archive' => true,
 		'supports'    => [ 'title', 'editor' ],
 	];
+}
+
+class TestPost3 extends AbstractPost {
+	const MK_DEFINED_VAR = 'defined_var';
+
+	protected static $post_type = 'test_post3';
 }

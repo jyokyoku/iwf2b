@@ -8,6 +8,7 @@ use Iwf2b\Util;
 
 /**
  * Class AbstractUser
+ *
  * @package Iwf2b\User
  */
 class AbstractUser extends AbstractSingleton {
@@ -44,6 +45,7 @@ class AbstractUser extends AbstractSingleton {
 	 */
 	protected function initialize() {
 		add_action( 'init', [ $this, 'register_roles' ] );
+		add_filter( 'user_register', [ $this, 'insert_default_meta' ], 10, 3 );
 	}
 
 	/**
@@ -68,6 +70,24 @@ class AbstractUser extends AbstractSingleton {
 	}
 
 	/**
+	 * @param int $user_id
+	 */
+	public function insert_default_meta( $user_id ) {
+		if ( ! static::is_valid( $user_id ) ) {
+			return;
+		}
+
+		$ref       = new \ReflectionClass( $this );
+		$constants = $ref->getConstants();
+
+		foreach ( $constants as $constant_name => $meta_key ) {
+			if ( strpos( $constant_name, 'MK_' ) === 0 ) {
+				update_user_meta( $user_id, $meta_key, '' );
+			}
+		}
+	}
+
+	/**
 	 * @param $user_id
 	 *
 	 * @return \WP_User|int|string
@@ -78,10 +98,10 @@ class AbstractUser extends AbstractSingleton {
 		if ( $user_id instanceof \WP_User ) {
 			$user = $user_id;
 
-		} else if ( is_numeric( $user_id ) && preg_match( '/^[0-9]+?$/', $user_id ) ) {
+		} elseif ( is_numeric( $user_id ) && preg_match( '/^[0-9]+?$/', $user_id ) ) {
 			$user = get_user_by( 'id', (int) $user_id );
 
-		} else if ( is_string( $user_id ) ) {
+		} elseif ( is_string( $user_id ) ) {
 			if ( is_email( $user_id ) ) {
 				$user = get_user_by( 'email', $user_id );
 
@@ -187,8 +207,8 @@ class AbstractUser extends AbstractSingleton {
 
 	/**
 	 * @param int|string|\WP_User $user_id
-	 * @param string $key
-	 * @param mixed $args
+	 * @param string              $key
+	 * @param mixed               $args
 	 *
 	 * @return mixed
 	 */
@@ -226,7 +246,7 @@ class AbstractUser extends AbstractSingleton {
 	/**
 	 * @param string $user_login
 	 * @param string $user_pass
-	 * @param array $userdata
+	 * @param array  $userdata
 	 *
 	 * @return int|\WP_Error
 	 */

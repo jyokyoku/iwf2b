@@ -5,6 +5,20 @@ namespace Iwf2b\Tests\TestCase\User;
 use Iwf2b\User\AbstractUser;
 
 class AbstractUserTest extends \WP_UnitTestCase {
+	public function test_register() {
+		TestUser::get_instance();
+
+		$user_id = $this->factory->user->create( [
+			'user_login' => 'test1',
+			'user_email' => 'test1@test.com',
+			'user_pass'  => 'pass',
+			'role'       => 'test_role',
+		] );
+
+		$this->assertTrue( metadata_exists( 'user', $user_id, 'defined_var' ) );
+		$this->assertFalse( metadata_exists( 'user', $user_id, 'undefined_var' ) );
+	}
+
 	public function test_get() {
 		$user_id = $this->factory->user->create( [
 			'user_login' => 'test1',
@@ -38,5 +52,7 @@ class AbstractUserTest extends \WP_UnitTestCase {
 }
 
 class TestUser extends AbstractUser {
+	const MK_DEFINED_VAR = 'defined_var';
+
 	protected static $role = 'test_role';
 }

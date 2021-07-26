@@ -57,6 +57,7 @@ abstract class AbstractTax extends AbstractSingleton {
 		}
 
 		add_action( 'init', [ $this, 'register_taxonomy' ] );
+		add_action( 'create_term', [ $this, 'insert_default_meta' ], 10, 3 );
 	}
 
 	/**
@@ -101,6 +102,26 @@ abstract class AbstractTax extends AbstractSingleton {
 			}
 
 			register_taxonomy( static::$taxonomy, $object_type, static::$args );
+		}
+	}
+
+	/**
+	 * @param int    $term_id
+	 * @param int    $tt_id
+	 * @param string $taxonomy
+	 */
+	public function insert_default_meta( $term_id, $tt_id, $taxonomy ) {
+		if ( $taxonomy !== static::get_slug() ) {
+			return;
+		}
+
+		$ref       = new \ReflectionClass( $this );
+		$constants = $ref->getConstants();
+
+		foreach ( $constants as $constant_name => $meta_key ) {
+			if ( strpos( $constant_name, 'MK_' ) === 0 ) {
+				update_term_meta( $term_id, $meta_key, '' );
+			}
 		}
 	}
 
