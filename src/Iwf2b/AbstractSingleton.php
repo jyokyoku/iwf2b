@@ -38,7 +38,7 @@ abstract class AbstractSingleton {
 	}
 
 	/**
-	 * @return mixed
+	 * @return static
 	 */
 	final public static function get_instance() {
 		$class = get_called_class();
