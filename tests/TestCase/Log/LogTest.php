@@ -30,11 +30,11 @@ class LogTest extends \WP_UnitTestCase {
 		$prop->setAccessible( true );
 		$prop->setValue( $log, [] );
 
-		$prop = $ref->getProperty( 'scope' );
+		$prop = $ref->getProperty( 'default_scope' );
 		$prop->setAccessible( true );
 		$prop->setValue( $log, '' );
 
-		$prop = $ref->getProperty( 'scope_once' );
+		$prop = $ref->getProperty( 'scope' );
 		$prop->setAccessible( true );
 		$prop->setValue( $log, '' );
 	}
@@ -182,7 +182,7 @@ class LogTest extends \WP_UnitTestCase {
 		$this->assertEquals( '[emergency] test emergency log', file_get_contents( $this->root->url() . '/emergency.log' ) );
 	}
 
-	public function test_scope() {
+	public function test_default_scope() {
 		$logger1 = new TestWritableLogger( $this->root, 'scope1' );
 		$logger2 = new TestWritableLogger( $this->root, 'scope2' );
 
@@ -190,7 +190,7 @@ class LogTest extends \WP_UnitTestCase {
 		Log::set_logger( $logger2, 'channel2', [ 'scopes' => 'scope2' ] );
 
 		// test for scope 1
-		Log::scope( 'scope1' );
+		Log::default_scope( 'scope1' );
 		Log::info( 'test info log to scope1 (1)' );
 
 		$this->assertTrue( file_exists( $this->root->url() . '/scope1_info.log' ) );
@@ -209,7 +209,7 @@ class LogTest extends \WP_UnitTestCase {
 		@unlink( $this->root->url() . '/scope1_info.log' );
 
 		// test for scope 2
-		Log::scope( 'scope2' );
+		Log::default_scope( 'scope2' );
 		Log::info( 'test info log to scope2 (1)' );
 
 		$this->assertFalse( file_exists( $this->root->url() . '/scope1_info.log' ) );
@@ -219,7 +219,7 @@ class LogTest extends \WP_UnitTestCase {
 		@unlink( $this->root->url() . '/scope2_info.log' );
 	}
 
-	public function test_scope_once() {
+	public function test_scope() {
 		$logger1 = new TestWritableLogger( $this->root, 'scope1' );
 		$logger2 = new TestWritableLogger( $this->root, 'scope2' );
 
@@ -227,7 +227,7 @@ class LogTest extends \WP_UnitTestCase {
 		Log::set_logger( $logger2, 'channel2', [ 'scopes' => 'scope2' ] );
 
 		// test for scope 1
-		Log::scope_once( 'scope1' );
+		Log::scope( 'scope1' );
 		Log::info( 'test info log to scope1' );
 
 		$this->assertTrue( file_exists( $this->root->url() . '/scope1_info.log' ) );
@@ -248,7 +248,7 @@ class LogTest extends \WP_UnitTestCase {
 		@unlink( $this->root->url() . '/scope2_info.log' );
 
 		// test for scope 2
-		Log::scope_once( 'scope2' );
+		Log::scope( 'scope2' );
 		Log::info( 'test info log to scope2' );
 
 		$this->assertFalse( file_exists( $this->root->url() . '/scope1_info.log' ) );

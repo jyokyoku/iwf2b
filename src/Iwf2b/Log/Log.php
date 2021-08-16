@@ -7,6 +7,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class Log
+ *
  * @package Iwf2b
  *
  * @method static debug( mixed $message, array $context = [] )
@@ -27,18 +28,18 @@ class Log {
 	protected $loggers = [];
 
 	/**
+	 * Default log scope
+	 *
+	 * @var string
+	 */
+	protected $default_scope;
+
+	/**
 	 * Log scope
 	 *
 	 * @var string
 	 */
 	protected $scope;
-
-	/**
-	 * Log scope once
-	 *
-	 * @var string
-	 */
-	protected $scope_once;
 
 	/**
 	 * @var Log
@@ -64,7 +65,7 @@ class Log {
 
 	/**
 	 * @param string $name
-	 * @param array $arguments
+	 * @param array  $arguments
 	 *
 	 * @return mixed
 	 */
@@ -76,7 +77,7 @@ class Log {
 
 	/**
 	 * @param string $name
-	 * @param array $arguments
+	 * @param array  $arguments
 	 *
 	 * @return mixed
 	 */
@@ -90,8 +91,8 @@ class Log {
 	 * Set the logger
 	 *
 	 * @param LoggerInterface $logger
-	 * @param string $channel
-	 * @param array $levels
+	 * @param string          $channel
+	 * @param array           $levels
 	 *
 	 * @return Log
 	 */
@@ -113,14 +114,14 @@ class Log {
 	}
 
 	/**
-	 * @param string|bool|null $scope
+	 * @param string|null $scope
 	 *
 	 * @return Log
 	 */
-	public static function scope( $scope ) {
+	public static function default_scope( $scope = null ) {
 		$instance = static::get_instance();
 
-		$instance->scope = $scope;
+		$instance->default_scope = $scope;
 
 		return $instance;
 	}
@@ -130,10 +131,10 @@ class Log {
 	 *
 	 * @return Log
 	 */
-	public static function scope_once( $scope ) {
+	public static function scope( $scope ) {
 		$instance = static::get_instance();
 
-		$instance->scope_once = $scope;
+		$instance->scope = $scope;
 
 		return $instance;
 	}
@@ -157,13 +158,13 @@ class Log {
 
 	/**
 	 * @param string $level
-	 * @param mixed $message
-	 * @param array $context
+	 * @param mixed  $message
+	 * @param array  $context
 	 */
 	protected function write_log( $level, $message, array $context = [] ) {
-		$scope = $this->scope_once ?: $this->scope;
+		$scope = $this->scope ?: $this->default_scope;
 
-		foreach ( $this->loggers as $name => $config ) {
+		foreach ( $this->loggers as $config ) {
 			$match_scope = empty( $config['scopes'] ) || empty( $scope ) || in_array( $scope, $config['scopes'] );
 			$match_level = empty( $config['levels'] ) || in_array( $level, $config['levels'] );
 
@@ -172,8 +173,8 @@ class Log {
 			}
 		}
 
-		if ( $this->scope_once ) {
-			$this->scope_once = '';
+		if ( $this->scope ) {
+			$this->scope = '';
 		}
 	}
 }
