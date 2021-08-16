@@ -74,6 +74,20 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
+	 * @param string $method
+	 * @param array  $args
+	 *
+	 * @return mixed
+	 */
+	public static function __callStatic( $method, $args ) {
+		if ( method_exists( static::$db, $method ) ) {
+			return call_user_func_array( [ static::$db, $method ], $args );
+		}
+
+		throw new \BadMethodCallException( sprintf( 'The method does not exist - %s::%s', __CLASS__, $method ) );
+	}
+
+	/**
 	 * @return string
 	 */
 	public static function table_name() {
