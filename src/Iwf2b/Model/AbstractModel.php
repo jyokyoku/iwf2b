@@ -251,6 +251,20 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
+	 * @param array $key_values
+	 * @param array $args
+	 *
+	 * @return int
+	 */
+	public static function count( array $key_values, array $args = [] ) {
+		$args['fields'] = 'COUNT(*) AS count';
+
+		$result = static::find_one_by( $key_values, $args );
+
+		return $result ? $result->count : 0;
+	}
+
+	/**
 	 * @param int|string $primary_key
 	 *
 	 * @return object|null
