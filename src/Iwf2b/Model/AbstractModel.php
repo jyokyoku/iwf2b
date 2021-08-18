@@ -3,7 +3,6 @@
 namespace Iwf2b\Model;
 
 use Iwf2b\AbstractSingleton;
-use Iwf2b\Text;
 
 /**
  * Class AbstractModel
@@ -28,9 +27,9 @@ abstract class AbstractModel extends AbstractSingleton {
 	/**
 	 * SQL
 	 *
-	 * @var string
+	 * @var array|string
 	 */
-	protected static $sql = '';
+	protected static $sql;
 
 	/**
 	 * wpdb object
@@ -60,10 +59,25 @@ abstract class AbstractModel extends AbstractSingleton {
 		if ( version_compare( static::$sql_version, get_option( $sql_config_name ), '!=' ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-			$sql = Text::replace( static::$sql, [
-				'table_name' => static::table_name(),
-				'charset'    => static::$db->get_charset_collate(),
-			] );
+			if ( ! is_array( static::$sql ) ) {
+				$sql_chunks = array_filter( array_map( function ( $value ) {
+					return rtrim( trim( $value ), ',' );
+				}, explode( "\n", static::$sql ) ) );
+
+			} else {
+				$sql_chunks = [];
+
+				foreach ( static::$sql as $field => $config ) {
+					if ( is_int( $field ) ) {
+						$sql_chunks[] = trim( $config );
+
+					} else {
+						$sql_chunks[] = $field . ' ' . trim( $config );
+					}
+				}
+			}
+
+			$sql = 'CREATE TABLE ' . static::table_name() . " (\n" . implode( ",\n", $sql_chunks ) . "\n) " . static::$db->get_charset_collate() . ';';
 
 			dbDelta( $sql );
 
