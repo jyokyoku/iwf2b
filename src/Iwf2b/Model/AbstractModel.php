@@ -18,6 +18,13 @@ abstract class AbstractModel extends AbstractSingleton {
 	protected static $table_name = '';
 
 	/**
+	 * Primary key
+	 *
+	 * @var string
+	 */
+	protected static $primary_key = '';
+
+	/**
 	 * SQL version
 	 *
 	 * @var string
@@ -106,6 +113,13 @@ abstract class AbstractModel extends AbstractSingleton {
 	 */
 	public static function table_name() {
 		return static::$db->prefix . static::$table_name;
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function get_primary_key() {
+		return static::$primary_key;
 	}
 
 	/**
@@ -234,6 +248,19 @@ abstract class AbstractModel extends AbstractSingleton {
 		$results = static::find_by( $key_values, $args );
 
 		return $results ? reset( $results ) : null;
+	}
+
+	/**
+	 * @param int|string $primary_key
+	 *
+	 * @return object|null
+	 */
+	public static function get( $primary_key ) {
+		if ( ! static::get_primary_key() ) {
+			throw new \BadMethodCallException( sprintf( 'The %s::$primary_key key has not been set.', __CLASS__ ) );
+		}
+
+		return static::find_one_by( [ static::get_primary_key() => $primary_key ] );
 	}
 
 	/**
