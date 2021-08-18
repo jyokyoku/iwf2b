@@ -151,10 +151,10 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
-	 * @param       $code
+	 * @param array $key_values
 	 * @param array $args
 	 *
-	 * @return array|null
+	 * @return array|object|null
 	 */
 	public static function find_by( array $key_values = [], array $args = [] ) {
 		$table_name = static::table_name();
@@ -223,7 +223,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
-	 * @param       $code
+	 * @param array $key_values
 	 * @param array $args
 	 *
 	 * @return object|null
