@@ -278,6 +278,13 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
+	 * @return int
+	 */
+	public static function get_last_insert_id() {
+		return static::$db->insert_id;
+	}
+
+	/**
 	 * @param        $key_values
 	 * @param string $association
 	 *
