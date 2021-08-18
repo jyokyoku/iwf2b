@@ -142,19 +142,19 @@ abstract class AbstractModel extends AbstractSingleton {
 	 *
 	 * @return array|null
 	 */
-	public static function find_by( array $key_values = array(), array $args = [] ) {
+	public static function find_by( array $key_values = [], array $args = [] ) {
 		$table_name = static::table_name();
 
 		$args = wp_parse_args( $args, [
 			'fields'  => [],
-			'join'    => null,
-			'groupby' => null,
-			'orderby' => null,
+			'join'    => [],
+			'groupby' => [],
+			'orderby' => [],
 			'limit'   => 0,
 			'offset'  => 0,
 		] );
 
-		$query = array(
+		$query = [
 			'select'  => "SELECT *",
 			'from'    => "FROM {$table_name}",
 			'join'    => '',
@@ -163,7 +163,7 @@ abstract class AbstractModel extends AbstractSingleton {
 			'orderby' => '',
 			'limit'   => '',
 			'offset'  => '',
-		);
+		];
 
 		if ( $args['fields'] ) {
 			if ( ! is_array( $args['fields'] ) ) {
@@ -174,15 +174,27 @@ abstract class AbstractModel extends AbstractSingleton {
 		}
 
 		if ( $args['join'] ) {
-			$query['join'] = $args['join'];
+			if ( ! is_array( $args['join'] ) ) {
+				$args['join'] = [ $args['join'] ];
+			}
+
+			$query['join'] = implode( "\n", array_unique( array_filter( $args['join'] ) ) );
 		}
 
 		if ( $args['groupby'] ) {
-			$query['groupby'] = "GROUP BY {$args['groupby']}";
+			if ( ! is_array( $args['groupby'] ) ) {
+				$args['groupby'] = [ $args['groupby'] ];
+			}
+
+			$query['groupby'] = 'GROUP BY ' . implode( ', ', array_unique( array_filter( $args['groupby'] ) ) );
 		}
 
 		if ( $args['orderby'] ) {
-			$query['orderby'] = "ORDER BY {$args['orderby']}";
+			if ( ! is_array( $args['orderby'] ) ) {
+				$args['orderby'] = [ $args['orderby'] ];
+			}
+
+			$query['orderby'] = 'ORDER BY ' . implode( ', ', array_unique( array_filter( $args['orderby'] ) ) );
 		}
 
 		if ( $args['offset'] ) {
