@@ -245,6 +245,36 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
+	 * @param string $field
+	 * @param array  $key_values
+	 * @param array  $args
+	 *
+	 * @return mixed|null
+	 */
+	public static function find_var_by( $field, array $key_values = [], array $args = [] ) {
+		$args['fields'] = $field;
+
+		$result = static::find_one_by( $key_values, $args );
+
+		return $result ? $result->{$field} : null;
+	}
+
+	/**
+	 * @param string $field
+	 * @param array  $key_values
+	 * @param array  $args
+	 *
+	 * @return array
+	 */
+	public static function find_col_by( $field, array $key_values = [], array $args = [] ) {
+		$args['fields'] = $field;
+
+		$results = static::find_by( $key_values, $args );
+
+		return $results ? wp_list_pluck( $results, $field ) : [];
+	}
+
+	/**
 	 * @param array $key_values
 	 * @param array $args
 	 *
