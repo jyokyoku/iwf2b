@@ -236,7 +236,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	 *
 	 * @return object|null
 	 */
-	public static function find_one_by( array $key_values, array $args = [] ) {
+	public static function find_one_by( array $key_values = [], array $args = [] ) {
 		$args['limit'] = 1;
 
 		$results = static::find_by( $key_values, $args );
@@ -250,7 +250,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	 *
 	 * @return int
 	 */
-	public static function count( array $key_values, array $args = [] ) {
+	public static function count( array $key_values = [], array $args = [] ) {
 		$args['fields'] = 'COUNT(*) AS count';
 
 		$result = static::find_one_by( $key_values, $args );
