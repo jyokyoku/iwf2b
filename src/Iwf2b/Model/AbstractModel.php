@@ -25,13 +25,6 @@ abstract class AbstractModel extends AbstractSingleton {
 	protected static $primary_key = '';
 
 	/**
-	 * SQL version
-	 *
-	 * @var string
-	 */
-	protected static $sql_version = '';
-
-	/**
 	 * SQL
 	 *
 	 * @var array|string
@@ -61,35 +54,36 @@ abstract class AbstractModel extends AbstractSingleton {
 			return;
 		}
 
-		$sql_config_name = static::$table_name . '_db_version';
+		if ( ! is_array( static::$sql ) ) {
+			$sql_chunks = array_filter( array_map( function ( $value ) {
+				return rtrim( trim( $value ), ',' );
+			}, explode( "\n", static::$sql ) ) );
 
-		if ( version_compare( static::$sql_version, get_option( $sql_config_name ), '!=' ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		} else {
+			$sql_chunks = [];
 
-			if ( ! is_array( static::$sql ) ) {
-				$sql_chunks = array_filter( array_map( function ( $value ) {
-					return rtrim( trim( $value ), ',' );
-				}, explode( "\n", static::$sql ) ) );
+			foreach ( static::$sql as $field => $config ) {
+				if ( is_int( $field ) ) {
+					$sql_chunks[] = trim( $config );
 
-			} else {
-				$sql_chunks = [];
-
-				foreach ( static::$sql as $field => $config ) {
-					if ( is_int( $field ) ) {
-						$sql_chunks[] = trim( $config );
-
-					} else {
-						$sql_chunks[] = $field . ' ' . trim( $config );
-					}
+				} else {
+					$sql_chunks[] = $field . ' ' . trim( $config );
 				}
 			}
+		}
 
-			$sql = 'CREATE TABLE ' . static::table_name() . " (\n" . implode( ",\n", $sql_chunks ) . "\n) " . static::$db->get_charset_collate() . ';';
+		$sql = 'CREATE TABLE ' . static::table_name() . " (\n" . implode( ",\n", $sql_chunks ) . "\n) " . static::$db->get_charset_collate() . ';';
+
+		$db_hash    = md5( $sql );
+		$config_key = static::$table_name . '_schema_hash';
+
+		if ( $db_hash != get_option( $config_key ) ) {
+			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 			dbDelta( $sql );
 
 			if ( ! static::$db->last_error ) {
-				update_option( $sql_config_name, static::$sql_version );
+				update_option( $config_key, $db_hash );
 			}
 		}
 	}
