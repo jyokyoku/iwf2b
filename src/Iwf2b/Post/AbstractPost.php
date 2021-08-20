@@ -4,6 +4,7 @@ namespace Iwf2b\Post;
 
 use Iwf2b\AbstractSingleton;
 use Iwf2b\Arr;
+use Iwf2b\Tax\AbstractTax;
 use Iwf2b\Util;
 
 /**
@@ -292,6 +293,10 @@ abstract class AbstractPost extends AbstractSingleton {
 
 		if ( ! $post ) {
 			return [];
+		}
+
+		if ( is_subclass_of( $taxonomy, AbstractTax::class ) ) {
+			$taxonomy = $taxonomy::get_slug();
 		}
 
 		$terms = get_object_term_cache( $post->ID, $taxonomy );
