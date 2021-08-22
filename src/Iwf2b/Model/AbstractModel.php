@@ -325,17 +325,33 @@ abstract class AbstractModel extends AbstractSingleton {
 			if ( $key === '__OR__' ) {
 				$where[] = '(' . static::make_conditions( $value, 'OR' ) . ')';
 
-			} else {
-				if ( is_int( $key ) ) {
-					$where[] = $value;
+			} elseif ( is_int( $key ) ) {
+				$where[] = $value;
+
+			} elseif ( is_array( $value ) ) {
+				$is_int = true;
+
+				foreach ( $value as $_value ) {
+					if ( ! is_int( $_value ) ) {
+						$is_int = false;
+						break;
+					}
+				}
+
+				if ( $is_int ) {
+					$value = "{$key} IN (" . implode( ", ", $value ) . ")";
 
 				} else {
-					if ( ! is_int( $value ) ) {
-						$value = "'{$value}'";
-					}
-
-					$where[] = "{$key} = {$value}";
+					$value = "{$key} IN ('" . implode( "', '", $value ) . "')";
 				}
+
+				$where[] = $value;
+
+			} elseif ( is_int( $value ) ) {
+				$where[] = "{$key} = {$value}";
+
+			} else {
+				$where[] = "{$key} = '{$value}'";
 			}
 		}
 
