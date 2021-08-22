@@ -325,6 +325,9 @@ abstract class AbstractModel extends AbstractSingleton {
 			if ( $key === '__OR__' ) {
 				$where[] = '(' . static::make_conditions( $value, 'OR' ) . ')';
 
+			} elseif ( $key === '__AND__' ) {
+				$where[] = '(' . static::make_conditions( $value ) . ')';
+
 			} elseif ( is_int( $key ) ) {
 				$where[] = $value;
 
