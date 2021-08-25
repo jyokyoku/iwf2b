@@ -4,6 +4,7 @@ namespace Iwf2b;
 
 /**
  * Class View
+ *
  * @package Iwf2b
  */
 class View {
@@ -20,6 +21,13 @@ class View {
 	 * @var array
 	 */
 	protected $action_files = [];
+
+	/**
+	 * Element include base path
+	 *
+	 * @var string
+	 */
+	protected static $base_path;
 
 	/**
 	 * @param $file
@@ -44,7 +52,7 @@ class View {
 
 	/**
 	 * @param array $view_vars
-	 * @param bool $do_action
+	 * @param bool  $do_action
 	 */
 	public function load( array $view_vars = [], $do_action = true ) {
 		if ( ! $this->template_file ) {
@@ -70,7 +78,7 @@ class View {
 
 	/**
 	 * @param array $view_vars
-	 * @param bool $do_action
+	 * @param bool  $do_action
 	 */
 	public function load_global( array $view_vars = [], $do_action = true ) {
 		if ( ! $this->template_file ) {
@@ -134,9 +142,16 @@ class View {
 	}
 
 	/**
-	 * @param $slug
+	 * @param $path
+	 */
+	public static function set_base_path( $path ) {
+		static::$base_path = untrailingslashit( $path );
+	}
+
+	/**
+	 * @param        $slug
 	 * @param string $name
-	 * @param array $vars
+	 * @param array  $vars
 	 */
 	public static function element( $slug, $name = '', $vars = [] ) {
 		$templates = [];
@@ -147,11 +162,45 @@ class View {
 		}
 
 		$templates[]   = "elements/{$slug}.php";
-		$template_file = locate_template( $templates, false, false );
+		$template_file = static::locate_template( $templates );
+
+		if ( ! $template_file ) {
+			throw new \InvalidArgumentException( sprintf( 'The template file "%s" could not be found.', $template_file ) );
+		}
 
 		$view = new static();
 
 		$view->set_template_file( $template_file );
 		$view->load_global( $vars );
+	}
+
+	/**
+	 * @param array $template_names
+	 *
+	 * @return string
+	 */
+	protected static function locate_template( array $template_names ) {
+		$located = '';
+
+		foreach ( $template_names as $template_name ) {
+			if ( static::$base_path && file_exists( static::$base_path . '/' . $template_name ) ) {
+				$located = static::$base_path . '/' . $template_name;
+
+			} elseif ( file_exists( STYLESHEETPATH . '/' . $template_name ) ) {
+				$located = STYLESHEETPATH . '/' . $template_name;
+
+			} elseif ( file_exists( TEMPLATEPATH . '/' . $template_name ) ) {
+				$located = TEMPLATEPATH . '/' . $template_name;
+
+			} elseif ( file_exists( ABSPATH . WPINC . '/theme-compat/' . $template_name ) ) {
+				$located = ABSPATH . WPINC . '/theme-compat/' . $template_name;
+			}
+
+			if ( $located ) {
+				break;
+			}
+		}
+
+		return $located;
 	}
 }
