@@ -46,25 +46,23 @@ abstract class AbstractModel extends AbstractSingleton {
 
 		$this->db = $wpdb;
 
-		$this->migrate_table();
+		add_action( 'init', [ $this, 'migrate_table' ] );
 	}
 
-	protected function migrate_table() {
-		$self = static::get_instance();
-
-		if ( ! $self->table_name || ! $self->sql ) {
+	public function migrate_table() {
+		if ( ! $this->table_name || ! $this->sql ) {
 			return;
 		}
 
-		if ( ! is_array( $self->sql ) ) {
+		if ( ! is_array( $this->sql ) ) {
 			$sql_chunks = array_filter( array_map( function ( $value ) {
 				return rtrim( trim( $value ), ',' );
-			}, explode( "\n", $self->sql ) ) );
+			}, explode( "\n", $this->sql ) ) );
 
 		} else {
 			$sql_chunks = [];
 
-			foreach ( $self->sql as $field => $config ) {
+			foreach ( $this->sql as $field => $config ) {
 				if ( is_int( $field ) ) {
 					$sql_chunks[] = trim( $config );
 
@@ -74,17 +72,17 @@ abstract class AbstractModel extends AbstractSingleton {
 			}
 		}
 
-		$sql = 'CREATE TABLE ' . static::table_name() . " (\n" . implode( ",\n", $sql_chunks ) . "\n) " . $self->db->get_charset_collate() . ';';
+		$sql = 'CREATE TABLE ' . static::table_name() . " (\n" . implode( ",\n", $sql_chunks ) . "\n) " . $this->db->get_charset_collate() . ';';
 
 		$db_hash    = md5( $sql );
-		$config_key = $self->table_name . '_schema_hash';
+		$config_key = $this->table_name . '_schema_hash';
 
 		if ( $db_hash != get_option( $config_key ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 			dbDelta( $sql );
 
-			if ( ! $self->db->last_error ) {
+			if ( ! $this->db->last_error ) {
 				update_option( $config_key, $db_hash );
 			}
 		}
