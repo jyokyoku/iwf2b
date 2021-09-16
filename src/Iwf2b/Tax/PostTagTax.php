@@ -10,10 +10,10 @@ class PostTagTax extends AbstractTax {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected static $taxonomy = 'post_tag';
+	protected $taxonomy = 'post_tag';
 
 	/**
 	 * {@inheritdoc}
 	 */
-	protected static $builtin = true;
+	protected $builtin = true;
 }

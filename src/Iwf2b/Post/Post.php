@@ -10,10 +10,10 @@ class Post extends AbstractPost {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected static $post_type = 'post';
+	protected $post_type = 'post';
 
 	/**
 	 * {@inheritdoc}
 	 */
-	protected static $builtin = true;
+	protected $builtin = true;
 }

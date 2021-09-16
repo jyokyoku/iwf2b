@@ -17,57 +17,57 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 	 *
 	 * @var string
 	 */
-	protected static $action_directory = '';
+	protected $action_directory = '';
 
 	/**
 	 * Template files dir
 	 *
 	 * @var string
 	 */
-	protected static $template_directory = '';
+	protected $template_directory = '';
 
 	/**
 	 * Menu slug
 	 *
 	 * @var string
 	 */
-	protected static $menu_slug = '';
+	protected $menu_slug = '';
 
 	/**
 	 * Menu title
 	 *
 	 * @var string
 	 */
-	protected static $menu_title = '';
+	protected $menu_title = '';
 
 	/**
 	 * Args for registration
 	 *
 	 * @var array
 	 */
-	protected static $args = [];
+	protected $args = [];
 
 	/**
 	 * Variables for template
 	 *
 	 * @var array
 	 */
-	protected static $view_vars = [];
+	protected $view_vars = [];
 
 	/**
 	 * @var View
 	 */
-	protected static $view;
+	protected $view;
 
 	/**
 	 * {@inheritdoc}
 	 */
 	protected function initialize() {
-		if ( ! static::$menu_slug ) {
+		if ( ! $this->menu_slug ) {
 			throw new \RuntimeException( sprintf( 'The variable "%s::$menu_slug" must be not empty.', get_class( $this ) ) );
 		}
 
-		if ( ! static::$menu_title ) {
+		if ( ! $this->menu_title ) {
 			throw new \RuntimeException( sprintf( 'The variable "%s::$menu_title" must be not empty.', get_class( $this ) ) );
 		}
 
@@ -75,7 +75,7 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 
 		add_action( '_admin_menu', [ $this, 'action' ] );
 
-		// Replaces directory keyword from static::$action_dir and static::$template_dir.
+		// Replaces directory keyword from $this->action_dir and $this->template_dir.
 		$replaces = [
 			'template_directory'   => TEMPLATEPATH,
 			'stylesheet_directory' => STYLESHEETPATH,
@@ -83,55 +83,55 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 			'content_directory'    => WP_CONTENT_DIR,
 		];
 
-		if ( static::$action_directory ) {
-			static::$action_directory = Text::replace( static::$action_directory, $replaces );
+		if ( $this->action_directory ) {
+			$this->action_directory = Text::replace( $this->action_directory, $replaces );
 		}
 
-		if ( static::$template_directory ) {
-			static::$template_directory = Text::replace( static::$template_directory, $replaces );
+		if ( $this->template_directory ) {
+			$this->template_directory = Text::replace( $this->template_directory, $replaces );
 		}
 
-		static::$args = Arr::merge_intersect_key( [
+		$this->args = Arr::merge_intersect_key( [
 			'parent'                   => '',
-			'page_title'               => static::$menu_title,
+			'page_title'               => $this->menu_title,
 			'capability'               => 'manage_options',
 			'icon'                     => '',
 			'position'                 => null,
 			'remove_duplicate_submenu' => true,
-		], static::$args );
+		], $this->args );
 
-		if ( static::$menu_slug && static::$args['remove_duplicate_submenu'] ) {
+		if ( $this->menu_slug && $this->args['remove_duplicate_submenu'] ) {
 			add_action( 'admin_init', function () {
-				remove_submenu_page( static::$menu_slug, static::$menu_slug );
+				remove_submenu_page( $this->menu_slug, $this->menu_slug );
 			} );
 		}
 
-		static::$view = new View();
+		$this->view = new View();
 	}
 
 	/**
 	 * Register pages
 	 */
 	public function register() {
-		if ( static::$args['parent'] ) {
+		if ( $this->args['parent'] ) {
 			add_submenu_page(
-				static::$args['parent'],
-				static::$args['page_title'],
-				static::$menu_title,
-				static::$args['capability'],
-				static::$menu_slug,
+				$this->args['parent'],
+				$this->args['page_title'],
+				$this->menu_title,
+				$this->args['capability'],
+				$this->menu_slug,
 				[ $this, 'template' ]
 			);
 
 		} else {
 			add_menu_page(
-				static::$args['page_title'],
-				static::$menu_title,
-				static::$args['capability'],
-				static::$menu_slug,
+				$this->args['page_title'],
+				$this->menu_title,
+				$this->args['capability'],
+				$this->menu_slug,
 				[ $this, 'template' ],
-				static::$args['icon'],
-				static::$args['position']
+				$this->args['icon'],
+				$this->args['position']
 			);
 		}
 	}
@@ -142,13 +142,13 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 	public function action() {
 		global $plugin_page;
 
-		if ( $plugin_page === static::$menu_slug ) {
+		if ( $plugin_page === $this->menu_slug ) {
 			$action      = Arr::get( $_REQUEST, 'action' );
 			$file_name   = static::generate_file_name( $plugin_page, $action, '.php' );
-			$action_file = trailingslashit( static::$action_directory ) . $file_name;
+			$action_file = trailingslashit( $this->action_directory ) . $file_name;
 
-			static::$view->add_action_file( $action_file );
-			static::$view_vars = static::$view->do_action();
+			$this->view->add_action_file( $action_file );
+			$this->view_vars = $this->view->do_action();
 		}
 	}
 
@@ -160,10 +160,10 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 
 		$action        = Arr::get( $_REQUEST, 'action' );
 		$file_name     = static::generate_file_name( $plugin_page, $action, '.php' );
-		$template_file = trailingslashit( static::$template_directory ) . $file_name;
+		$template_file = trailingslashit( $this->template_directory ) . $file_name;
 
-		static::$view->set_template_file( $template_file );
-		static::$view->load( static::$view_vars, false );
+		$this->view->set_template_file( $template_file );
+		$this->view->load( $this->view_vars, false );
 	}
 
 	/**

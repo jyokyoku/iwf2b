@@ -54,5 +54,5 @@ class AbstractUserTest extends \WP_UnitTestCase {
 class TestUser extends AbstractUser {
 	const MK_DEFINED_VAR = 'defined_var';
 
-	protected static $role = 'test_role';
+	protected $role = 'test_role';
 }

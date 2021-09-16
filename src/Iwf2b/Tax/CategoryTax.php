@@ -10,10 +10,10 @@ class CategoryTax extends AbstractTax {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected static $taxonomy = 'category';
+	protected $taxonomy = 'category';
 
 	/**
 	 * {@inheritdoc}
 	 */
-	protected static $builtin = true;
+	protected $builtin = true;
 }

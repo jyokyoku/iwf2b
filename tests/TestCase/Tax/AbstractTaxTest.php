@@ -71,35 +71,35 @@ class AbstractTaxTest extends \WP_UnitTestCase {
 }
 
 class TestTax extends AbstractTax {
-	protected static $taxonomy = 'test_tax';
+	protected $taxonomy = 'test_tax';
 }
 
 class RegisterTextTax1 extends AbstractTax {
-	protected static $taxonomy = 'register_test_tax_1';
+	protected $taxonomy = 'register_test_tax_1';
 
-	protected static $object_type = 'dummy_post';
+	protected $object_type = 'dummy_post';
 }
 
 class RegisterTextTax2 extends AbstractTax {
-	protected static $taxonomy = 'register_test_tax_2';
+	protected $taxonomy = 'register_test_tax_2';
 
-	protected static $object_type = TestPost::class;
+	protected $object_type = TestPost::class;
 }
 
 class RegisterTextTax3 extends AbstractTax {
-	protected static $taxonomy = 'register_test_tax_3';
+	protected $taxonomy = 'register_test_tax_3';
 
-	protected static $object_type = DummyObject::class;
+	protected $object_type = DummyObject::class;
 }
 
 class RegisterTextTax4 extends AbstractTax {
 	const MK_DEFINED_VAR = 'defined_var';
 
-	protected static $taxonomy = 'register_test_tax_4';
+	protected $taxonomy = 'register_test_tax_4';
 }
 
 class TestPost extends AbstractPost {
-	protected static $post_type = 'test_post';
+	protected $post_type = 'test_post';
 }
 
 class DummyObject {

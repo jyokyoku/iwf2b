@@ -15,28 +15,28 @@ abstract class AbstractModel extends AbstractSingleton {
 	 *
 	 * @var string
 	 */
-	protected static $table_name = '';
+	protected $table_name = '';
 
 	/**
 	 * Primary key
 	 *
 	 * @var string
 	 */
-	protected static $primary_key = '';
+	protected $primary_key = '';
 
 	/**
 	 * SQL
 	 *
 	 * @var array|string
 	 */
-	protected static $sql;
+	protected $sql;
 
 	/**
 	 * wpdb object
 	 *
 	 * @var \wpdb
 	 */
-	public static $db;
+	public $db;
 
 	/**
 	 * {@inheritdoc}
@@ -44,25 +44,27 @@ abstract class AbstractModel extends AbstractSingleton {
 	protected function initialize() {
 		global $wpdb;
 
-		static::$db = $wpdb;
+		$this->db = $wpdb;
 
 		$this->migrate_table();
 	}
 
 	protected function migrate_table() {
-		if ( ! static::$table_name || ! static::$sql ) {
+		$self = static::get_instance();
+
+		if ( ! $self->table_name || ! $self->sql ) {
 			return;
 		}
 
-		if ( ! is_array( static::$sql ) ) {
+		if ( ! is_array( $self->sql ) ) {
 			$sql_chunks = array_filter( array_map( function ( $value ) {
 				return rtrim( trim( $value ), ',' );
-			}, explode( "\n", static::$sql ) ) );
+			}, explode( "\n", $self->sql ) ) );
 
 		} else {
 			$sql_chunks = [];
 
-			foreach ( static::$sql as $field => $config ) {
+			foreach ( $self->sql as $field => $config ) {
 				if ( is_int( $field ) ) {
 					$sql_chunks[] = trim( $config );
 
@@ -72,17 +74,17 @@ abstract class AbstractModel extends AbstractSingleton {
 			}
 		}
 
-		$sql = 'CREATE TABLE ' . static::table_name() . " (\n" . implode( ",\n", $sql_chunks ) . "\n) " . static::$db->get_charset_collate() . ';';
+		$sql = 'CREATE TABLE ' . static::table_name() . " (\n" . implode( ",\n", $sql_chunks ) . "\n) " . $self->db->get_charset_collate() . ';';
 
 		$db_hash    = md5( $sql );
-		$config_key = static::$table_name . '_schema_hash';
+		$config_key = $self->table_name . '_schema_hash';
 
 		if ( $db_hash != get_option( $config_key ) ) {
 			require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 			dbDelta( $sql );
 
-			if ( ! static::$db->last_error ) {
+			if ( ! $self->db->last_error ) {
 				update_option( $config_key, $db_hash );
 			}
 		}
@@ -95,8 +97,10 @@ abstract class AbstractModel extends AbstractSingleton {
 	 * @return mixed
 	 */
 	public static function __callStatic( $method, $args ) {
-		if ( method_exists( static::$db, $method ) ) {
-			return call_user_func_array( [ static::$db, $method ], $args );
+		$self = static::get_instance();
+
+		if ( method_exists( $self->db, $method ) ) {
+			return call_user_func_array( [ $self->db, $method ], $args );
 		}
 
 		throw new \BadMethodCallException( sprintf( 'The method does not exist - %s::%s', __CLASS__, $method ) );
@@ -106,14 +110,16 @@ abstract class AbstractModel extends AbstractSingleton {
 	 * @return string
 	 */
 	public static function table_name() {
-		return static::$db->prefix . static::$table_name;
+		$self = static::get_instance();
+
+		return $self->db->prefix . $self->table_name;
 	}
 
 	/**
 	 * @return string
 	 */
 	public static function get_primary_key() {
-		return static::$primary_key;
+		return static::get_instance()->primary_key;
 	}
 
 	/**
@@ -123,7 +129,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	 * @return false|int
 	 */
 	public static function insert( array $data, $format = null ) {
-		return static::$db->insert( static::table_name(), $data, $format );
+		return static::get_instance()->db->insert( static::table_name(), $data, $format );
 	}
 
 	/**
@@ -133,7 +139,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	 * @return false|int
 	 */
 	public static function replace( array $data, $format = null ) {
-		return static::$db->replace( static::table_name(), $data, $format );
+		return static::get_instance()->db->replace( static::table_name(), $data, $format );
 	}
 
 	/**
@@ -145,7 +151,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	 * @return false|int
 	 */
 	public static function update( array $data, array $where, $format = null, $where_format = null ) {
-		return static::$db->update( static::table_name(), $data, $where, $format, $where_format );
+		return static::get_instance()->db->update( static::table_name(), $data, $where, $format, $where_format );
 	}
 
 	/**
@@ -155,7 +161,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	 * @return false|int
 	 */
 	public static function delete( array $where, $where_format = null ) {
-		return static::$db->delete( static::table_name(), $where, $where_format );
+		return static::get_instance()->db->delete( static::table_name(), $where, $where_format );
 	}
 
 	/**
@@ -227,7 +233,7 @@ abstract class AbstractModel extends AbstractSingleton {
 			$query['limit'] = "LIMIT {$args['limit']}";
 		}
 
-		return static::$db->get_results( implode( "\n", $query ) );
+		return static::get_instance()->db->get_results( implode( "\n", $query ) );
 	}
 
 	/**
@@ -305,7 +311,7 @@ abstract class AbstractModel extends AbstractSingleton {
 	 * @return int
 	 */
 	public static function get_last_insert_id() {
-		return static::$db->insert_id;
+		return static::get_instance()->db->insert_id;
 	}
 
 	/**

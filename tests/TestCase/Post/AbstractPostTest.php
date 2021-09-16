@@ -243,18 +243,18 @@ class AbstractPostTest extends \WP_UnitTestCase {
 }
 
 class TestPost extends AbstractPost {
-	protected static $post_type = 'test_post';
+	protected $post_type = 'test_post';
 
-	protected static $args = [
+	protected $args = [
 		'has_archive' => true,
 		'supports'    => [ 'title', 'editor' ],
 	];
 }
 
 class TestPost2 extends AbstractPost {
-	protected static $post_type = 'test_post2';
+	protected $post_type = 'test_post2';
 
-	protected static $args = [
+	protected $args = [
 		'has_archive' => true,
 		'supports'    => [ 'title', 'editor' ],
 	];
@@ -263,5 +263,5 @@ class TestPost2 extends AbstractPost {
 class TestPost3 extends AbstractPost {
 	const MK_DEFINED_VAR = 'defined_var';
 
-	protected static $post_type = 'test_post3';
+	protected $post_type = 'test_post3';
 }

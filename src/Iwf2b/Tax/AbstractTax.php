@@ -18,41 +18,41 @@ abstract class AbstractTax extends AbstractSingleton {
 	 *
 	 * @var string
 	 */
-	protected static $taxonomy;
+	protected $taxonomy;
 
 	/**
 	 * Assoc object slug
 	 *
 	 * @var string
 	 */
-	protected static $object_type = '';
+	protected $object_type = '';
 
 	/**
 	 * Params for registration
 	 *
 	 * @var array
 	 */
-	protected static $args = [];
+	protected $args = [];
 
 	/**
 	 * Search conditions
 	 *
 	 * @var array
 	 */
-	protected static $find_args = [];
+	protected $find_args = [];
 
 	/**
 	 * Builtin taxonomy
 	 *
 	 * @var bool
 	 */
-	protected static $builtin = false;
+	protected $builtin = false;
 
 	/**
 	 * {@inheritdoc}
 	 */
 	protected function initialize() {
-		if ( ! static::$taxonomy ) {
+		if ( ! $this->taxonomy ) {
 			throw new \RuntimeException( sprintf( 'The variable "%s::$taxonomy" must be not empty.', get_class( $this ) ) );
 		}
 
@@ -64,44 +64,44 @@ abstract class AbstractTax extends AbstractSingleton {
 	 * Register taxonomy
 	 */
 	public function register_taxonomy() {
-		if ( ! static::$builtin ) {
-			if ( class_exists( static::$object_type ) ) {
-				if ( ! is_subclass_of( static::$object_type, AbstractPost::class ) ) {
+		if ( ! $this->builtin ) {
+			if ( class_exists( $this->object_type ) ) {
+				if ( ! is_subclass_of( $this->object_type, AbstractPost::class ) ) {
 					throw new \InvalidArgumentException( sprintf( 'The variable "%s::$object_type" must be child class of AbstractPost.', get_class( $this ) ) );
 				}
 
-				$object_type = call_user_func( [ static::$object_type, 'get_slug' ] );
+				$object_type = call_user_func( [ $this->object_type, 'get_slug' ] );
 
 			} else {
-				$object_type = static::$object_type;
+				$object_type = $this->object_type;
 			}
 
-			if ( ! empty( static::$args['label'] ) && empty( static::$args['labels'] ) ) {
-				static::$args['labels'] = [
-					'name'                       => static::$args['label'],
-					'singular_name'              => static::$args['label'],
-					'search_items'               => sprintf( _x( 'Search %s', 'tax', 'iwf2b' ), static::$args['label'] ),
-					'popular_items'              => sprintf( __( 'Popular %s', 'iwf2b' ), static::$args['label'] ),
-					'all_items'                  => sprintf( _x( 'All %s', 'tax', 'iwf2b' ), static::$args['label'] ),
-					'parent_item'                => sprintf( __( 'Parent %s', 'iwf2b' ), static::$args['label'] ),
-					'parent_item_colon'          => sprintf( _x( 'Parent %s:', 'tax', 'iwf2b' ), static::$args['label'] ),
-					'edit_item'                  => sprintf( _x( 'Edit %s', 'tax', 'iwf2b' ), static::$args['label'] ),
-					'view_item'                  => sprintf( _x( 'View %s', 'tax', 'iwf2b' ), static::$args['label'] ),
-					'update_item'                => sprintf( __( 'Update %s', 'iwf2b' ), static::$args['label'] ),
-					'add_new_item'               => sprintf( _x( 'Add New %s', 'tax', 'iwf2b' ), static::$args['label'] ),
-					'new_item_name'              => sprintf( __( 'New %s Name', 'iwf2b' ), static::$args['label'] ),
-					'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'iwf2b' ), static::$args['label'] ),
-					'add_or_remove_items'        => sprintf( __( 'Add or remove %s', 'iwf2b' ), static::$args['label'] ),
-					'choose_from_most_used'      => sprintf( __( 'Choose from the most used %s', 'iwf2b' ), static::$args['label'] ),
-					'not_found'                  => sprintf( _x( 'No %s found.', 'tax', 'iwf2b' ), static::$args['label'] ),
-					'no_terms'                   => sprintf( __( 'No %s', 'iwf2b' ), static::$args['label'] ),
-					'items_list_navigation'      => sprintf( _x( '%s list navigation', 'tax', 'iwf2b' ), static::$args['label'] ),
-					'items_list'                 => sprintf( _x( '%s list', 'tax', 'iwf2b' ), static::$args['label'] ),
-					'back_to_items'              => sprintf( __( '&larr; Back to %s', 'iwf2b' ), static::$args['label'] ),
+			if ( ! empty( $this->args['label'] ) && empty( $this->args['labels'] ) ) {
+				$this->args['labels'] = [
+					'name'                       => $this->args['label'],
+					'singular_name'              => $this->args['label'],
+					'search_items'               => sprintf( _x( 'Search %s', 'tax', 'iwf2b' ), $this->args['label'] ),
+					'popular_items'              => sprintf( __( 'Popular %s', 'iwf2b' ), $this->args['label'] ),
+					'all_items'                  => sprintf( _x( 'All %s', 'tax', 'iwf2b' ), $this->args['label'] ),
+					'parent_item'                => sprintf( __( 'Parent %s', 'iwf2b' ), $this->args['label'] ),
+					'parent_item_colon'          => sprintf( _x( 'Parent %s:', 'tax', 'iwf2b' ), $this->args['label'] ),
+					'edit_item'                  => sprintf( _x( 'Edit %s', 'tax', 'iwf2b' ), $this->args['label'] ),
+					'view_item'                  => sprintf( _x( 'View %s', 'tax', 'iwf2b' ), $this->args['label'] ),
+					'update_item'                => sprintf( __( 'Update %s', 'iwf2b' ), $this->args['label'] ),
+					'add_new_item'               => sprintf( _x( 'Add New %s', 'tax', 'iwf2b' ), $this->args['label'] ),
+					'new_item_name'              => sprintf( __( 'New %s Name', 'iwf2b' ), $this->args['label'] ),
+					'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'iwf2b' ), $this->args['label'] ),
+					'add_or_remove_items'        => sprintf( __( 'Add or remove %s', 'iwf2b' ), $this->args['label'] ),
+					'choose_from_most_used'      => sprintf( __( 'Choose from the most used %s', 'iwf2b' ), $this->args['label'] ),
+					'not_found'                  => sprintf( _x( 'No %s found.', 'tax', 'iwf2b' ), $this->args['label'] ),
+					'no_terms'                   => sprintf( __( 'No %s', 'iwf2b' ), $this->args['label'] ),
+					'items_list_navigation'      => sprintf( _x( '%s list navigation', 'tax', 'iwf2b' ), $this->args['label'] ),
+					'items_list'                 => sprintf( _x( '%s list', 'tax', 'iwf2b' ), $this->args['label'] ),
+					'back_to_items'              => sprintf( __( '&larr; Back to %s', 'iwf2b' ), $this->args['label'] ),
 				];
 			}
 
-			register_taxonomy( static::$taxonomy, $object_type, static::$args );
+			register_taxonomy( $this->taxonomy, $object_type, $this->args );
 		}
 	}
 
@@ -129,7 +129,7 @@ abstract class AbstractTax extends AbstractSingleton {
 	 * @return string
 	 */
 	public static function get_taxonomy() {
-		return static::$taxonomy;
+		return static::get_instance()->taxonomy;
 	}
 
 	/**
@@ -145,7 +145,7 @@ abstract class AbstractTax extends AbstractSingleton {
 	 * @return string
 	 */
 	public static function get_object_type() {
-		return static::$object_type;
+		return static::get_instance()->object_type;
 	}
 
 	/**
@@ -163,6 +163,7 @@ abstract class AbstractTax extends AbstractSingleton {
 	 * @return bool|\WP_Term
 	 */
 	public static function get( $term_id ) {
+		$self        = static::get_instance();
 		$term_object = false;
 
 		if ( $term_id instanceof \WP_Term ) {
@@ -172,14 +173,14 @@ abstract class AbstractTax extends AbstractSingleton {
 			$term_object = get_term( (int) $term_id );
 
 		} elseif ( is_string( $term_id ) ) {
-			$term_object = get_term_by( 'slug', $term_id, static::$taxonomy );
+			$term_object = get_term_by( 'slug', $term_id, $self->taxonomy );
 
 			if ( ! $term_object ) {
-				$term_object = get_term_by( 'name', $term_id, static::$taxonomy );
+				$term_object = get_term_by( 'name', $term_id, $self->taxonomy );
 			}
 		}
 
-		if ( is_wp_error( $term_object ) || ! $term_object || ( static::$taxonomy && $term_object->taxonomy !== static::$taxonomy ) ) {
+		if ( is_wp_error( $term_object ) || ! $term_object || ( $self->taxonomy && $term_object->taxonomy !== $self->taxonomy ) ) {
 			return false;
 		}
 
@@ -207,10 +208,11 @@ abstract class AbstractTax extends AbstractSingleton {
 	 * @return array
 	 */
 	public static function create_args( array $args = [] ) {
-		$args = array_merge( static::$find_args, $args );
+		$self = static::get_instance();
+		$args = array_merge( $self->find_args, $args );
 
-		if ( static::$taxonomy ) {
-			$args['taxonomy'] = static::$taxonomy;
+		if ( $self->taxonomy ) {
+			$args['taxonomy'] = $self->taxonomy;
 		}
 
 		return $args;
@@ -333,6 +335,6 @@ abstract class AbstractTax extends AbstractSingleton {
 	 * @return array|\WP_Error
 	 */
 	public static function insert( $name, array $args = [] ) {
-		return wp_insert_term( $name, static::$taxonomy, $args );
+		return wp_insert_term( $name, static::get_instance()->taxonomy, $args );
 	}
 }

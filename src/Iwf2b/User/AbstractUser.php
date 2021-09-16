@@ -17,28 +17,28 @@ class AbstractUser extends AbstractSingleton {
 	 *
 	 * @var string
 	 */
-	protected static $role = '';
+	protected $role = '';
 
 	/**
 	 * Role label
 	 *
 	 * @var string
 	 */
-	protected static $role_label = '';
+	protected $role_label = '';
 
 	/**
 	 * Capabilities
 	 *
 	 * @var array
 	 */
-	protected static $capabilities = [];
+	protected $capabilities = [];
 
 	/**
 	 * Search conditions
 	 *
 	 * @var array
 	 */
-	protected static $find_args = [];
+	protected $find_args = [];
 
 	/**
 	 * {@inheritdoc}
@@ -52,15 +52,15 @@ class AbstractUser extends AbstractSingleton {
 	 * Register roles
 	 */
 	public function register_roles() {
-		if ( static::$role ) {
-			$role = get_role( static::$role );
+		if ( $this->role ) {
+			$role = get_role( $this->role );
 
 			if ( ! $role ) {
-				$role = add_role( static::$role, static::$role_label ?: static::$role );
+				$role = add_role( $this->role, $this->role_label ?: $this->role );
 			}
 
-			if ( static::$capabilities ) {
-				foreach ( (array) static::$capabilities as $capability ) {
+			if ( $this->capabilities ) {
+				foreach ( (array) $this->capabilities as $capability ) {
 					if ( ! $role->has_cap( $capability ) ) {
 						$role->add_cap( $capability );
 					}
@@ -93,6 +93,7 @@ class AbstractUser extends AbstractSingleton {
 	 * @return \WP_User|int|string
 	 */
 	public static function get( $user_id ) {
+		$self = static::get_instance();
 		$user = null;
 
 		if ( $user_id instanceof \WP_User ) {
@@ -114,7 +115,7 @@ class AbstractUser extends AbstractSingleton {
 			}
 		}
 
-		if ( ! $user || ( static::$role && ! user_can( $user, static::$role ) ) ) {
+		if ( ! $user || ( $self->role && ! user_can( $user, $self->role ) ) ) {
 			return null;
 		}
 
@@ -142,10 +143,11 @@ class AbstractUser extends AbstractSingleton {
 	 * @return array
 	 */
 	public static function create_args( array $args = [] ) {
-		$args = array_merge( static::$find_args, $args );
+		$self = static::get_instance();
+		$args = array_merge( $self->find_args, $args );
 
-		if ( static::$role ) {
-			$args['role'] = static::$role;
+		if ( $self->role ) {
+			$args['role'] = $self->role;
 		}
 
 		return $args;
@@ -188,14 +190,14 @@ class AbstractUser extends AbstractSingleton {
 	 * @return string
 	 */
 	public static function get_role() {
-		return static::$role;
+		return static::get_instance()->role;
 	}
 
 	/**
 	 * @return string
 	 */
 	public static function get_role_label() {
-		return static::$role_label;
+		return static::get_instance()->role_label;
 	}
 
 	/**
@@ -251,11 +253,13 @@ class AbstractUser extends AbstractSingleton {
 	 * @return int|\WP_Error
 	 */
 	public static function insert( $user_login, $user_pass, array $userdata = [] ) {
+		$self = static::get_instance();
+
 		$userdata['user_login'] = $user_login;
 		$userdata['user_pass']  = $user_pass;
 
-		if ( static::$role ) {
-			$userdata['role'] = static::$role;
+		if ( $self->role ) {
+			$userdata['role'] = $self->role;
 		}
 
 		unset( $userdata['ID'] );

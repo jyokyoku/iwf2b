@@ -18,51 +18,51 @@ abstract class AbstractPost extends AbstractSingleton {
 	 *
 	 * @var string
 	 */
-	protected static $post_type;
+	protected $post_type;
 
 	/**
 	 * Args for registration
 	 *
 	 * @var array
 	 */
-	protected static $args = [];
+	protected $args = [];
 
 	/**
 	 * Builtin post type
 	 *
 	 * @var bool
 	 */
-	protected static $builtin = false;
+	protected $builtin = false;
 
 	/**
 	 * Search conditions
 	 *
 	 * @var array
 	 */
-	protected static $find_args = [];
+	protected $find_args = [];
 
 	/**
 	 * {@inheritdoc}
 	 */
 	protected function initialize() {
-		if ( ! static::$post_type ) {
+		if ( ! $this->post_type ) {
 			throw new \RuntimeException( sprintf( 'The variable "%s::$post_type" must be not empty.', get_class( $this ) ) );
 		}
 
 		add_action( 'init', [ $this, 'register_post_type' ] );
 		add_action( 'use_block_editor_for_post_type', [ $this, 'use_block_editor' ], 10, 2 );
-		add_action( 'save_post_' . static::get_slug(), [ $this, 'insert_default_meta' ], 10, 3 );
+		add_action( 'save_post_' . $this->post_type, [ $this, 'insert_default_meta' ], 10, 3 );
 	}
 
 	/**
 	 * Register post type
 	 */
 	public function register_post_type() {
-		$args = wp_parse_args( static::$args, [
+		$args = wp_parse_args( $this->args, [
 			'supports' => [],
 		] );
 
-		if ( ! static::$builtin ) {
+		if ( ! $this->builtin ) {
 			if ( ! empty( $args['label'] ) && empty( $args['labels'] ) ) {
 				$args['labels'] = [
 					'name'                  => $args['label'],
@@ -89,14 +89,14 @@ abstract class AbstractPost extends AbstractSingleton {
 
 			if ( is_array( $args['supports'] ) ) {
 				if ( in_array( 'thumbnail', $args['supports'] ) ) {
-					add_theme_support( 'post-thumbnails', [ static::$post_type ] );
+					add_theme_support( 'post-thumbnails', [ $this->post_type ] );
 				}
 			}
 
-			register_post_type( static::$post_type, $args );
+			register_post_type( $this->post_type, $args );
 
 		} else {
-			add_post_type_support( static::$post_type, $args['supports'] );
+			add_post_type_support( $this->post_type, $args['supports'] );
 		}
 	}
 
@@ -107,7 +107,7 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @return bool
 	 */
 	public function use_block_editor( $use_block_editor, $post_type ) {
-		if ( static::$post_type && $post_type === static::$post_type ) {
+		if ( $this->post_type && $post_type === $this->post_type ) {
 			$supports = get_all_post_type_supports( $post_type );
 
 			if ( ! empty( $supports['classic-editor'] ) ) {
@@ -144,6 +144,8 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @return \WP_Post|null
 	 */
 	public static function get( $post_id ) {
+		$self = static::get_instance();
+
 		if ( $post_id instanceof \WP_Post ) {
 			$post = $post_id;
 
@@ -151,14 +153,14 @@ abstract class AbstractPost extends AbstractSingleton {
 			$post = get_post( $post_id );
 
 		} elseif ( is_string( $post_id ) ) {
-			$post = get_page_by_path( $post_id, OBJECT, static::$post_type );
+			$post = get_page_by_path( $post_id, OBJECT, $self->post_type );
 
 			if ( ! $post ) {
-				$post = get_page_by_title( $post_id, OBJECT, static::$post_type );
+				$post = get_page_by_title( $post_id, OBJECT, $self->post_type );
 			}
 		}
 
-		if ( ! $post || ( static::$post_type && $post->post_type !== static::$post_type ) ) {
+		if ( ! $post || ( $self->post_type && $post->post_type !== $self->post_type ) ) {
 			return null;
 		}
 
@@ -184,7 +186,7 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @return string
 	 */
 	public static function get_post_type() {
-		return static::$post_type;
+		return static::get_instance()->post_type;
 	}
 
 	/**
@@ -211,10 +213,11 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @return array
 	 */
 	public static function create_args( array $args = [] ) {
-		$args = array_merge( static::$find_args, $args );
+		$self = static::get_instance();
+		$args = array_merge( $self->find_args, $args );
 
-		if ( static::$post_type ) {
-			$args['post_type'] = static::$post_type;
+		if ( $self->post_type ) {
+			$args['post_type'] = $self->post_type;
 		}
 
 		// convert 'template' keyword to meta_query
@@ -508,7 +511,7 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @return int|\WP_Error
 	 */
 	public static function insert( array $args = [] ) {
-		$args['post_type'] = static::$post_type;
+		$args['post_type'] = static::get_instance()->post_type;
 
 		return wp_insert_post( $args, true );
 	}
@@ -517,13 +520,13 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @return false|string
 	 */
 	public static function get_archive_link() {
-		return get_post_type_archive_link( static::$post_type );
+		return get_post_type_archive_link( static::get_instance()->post_type );
 	}
 
 	/**
 	 * @return \WP_Post_Type|null
 	 */
 	public static function get_post_type_object() {
-		return get_post_type_object( static::$post_type );
+		return get_post_type_object( static::get_instance()->post_type );
 	}
 }
