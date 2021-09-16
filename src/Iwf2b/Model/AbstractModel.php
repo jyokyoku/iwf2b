@@ -116,6 +116,13 @@ abstract class AbstractModel extends AbstractSingleton {
 	}
 
 	/**
+	 * @return \wpdb
+	 */
+	public static function db() {
+		return static::get_instance()->db;
+	}
+
+	/**
 	 * @return string
 	 */
 	public static function table_name() {
