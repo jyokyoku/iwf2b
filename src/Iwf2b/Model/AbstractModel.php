@@ -99,11 +99,20 @@ abstract class AbstractModel extends AbstractSingleton {
 	public static function __callStatic( $method, $args ) {
 		$self = static::get_instance();
 
-		if ( method_exists( $self->db, $method ) ) {
+		$db_ref     = new \ReflectionClass( $self->db );
+		$method_ref = $db_ref->getMethod( $method );
+
+		if ( $method_ref && $method_ref->isPublic() ) {
 			return call_user_func_array( [ $self->db, $method ], $args );
 		}
 
-		throw new \BadMethodCallException( sprintf( 'The method does not exist - %s::%s', __CLASS__, $method ) );
+		$prop_ref = $db_ref->getProperty( $method );
+
+		if ( $prop_ref && $prop_ref->isPublic() ) {
+			return $self->db->{$method};
+		}
+
+		throw new \BadMethodCallException( sprintf( 'The method/variable does not exist or invalid permissions - %s::%s', __CLASS__, $method ) );
 	}
 
 	/**
