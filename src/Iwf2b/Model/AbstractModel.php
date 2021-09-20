@@ -100,13 +100,13 @@ abstract class AbstractModel extends AbstractSingleton {
 		$self = static::get_instance();
 
 		$db_ref     = new \ReflectionClass( $self->db );
-		$method_ref = $db_ref->getMethod( $method );
+		$method_ref = $db_ref->hasMethod( $method ) ? $db_ref->getMethod( $method ) : null;
 
 		if ( $method_ref && $method_ref->isPublic() ) {
 			return call_user_func_array( [ $self->db, $method ], $args );
 		}
 
-		$prop_ref = $db_ref->getProperty( $method );
+		$prop_ref = $db_ref->hasProperty( $method ) ? $db_ref->getProperty( $method ) : null;
 
 		if ( $prop_ref && $prop_ref->isPublic() ) {
 			return $self->db->{$method};
