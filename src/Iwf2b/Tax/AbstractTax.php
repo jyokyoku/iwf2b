@@ -57,7 +57,7 @@ abstract class AbstractTax extends AbstractSingleton {
 		}
 
 		add_action( 'init', [ $this, 'register_taxonomy' ] );
-		add_action( 'create_term', [ $this, 'insert_default_meta' ], 10, 3 );
+		add_action( 'create_term', [ $this, 'insert_default_meta' ], 5, 3 );
 	}
 
 	/**
