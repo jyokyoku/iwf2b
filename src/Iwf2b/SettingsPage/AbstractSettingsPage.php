@@ -55,6 +55,13 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 	protected $view_vars = [];
 
 	/**
+	 * Ignore actions
+	 *
+	 * @var string[]
+	 */
+	protected $ignore_actions = [ '-1' ];
+
+	/**
 	 * @var View
 	 */
 	protected $view;
@@ -143,7 +150,12 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 		global $plugin_page;
 
 		if ( $plugin_page === $this->menu_slug ) {
-			$action      = Arr::get( $_REQUEST, 'action' );
+			$action = Arr::get( $_REQUEST, 'action' );
+
+			if ( in_array( $action, $this->ignore_actions ) ) {
+				$action = '';
+			}
+
 			$file_name   = static::generate_file_name( $plugin_page, $action, '.php' );
 			$action_file = trailingslashit( $this->action_directory ) . $file_name;
 
@@ -158,7 +170,12 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 	public function template() {
 		global $plugin_page;
 
-		$action        = Arr::get( $_REQUEST, 'action' );
+		$action = Arr::get( $_REQUEST, 'action' );
+
+		if ( in_array( $action, $this->ignore_actions ) ) {
+			$action = '';
+		}
+
 		$file_name     = static::generate_file_name( $plugin_page, $action, '.php' );
 		$template_file = trailingslashit( $this->template_directory ) . $file_name;
 
