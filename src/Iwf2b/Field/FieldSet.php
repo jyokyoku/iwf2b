@@ -15,13 +15,6 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 	protected $fields = [];
 
 	/**
-	 * Validated status
-	 *
-	 * @var bool
-	 */
-	protected $is_valid;
-
-	/**
 	 * Instances
 	 *
 	 * @var array
@@ -136,26 +129,30 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 	 * @return bool
 	 */
 	public function validate( $break_on_first_error = true ) {
-		$this->is_valid = true;
+		$is_valid = true;
 
-		foreach ( $this->fields as $field_name => $field ) {
+		foreach ( $this->fields as $field ) {
 			if ( $field->validate( $break_on_first_error ) === false ) {
-				$this->is_valid = false;
+				$is_valid = false;
 			}
 		}
 
-		return $this->is_valid;
+		return $is_valid;
 	}
 
 	/**
 	 * @return bool
 	 */
 	public function is_valid() {
-		if ( $this->is_valid === null ) {
-			$this->validate();
+		$is_valid = true;
+
+		foreach ( $this->fields as $field ) {
+			if ( $field->is_valid() === false ) {
+				$is_valid = false;
+			}
 		}
 
-		return $this->is_valid;
+		return $is_valid;
 	}
 
 	/**
