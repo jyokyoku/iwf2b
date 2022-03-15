@@ -65,15 +65,16 @@ abstract class AbstractTax extends AbstractSingleton {
 	 */
 	public function register_taxonomy() {
 		if ( ! $this->builtin ) {
-			if ( class_exists( $this->object_type ) ) {
-				if ( ! is_subclass_of( $this->object_type, AbstractPost::class ) ) {
-					throw new \InvalidArgumentException( sprintf( 'The variable "%s::$object_type" must be child class of AbstractPost.', get_class( $this ) ) );
+			$object_types = array_values( (array) $this->object_type );
+
+			foreach ( $object_types as $i => $object_type ) {
+				if ( class_exists( $object_type ) ) {
+					if ( ! is_subclass_of( $object_type, AbstractPost::class ) ) {
+						throw new \InvalidArgumentException( sprintf( 'The variable "%s::$object_type" must be child class of AbstractPost.', get_class( $this ) ) );
+					}
+
+					$object_types[ $i ] = call_user_func( [ $object_type, 'get_slug' ] );
 				}
-
-				$object_type = call_user_func( [ $this->object_type, 'get_slug' ] );
-
-			} else {
-				$object_type = $this->object_type;
 			}
 
 			if ( ! empty( $this->args['label'] ) && empty( $this->args['labels'] ) ) {
@@ -101,7 +102,7 @@ abstract class AbstractTax extends AbstractSingleton {
 				];
 			}
 
-			register_taxonomy( $this->taxonomy, $object_type, $this->args );
+			register_taxonomy( $this->taxonomy, $object_types, $this->args );
 		}
 	}
 
