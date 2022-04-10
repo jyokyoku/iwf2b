@@ -49,6 +49,13 @@ abstract class AbstractTax extends AbstractSingleton {
 	protected $builtin = false;
 
 	/**
+	 * Insert the default metas when term added
+	 *
+	 * @var bool
+	 */
+	protected $insert_default_meta = true;
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected function initialize() {
@@ -57,7 +64,7 @@ abstract class AbstractTax extends AbstractSingleton {
 		}
 
 		add_action( 'init', [ $this, 'register_taxonomy' ] );
-		add_action( 'create_term', [ $this, 'insert_default_meta' ], 5, 3 );
+		add_action( 'create_term', [ $this, 'insert_default_meta' ], 1, 3 );
 	}
 
 	/**
@@ -112,7 +119,7 @@ abstract class AbstractTax extends AbstractSingleton {
 	 * @param string $taxonomy
 	 */
 	public function insert_default_meta( $term_id, $tt_id, $taxonomy ) {
-		if ( $taxonomy !== static::get_slug() ) {
+		if ( ! $this->insert_default_meta || $taxonomy !== static::get_slug() ) {
 			return;
 		}
 
@@ -120,8 +127,8 @@ abstract class AbstractTax extends AbstractSingleton {
 		$constants = $ref->getConstants();
 
 		foreach ( $constants as $constant_name => $meta_key ) {
-			if ( strpos( $constant_name, 'MK_' ) === 0 ) {
-				update_term_meta( $term_id, $meta_key, '' );
+			if ( strpos( $constant_name, 'MK_' ) === 0 & ! metadata_exists( 'term', $term_id, $meta_key ) ) {
+				add_term_meta( $term_id, $meta_key, '' );
 			}
 		}
 	}
