@@ -42,6 +42,13 @@ abstract class AbstractPost extends AbstractSingleton {
 	protected $find_args = [];
 
 	/**
+	 * Insert the default metas when post added
+	 *
+	 * @var bool
+	 */
+	protected $insert_default_meta = true;
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected function initialize() {
@@ -51,7 +58,7 @@ abstract class AbstractPost extends AbstractSingleton {
 
 		add_action( 'init', [ $this, 'register_post_type' ] );
 		add_action( 'use_block_editor_for_post_type', [ $this, 'use_block_editor' ], 10, 2 );
-		add_action( 'save_post_' . $this->post_type, [ $this, 'insert_default_meta' ], 10, 3 );
+		add_action( 'save_post_' . $this->post_type, [ $this, 'insert_default_meta' ], 1, 3 );
 	}
 
 	/**
@@ -124,7 +131,7 @@ abstract class AbstractPost extends AbstractSingleton {
 	 * @param bool     $update
 	 */
 	public function insert_default_meta( $post_id, $post, $update ) {
-		if ( $update ) {
+		if ( ! $this->insert_default_meta || $update ) {
 			return;
 		}
 
@@ -132,8 +139,8 @@ abstract class AbstractPost extends AbstractSingleton {
 		$constants = $ref->getConstants();
 
 		foreach ( $constants as $constant_name => $meta_key ) {
-			if ( strpos( $constant_name, 'MK_' ) === 0 ) {
-				update_post_meta( $post_id, $meta_key, '' );
+			if ( strpos( $constant_name, 'MK_' ) === 0 && ! metadata_exists( 'post', $post_id, $meta_key ) ) {
+				add_post_meta( $post_id, $meta_key, '' );
 			}
 		}
 	}

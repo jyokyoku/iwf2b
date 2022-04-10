@@ -41,6 +41,13 @@ class AbstractUser extends AbstractSingleton {
 	protected $find_args = [];
 
 	/**
+	 * Insert the default metas when user added
+	 *
+	 * @var bool
+	 */
+	protected $insert_default_meta = true;
+
+	/**
 	 * {@inheritdoc}
 	 */
 	protected function initialize() {
@@ -73,7 +80,7 @@ class AbstractUser extends AbstractSingleton {
 	 * @param int $user_id
 	 */
 	public function insert_default_meta( $user_id ) {
-		if ( ! static::is_valid( $user_id ) ) {
+		if ( ! $this->insert_default_meta || ! static::is_valid( $user_id ) ) {
 			return;
 		}
 
@@ -81,8 +88,8 @@ class AbstractUser extends AbstractSingleton {
 		$constants = $ref->getConstants();
 
 		foreach ( $constants as $constant_name => $meta_key ) {
-			if ( strpos( $constant_name, 'MK_' ) === 0 ) {
-				update_user_meta( $user_id, $meta_key, '' );
+			if ( strpos( $constant_name, 'MK_' ) === 0 && ! metadata_exists( 'user', $user_id, $meta_key ) ) {
+				add_user_meta( $user_id, $meta_key, '' );
 			}
 		}
 	}
