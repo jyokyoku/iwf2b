@@ -152,6 +152,7 @@ abstract class AbstractPost extends AbstractSingleton {
 	 */
 	public static function get( $post_id ) {
 		$self = static::get_instance();
+		$post = null;
 
 		if ( $post_id instanceof \WP_Post ) {
 			$post = $post_id;
