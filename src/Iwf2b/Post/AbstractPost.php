@@ -164,7 +164,14 @@ abstract class AbstractPost extends AbstractSingleton {
 			$post = get_page_by_path( $post_id, OBJECT, $self->post_type );
 
 			if ( ! $post ) {
-				$post = get_page_by_title( $post_id, OBJECT, $self->post_type );
+				$posts = get_posts( [
+					'post_type' => $self->post_type,
+					'title'     => $post_id,
+				] );
+
+				if ( $posts ) {
+					$post = $posts[0];
+				}
 			}
 		}
 
