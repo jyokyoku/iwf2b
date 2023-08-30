@@ -139,7 +139,7 @@ abstract class AbstractPost extends AbstractSingleton {
 		$constants = $ref->getConstants();
 
 		foreach ( $constants as $constant_name => $meta_key ) {
-			if ( strpos( $constant_name, 'MK_' ) === 0 && ! metadata_exists( 'post', $post_id, $meta_key ) ) {
+			if ( strpos( $constant_name, 'MK_' ) === 0 && is_string( $meta_key ) && ! metadata_exists( 'post', $post_id, $meta_key ) ) {
 				add_post_meta( $post_id, $meta_key, '' );
 			}
 		}
