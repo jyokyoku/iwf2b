@@ -127,7 +127,7 @@ abstract class AbstractTax extends AbstractSingleton {
 		$constants = $ref->getConstants();
 
 		foreach ( $constants as $constant_name => $meta_key ) {
-			if ( strpos( $constant_name, 'MK_' ) === 0 & ! metadata_exists( 'term', $term_id, $meta_key ) ) {
+			if ( strpos( $constant_name, 'MK_' ) === 0 && is_string( $meta_key ) && ! metadata_exists( 'term', $term_id, $meta_key ) ) {
 				add_term_meta( $term_id, $meta_key, '' );
 			}
 		}
