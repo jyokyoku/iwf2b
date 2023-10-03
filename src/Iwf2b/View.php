@@ -149,6 +149,21 @@ class View {
 	}
 
 	/**
+	 * @param        $path
+	 * @param array  $vars
+	 */
+	public static function include_file( $path, $vars = [] ) {
+		if ( ! $path ) {
+			throw new \InvalidArgumentException( sprintf( 'The file "%s" could not be found.', $path ) );
+		}
+
+		$view = new static();
+
+		$view->set_template_file( $path );
+		$view->load_global( $vars );
+	}
+
+	/**
 	 * @param        $slug
 	 * @param string $name
 	 * @param array  $vars
@@ -164,14 +179,7 @@ class View {
 		$templates[]   = "elements/{$slug}.php";
 		$template_file = static::locate_template( $templates );
 
-		if ( ! $template_file ) {
-			throw new \InvalidArgumentException( sprintf( 'The template file "%s" could not be found.', $template_file ) );
-		}
-
-		$view = new static();
-
-		$view->set_template_file( $template_file );
-		$view->load_global( $vars );
+		static::include_file( $template_file, $vars );
 	}
 
 	/**
