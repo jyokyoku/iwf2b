@@ -9,22 +9,39 @@ use Iwf2b\View;
 
 /**
  * Class AbstractSettingsPage
+ *
  * @package Iwf2b\SettingsPage
  */
 abstract class AbstractSettingsPage extends AbstractSingleton {
+	/**
+	 * Action files dir (deprecated)
+	 *
+	 * @var string
+	 * @deprecated
+	 */
+	protected $action_directory = '';
+
 	/**
 	 * Action files dir
 	 *
 	 * @var string
 	 */
-	protected $action_directory = '';
+	protected $action_dir = '';
+
+	/**
+	 * Template files dir (deprecated)
+	 *
+	 * @var string
+	 * @deprecated
+	 */
+	protected $template_directory = '';
 
 	/**
 	 * Template files dir
 	 *
 	 * @var string
 	 */
-	protected $template_directory = '';
+	protected $template_dir = '';
 
 	/**
 	 * Menu slug
@@ -84,18 +101,32 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 
 		// Replaces directory keyword from $this->action_dir and $this->template_dir.
 		$replaces = [
-			'template_directory'   => TEMPLATEPATH,
-			'stylesheet_directory' => STYLESHEETPATH,
-			'plugin_directory'     => WP_PLUGIN_DIR,
-			'content_directory'    => WP_CONTENT_DIR,
+			'template_directory'   => get_template_directory(), // Backward compatibility.
+			'template_dir'         => get_template_directory(),
+			'stylesheet_directory' => get_stylesheet_directory(), // Backward compatibility.
+			'stylesheet_dir'       => get_stylesheet_directory(),
+			'plugin_directory'     => trailingslashit( WP_CONTENT_DIR ) . 'plugins', // Backward compatibility.
+			'plugin_dir'           => trailingslashit( WP_CONTENT_DIR ) . 'plugins',
+			'content_directory'    => WP_CONTENT_DIR, // Backward compatibility.
+			'wp_content'           => WP_CONTENT_DIR,
 		];
 
-		if ( $this->action_directory ) {
-			$this->action_directory = Text::replace( $this->action_directory, $replaces );
+		// Backward compatibility.
+		if ( $this->action_directory && ! $this->action_dir ) {
+			$this->action_dir = $this->action_directory;
 		}
 
-		if ( $this->template_directory ) {
-			$this->template_directory = Text::replace( $this->template_directory, $replaces );
+		// Backward compatibility.
+		if ( $this->template_directory && ! $this->template_dir ) {
+			$this->template_dir = $this->template_directory;
+		}
+
+		if ( $this->action_dir ) {
+			$this->action_dir = Text::replace( $this->action_dir, $replaces, '%' );
+		}
+
+		if ( $this->template_dir ) {
+			$this->template_dir = Text::replace( $this->template_dir, $replaces, '%' );
 		}
 
 		$this->args = Arr::merge_intersect_key( [
@@ -157,7 +188,7 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 			}
 
 			$file_name   = static::generate_file_name( $plugin_page, $action, '.php' );
-			$action_file = trailingslashit( $this->action_directory ) . $file_name;
+			$action_file = trailingslashit( $this->action_dir ) . $file_name;
 
 			$this->view->add_action_file( $action_file );
 			$this->view_vars = $this->view->do_action();
@@ -177,7 +208,7 @@ abstract class AbstractSettingsPage extends AbstractSingleton {
 		}
 
 		$file_name     = static::generate_file_name( $plugin_page, $action, '.php' );
-		$template_file = trailingslashit( $this->template_directory ) . $file_name;
+		$template_file = trailingslashit( $this->template_dir ) . $file_name;
 
 		$this->view->set_template_file( $template_file );
 		$this->view->load( $this->view_vars, false );
