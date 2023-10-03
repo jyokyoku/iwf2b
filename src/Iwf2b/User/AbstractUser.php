@@ -4,6 +4,7 @@ namespace Iwf2b\User;
 
 use Iwf2b\AbstractSingleton;
 use Iwf2b\Arr;
+use Iwf2b\DefineMetaTrait;
 use Iwf2b\Util;
 
 /**
@@ -12,6 +13,8 @@ use Iwf2b\Util;
  * @package Iwf2b\User
  */
 class AbstractUser extends AbstractSingleton {
+	use DefineMetaTrait;
+
 	/**
 	 * Role slug
 	 *
@@ -84,11 +87,8 @@ class AbstractUser extends AbstractSingleton {
 			return;
 		}
 
-		$ref       = new \ReflectionClass( $this );
-		$constants = $ref->getConstants();
-
-		foreach ( $constants as $constant_name => $meta_key ) {
-			if ( strpos( $constant_name, 'MK_' ) === 0 && ! metadata_exists( 'user', $user_id, $meta_key ) ) {
+		foreach ( $this->get_meta_defines() as $meta_key ) {
+			if ( ! metadata_exists( 'user', $user_id, $meta_key ) ) {
 				add_user_meta( $user_id, $meta_key, '' );
 			}
 		}
