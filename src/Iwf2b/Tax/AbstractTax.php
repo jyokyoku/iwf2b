@@ -4,6 +4,7 @@ namespace Iwf2b\Tax;
 
 use Iwf2b\AbstractSingleton;
 use Iwf2b\Arr;
+use Iwf2b\DefineMetaTrait;
 use Iwf2b\Post\AbstractPost;
 use Iwf2b\Util;
 
@@ -13,6 +14,8 @@ use Iwf2b\Util;
  * @package Iwf2b\Tax
  */
 abstract class AbstractTax extends AbstractSingleton {
+	use DefineMetaTrait;
+
 	/**
 	 * Taxonomy slug
 	 *
@@ -123,11 +126,8 @@ abstract class AbstractTax extends AbstractSingleton {
 			return;
 		}
 
-		$ref       = new \ReflectionClass( $this );
-		$constants = $ref->getConstants();
-
-		foreach ( $constants as $constant_name => $meta_key ) {
-			if ( strpos( $constant_name, 'MK_' ) === 0 && is_string( $meta_key ) && ! metadata_exists( 'term', $term_id, $meta_key ) ) {
+		foreach ( $this->get_meta_defines() as $meta_key ) {
+			if ( ! metadata_exists( 'term', $term_id, $meta_key ) ) {
 				add_term_meta( $term_id, $meta_key, '' );
 			}
 		}
