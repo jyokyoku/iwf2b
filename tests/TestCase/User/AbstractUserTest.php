@@ -49,10 +49,43 @@ class AbstractUserTest extends \WP_UnitTestCase {
 		$this->assertEquals( $user_id, TestUser::get_id( 'test2' ) );
 		$this->assertEquals( $user_id, TestUser::get_id( 'test2@test.com' ) );
 	}
+
+	public function test_meta_operations_using_meta_key_constant() {
+		TestUser2::get_instance();
+
+		$user_id = $this->factory->user->create( [
+			'user_login' => 'test3',
+			'user_email' => 'test3@test.com',
+			'user_pass'  => 'pass',
+			'role'       => TestUser2::get_role(),
+		] );
+
+		$expected = 'test1234';
+		TestUser2::MK_SCALAR_VAR( $user_id, $expected );
+
+		$this->assertEquals( $expected, TestUser2::MK_SCALAR_VAR( $user_id ) );
+
+		$expected = [ 1 => 'var1', 2 => 'var2' ];
+		TestUser2::MK_ARRAY_VAR( $user_id, $expected );
+
+		$this->assertEquals( $expected, TestUser2::MK_ARRAY_VAR( $user_id ) );
+
+		TestUser2::clear_meta( $user_id );
+
+		$this->assertEmpty( TestUser2::MK_SCALAR_VAR( $user_id ) );
+		$this->assertEmpty( TestUser2::MK_ARRAY_VAR( $user_id ) );
+	}
 }
 
 class TestUser extends AbstractUser {
 	const MK_DEFINED_VAR = 'defined_var';
 
 	protected $role = 'test_role';
+}
+
+class TestUser2 extends AbstractUser {
+	const MK_SCALAR_VAR = 'scalar_var';
+	const MK_ARRAY_VAR = 'array_Var';
+
+	protected $role = 'test_role2';
 }

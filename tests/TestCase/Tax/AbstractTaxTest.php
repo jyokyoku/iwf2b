@@ -68,6 +68,31 @@ class AbstractTaxTest extends \WP_UnitTestCase {
 		$this->assertEquals( $term_id, TestTax::get_id( 'test_term2' ) );
 		$this->assertEquals( $term_id, TestTax::get_id( 'test_term_slug2' ) );
 	}
+
+	public function test_meta_operations_using_meta_key_constant() {
+		RegisterTextTax5::get_instance()->register_taxonomy();
+
+		$term_id = $this->factory->term->create( [
+			'taxonomy' => RegisterTextTax5::get_taxonomy(),
+			'name'     => 'test_term',
+			'slug'     => 'test_term_slug',
+		] );
+
+		$expected = 'test1234';
+		RegisterTextTax5::MK_SCALAR_VAR( $term_id, $expected );
+
+		$this->assertEquals( $expected, RegisterTextTax5::MK_SCALAR_VAR( $term_id ) );
+
+		$expected = [ 1 => 'var1', 2 => 'var2' ];
+		RegisterTextTax5::MK_ARRAY_VAR( $term_id, $expected );
+
+		$this->assertEquals( $expected, RegisterTextTax5::MK_ARRAY_VAR( $term_id ) );
+
+		RegisterTextTax5::clear_meta( $term_id );
+
+		$this->assertEmpty( RegisterTextTax5::MK_SCALAR_VAR( $term_id ) );
+		$this->assertEmpty( RegisterTextTax5::MK_ARRAY_VAR( $term_id ) );
+	}
 }
 
 class TestTax extends AbstractTax {
@@ -96,6 +121,13 @@ class RegisterTextTax4 extends AbstractTax {
 	const MK_DEFINED_VAR = 'defined_var';
 
 	protected $taxonomy = 'register_test_tax_4';
+}
+
+class RegisterTextTax5 extends AbstractTax {
+	const MK_SCALAR_VAR = 'scalar_var';
+	const MK_ARRAY_VAR = 'array_Var';
+
+	protected $taxonomy = 'register_test_tax_5';
 }
 
 class TestPost extends AbstractPost {
