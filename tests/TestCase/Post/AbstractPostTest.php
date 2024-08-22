@@ -2,6 +2,7 @@
 
 namespace Iwf2b\Tests\TestCase\Post;
 
+use Iwf2b\DefineMetaTrait;
 use Iwf2b\Post\AbstractPost;
 use org\bovigo\vfs\vfsStream;
 
@@ -213,6 +214,29 @@ class AbstractPostTest extends \WP_UnitTestCase {
 		$this->assertEquals( 'Overwrite alt text', $thumbnail['alt'] );
 	}
 
+	public function test_meta_operations_using_meta_key_constant() {
+		TestPost4::get_instance();
+
+		$post_id = $this->factory->post->create( [
+			'post_type' => TestPost4::get_slug(),
+		] );
+
+		$expected = 'test1234';
+		TestPost4::MK_SCALAR_VAR( $post_id, $expected );
+
+		$this->assertEquals( $expected, TestPost4::MK_SCALAR_VAR( $post_id ) );
+
+		$expected = [ 1 => 'var1', 2 => 'var2' ];
+		TestPost4::MK_ARRAY_VAR( $post_id, $expected );
+
+		$this->assertEquals( $expected, TestPost4::MK_ARRAY_VAR( $post_id ) );
+
+		TestPost4::clear_meta( $post_id );
+
+		$this->assertEmpty( TestPost4::MK_SCALAR_VAR( $post_id ) );
+		$this->assertEmpty( TestPost4::MK_ARRAY_VAR( $post_id ) );
+	}
+
 	protected function create_virtual_image( $file_name, $type = 'jpg', array $args = [] ) {
 		$width  = isset( $args['width'] ) && $args['width'] > 0 ? (int) $args['width'] : 100;
 		$height = isset( $args['height'] ) && $args['height'] > 0 ? (int) $args['height'] : 100;
@@ -264,4 +288,11 @@ class TestPost3 extends AbstractPost {
 	const MK_DEFINED_VAR = 'defined_var';
 
 	protected $post_type = 'test_post3';
+}
+
+class TestPost4 extends AbstractPost {
+	const MK_SCALAR_VAR = 'scalar_var';
+	const MK_ARRAY_VAR = 'array_Var';
+
+	protected $post_type = 'test_post4';
 }

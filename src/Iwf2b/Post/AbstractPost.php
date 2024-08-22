@@ -460,8 +460,8 @@ abstract class AbstractPost extends AbstractSingleton {
 	 *
 	 * @return mixed
 	 */
-	public static function get_meta( $post_id, $key, $args = [] ) {
-		$post = static::get( $post_id );
+	public static function get_meta( $object_id, $key, $args = [] ) {
+		$post = static::get( $object_id );
 
 		if ( ! $post ) {
 			return null;

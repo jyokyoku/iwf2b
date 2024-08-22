@@ -68,46 +68,4 @@ abstract class AbstractSingleton {
 	 * Initialize
 	 */
 	abstract protected function initialize();
-
-	/**
-	 * Defined static getter and setter
-	 *
-	 * Usage:
-	 * __CLASS__::get_{property}()
-	 * __CLASS__::get_{property}( $value )
-	 *
-	 * @param $method
-	 * @param $args
-	 *
-	 * @return mixed
-	 * @throws \Exception
-	 */
-	public static function __callStatic( $method, $args ) {
-		if ( preg_match( '/^([gs]et)_(.*)$/', $method, $match ) ) {
-			try {
-				$reflector = new \ReflectionClass( get_called_class() );
-
-			} catch ( \ReflectionException $exception ) {
-				throw $exception;
-			}
-
-			$property = $match[2];
-
-			if ( $reflector->hasProperty( $property ) ) {
-				$property = $reflector->getProperty( $property );
-				$property->setAccessible( true );
-
-				switch ( $match[1] ) {
-					case 'get':
-						return $property->getValue();
-
-					case 'set':
-						$property->setValue( $args[0] );
-				}
-
-			} else {
-				throw new \InvalidArgumentException( "Property {$property} doesn't exist" );
-			}
-		}
-	}
 }
