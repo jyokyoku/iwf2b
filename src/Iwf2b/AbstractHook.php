@@ -108,6 +108,13 @@ abstract class AbstractHook extends AbstractSingleton {
 			add_action( 'save_preview_postmeta', [ $this, 'acf_save_preview_postmeta' ] );
 			add_action( 'save_post', [ $this, 'acf_field_auto_export' ], 1000, 3 );
 
+			add_filter( 'iwf2b/meta/set', [ $this, 'set_meta_with_acf' ], 10, 5 );
+			add_filter( 'iwf2b/meta/get', [ $this, 'get_meta_with_acf' ], 10, 4 );
+			add_filter( 'iwf2b/meta/clear', [ $this, 'clear_meta_with_acf' ], 10, 3 );
+			add_filter( 'iwf2b/option/set', [ $this, 'set_option_with_acf' ], 10, 4 );
+			add_filter( 'iwf2b/option/get', [ $this, 'get_option_with_acf' ], 10, 3 );
+			add_filter( 'iwf2b/option/clear', [ $this, 'clear_option_with_acf' ], 10, 2 );
+
 			if ( ! apply_filters( 'acf_activated', false ) ) {
 				add_filter( 'acf/settings/show_admin', '__return_false' );
 			}
@@ -125,7 +132,7 @@ abstract class AbstractHook extends AbstractSingleton {
 
 	/**
 	 * @param string $slug
-	 * @param int    $post_ID
+	 * @param int $post_ID
 	 * @param        $post_status
 	 * @param        $post_type
 	 *
@@ -261,7 +268,7 @@ abstract class AbstractHook extends AbstractSingleton {
 		}
 
 		$field_groups = acf_get_field_groups();
-		$json         = array();
+		$json         = [];
 
 		foreach ( $field_groups as $field_group ) {
 			$field_group['fields'] = acf_get_fields( $field_group );
@@ -272,6 +279,111 @@ abstract class AbstractHook extends AbstractSingleton {
 		$file_name = 'acf-export-9' . $hash . '.json';
 
 		file_put_contents( trailingslashit( get_stylesheet_directory() ) . $file_name, acf_json_encode( $json ) );
+	}
+
+	/**
+	 * Processes the Option::set() using ACF
+	 *
+	 * @param bool $result
+	 * @param string $key
+	 * @param mixed $value
+	 * @param string $class
+	 *
+	 * @return bool
+	 */
+	public function set_option_with_acf( $result, $key, $value, $class ) {
+		if ( $result === false && function_exists( 'update_field' ) ) {
+			$result = update_field( $key, $value, 'option' );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Processes the Option::get() using ACF
+	 *
+	 * @param mixed $value
+	 * @param string $key
+	 * @param string $class
+	 *
+	 * @return mixed
+	 */
+	public function get_option_with_acf( $value, $key, $class ) {
+		if ( $value === null && function_exists( 'get_field' ) ) {
+			$value = get_field( $key, 'option' );
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Processes the Option::clear() using ACF
+	 *
+	 * @param bool $result
+	 * @param string $class
+	 *
+	 * @return mixed
+	 */
+	public function clear_option_with_acf( $result, $class ) {
+		if ( $result === false && function_exists( 'delete_field' ) ) {
+			$result = delete_field( 'option' );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Processes the DefineMetaTrait::set_meta() using ACF
+	 *
+	 * @param bool $result
+	 * @param int $object_id
+	 * @param string $key
+	 * @param mixed $value
+	 * @param string $class
+	 *
+	 * @return mixed
+	 */
+	public function set_meta_with_acf( $result, $object_id, $key, $value, $class ) {
+		if ( $result === false && function_exists( 'update_field' ) ) {
+			$result = update_field( $key, $value, $object_id );
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Processes the DefineMetaTrait::get_meta() using ACF
+	 *
+	 * @param mixed $value
+	 * @param int $object_id
+	 * @param string $key
+	 * @param string $class
+	 *
+	 * @return mixed
+	 */
+	public function get_meta_with_acf( $value, $object_id, $key, $class ) {
+		if ( $value === null && function_exists( 'get_field' ) ) {
+			$value = get_field( $key, $object_id );
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Processes the DefineMetaTrait::clear_meta() using ACF
+	 *
+	 * @param bool $result
+	 * @param int $object_id
+	 * @param string $class
+	 *
+	 * @return mixed
+	 */
+	public function clear_meta_with_acf( $result, $object_id, $class ) {
+		if ( $result === false && function_exists( 'delete_field' ) ) {
+			$result = delete_field( $object_id );
+		}
+
+		return $result;
 	}
 
 	/**
@@ -360,7 +472,7 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * チェックされたタクソノミーが一番上にこないようにする
 	 *
 	 * @param array $args
-	 * @param int   $post_id
+	 * @param int $post_id
 	 *
 	 * @return array
 	 */
@@ -406,7 +518,7 @@ abstract class AbstractHook extends AbstractSingleton {
 	/**
 	 * SQLフィルター
 	 *
-	 * @param array     $sql
+	 * @param array $sql
 	 * @param \WP_Query $the_query
 	 *
 	 * @return array
