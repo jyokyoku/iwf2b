@@ -31,9 +31,9 @@ abstract class AbstractOption {
 	 * @return bool
 	 */
 	public static function set( $key, $value ) {
-		$result = (bool) apply_filters( 'iwf2b/option/set', false, $key, $value, static::class );
+		$result = apply_filters( 'iwf2b/option/set', null, $key, $value, static::class );
 
-		if ( ! $result ) {
+		if ( $result === null ) {
 			$result = \update_option( $key, $value );
 		}
 
@@ -54,9 +54,9 @@ abstract class AbstractOption {
 				continue;
 			}
 
-			$result = (bool) apply_filters( 'iwf2b/option/delete', false, $value, static::class );
+			$result = apply_filters( 'iwf2b/option/delete', null, $value, static::class );
 
-			if ( ! $result ) {
+			if ( $result === null ) {
 				\delete_option( $value );
 			}
 		}

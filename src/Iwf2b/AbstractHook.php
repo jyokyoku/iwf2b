@@ -292,7 +292,7 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * @return bool
 	 */
 	public function set_option_with_acf( $result, $key, $value, $class ) {
-		if ( $result === false && function_exists( 'update_field' ) ) {
+		if ( $result === null && function_exists( 'update_field' ) ) {
 			$result = update_field( $key, $value, 'option' );
 		}
 
@@ -325,7 +325,7 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * @return mixed
 	 */
 	public function clear_option_with_acf( $result, $class ) {
-		if ( $result === false && function_exists( 'delete_field' ) ) {
+		if ( $result === null && function_exists( 'delete_field' ) ) {
 			$result = delete_field( 'option' );
 		}
 
@@ -344,7 +344,7 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * @return mixed
 	 */
 	public function set_meta_with_acf( $result, $object_id, $key, $value, $class ) {
-		if ( $result === false && function_exists( 'update_field' ) ) {
+		if ( $result === null && function_exists( 'update_field' ) ) {
 			$result = update_field( $key, $value, $object_id );
 		}
 
@@ -379,7 +379,7 @@ abstract class AbstractHook extends AbstractSingleton {
 	 * @return mixed
 	 */
 	public function clear_meta_with_acf( $result, $object_id, $class ) {
-		if ( $result === false && function_exists( 'delete_field' ) ) {
+		if ( $result === null && function_exists( 'delete_field' ) ) {
 			$result = delete_field( $object_id );
 		}
 
