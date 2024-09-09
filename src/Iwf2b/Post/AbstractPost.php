@@ -454,44 +454,6 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	/**
-	 * @param int|\WP_Post $post
-	 * @param string       $key
-	 * @param mixed        $args
-	 *
-	 * @return mixed
-	 */
-	public static function get_meta( $object_id, $key, $args = [] ) {
-		$post = static::get( $object_id );
-
-		if ( ! $post ) {
-			return null;
-		}
-
-		if ( ! is_array( $args ) ) {
-			$args = [ 'default' => $args ];
-		}
-
-		$acf_options = Arr::merge_intersect_key( [
-			'noautop' => false,
-			'raw'     => false,
-		], (array) Arr::get( $args, 'acf', [] ) );
-
-		unset( $args['acf'] );
-
-		if ( $acf_options['noautop'] ) {
-			remove_filter( 'acf_the_content', 'wpautop' );
-		}
-
-		$value = function_exists( 'get_field' ) ? get_field( $key, $post, ! $acf_options['raw'] ) : get_post_meta( $post->ID, $key, true );
-
-		if ( $acf_options['noautop'] ) {
-			add_filter( 'acf_the_content', 'wpautop' );
-		}
-
-		return Util::filter( $value, $args );
-	}
-
-	/**
 	 * @param int|\WP_Post $post_id
 	 * @param bool         $include_current
 	 * @param bool         $reverse

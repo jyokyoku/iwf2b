@@ -42,7 +42,7 @@ trait DefineMetaTrait {
 	/**
 	 * Get the meta
 	 *
-	 * @param int $object_id
+	 * @param int|\WP_Post|\WP_Term|\WP_User $object_id
 	 * @param string $key
 	 *
 	 * @return mixed
@@ -52,6 +52,14 @@ trait DefineMetaTrait {
 
 		if ( $value !== null ) {
 			return $value;
+		}
+
+		if ( $object_id instanceof \WP_Post ) {
+			$object_id = $object_id->ID;
+		} elseif ( $object_id instanceof \WP_Term ) {
+			$object_id = $object_id->term_id;
+		} elseif ( $object_id instanceof \WP_User ) {
+			$object_id = $object_id->ID;
 		}
 
 		switch ( true ) {
@@ -72,16 +80,24 @@ trait DefineMetaTrait {
 	/**
 	 * Set the meta
 	 *
-	 * @param int $object_id
+	 * @param int|\WP_Post|\WP_Term|\WP_User $object_id
 	 * @param string $key
 	 * @param mixed $value
 	 *
 	 * @return bool
 	 */
 	public static function set_meta( $object_id, $key, $value ) {
-		$result = (bool) apply_filters( 'iwf2b/meta/set', false, $object_id, $key, $value, static::class );
+		$result = apply_filters( 'iwf2b/meta/set', null, $object_id, $key, $value, static::class );
 
-		if ( ! $result ) {
+		if ( $result === null ) {
+			if ( $object_id instanceof \WP_Post ) {
+				$object_id = $object_id->ID;
+			} elseif ( $object_id instanceof \WP_Term ) {
+				$object_id = $object_id->term_id;
+			} elseif ( $object_id instanceof \WP_User ) {
+				$object_id = $object_id->ID;
+			}
+
 			switch ( true ) {
 				case is_subclass_of( static::class, AbstractPost::class ):
 					$result = \update_post_meta( $object_id, $key, $value );
@@ -101,7 +117,7 @@ trait DefineMetaTrait {
 	/**
 	 * Clear the all meta
 	 *
-	 * @param int $object_id
+	 * @param int|\WP_Post|\WP_Term|\WP_User $object_id
 	 *
 	 * @return void
 	 */
@@ -114,9 +130,17 @@ trait DefineMetaTrait {
 				continue;
 			}
 
-			$result = (bool) apply_filters( 'iwf2b/meta/delete', false, $value, static::class );
+			$result = apply_filters( 'iwf2b/meta/delete', null, $value, static::class );
 
-			if ( ! $result ) {
+			if ( $result === null ) {
+				if ( $object_id instanceof \WP_Post ) {
+					$object_id = $object_id->ID;
+				} elseif ( $object_id instanceof \WP_Term ) {
+					$object_id = $object_id->term_id;
+				} elseif ( $object_id instanceof \WP_User ) {
+					$object_id = $object_id->ID;
+				}
+
 				switch ( true ) {
 					case is_subclass_of( static::class, AbstractPost::class ):
 						\delete_post_meta( $object_id, $value );
