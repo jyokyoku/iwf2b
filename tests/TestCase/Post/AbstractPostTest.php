@@ -2,7 +2,6 @@
 
 namespace Iwf2b\Tests\TestCase\Post;
 
-use Iwf2b\DefineMetaTrait;
 use Iwf2b\Post\AbstractPost;
 use org\bovigo\vfs\vfsStream;
 
@@ -235,6 +234,30 @@ class AbstractPostTest extends \WP_UnitTestCase {
 
 		$this->assertEmpty( TestPost4::MK_SCALAR_VAR( $post_id ) );
 		$this->assertEmpty( TestPost4::MK_ARRAY_VAR( $post_id ) );
+	}
+
+	public function test_meta_operations_using_meta_key_constant_with_post_object() {
+		TestPost4::get_instance();
+
+		$post_id     = $this->factory->post->create( [
+			'post_type' => TestPost4::get_slug(),
+		] );
+		$post_object = get_post( $post_id );
+
+		$expected = 'test1234';
+		TestPost4::MK_SCALAR_VAR( $post_object, $expected );
+
+		$this->assertEquals( $expected, TestPost4::MK_SCALAR_VAR( $post_object ) );
+
+		$expected = [ 1 => 'var1', 2 => 'var2' ];
+		TestPost4::MK_ARRAY_VAR( $post_object, $expected );
+
+		$this->assertEquals( $expected, TestPost4::MK_ARRAY_VAR( $post_object ) );
+
+		TestPost4::clear_meta( $post_object );
+
+		$this->assertEmpty( TestPost4::MK_SCALAR_VAR( $post_object ) );
+		$this->assertEmpty( TestPost4::MK_ARRAY_VAR( $post_object ) );
 	}
 
 	protected function create_virtual_image( $file_name, $type = 'jpg', array $args = [] ) {

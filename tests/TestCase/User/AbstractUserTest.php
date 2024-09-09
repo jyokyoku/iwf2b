@@ -75,6 +75,33 @@ class AbstractUserTest extends \WP_UnitTestCase {
 		$this->assertEmpty( TestUser2::MK_SCALAR_VAR( $user_id ) );
 		$this->assertEmpty( TestUser2::MK_ARRAY_VAR( $user_id ) );
 	}
+
+	public function test_meta_operations_using_meta_key_constant_with_user_object() {
+		TestUser2::get_instance();
+
+		$user_id     = $this->factory->user->create( [
+			'user_login' => 'test3',
+			'user_email' => 'test3@test.com',
+			'user_pass'  => 'pass',
+			'role'       => TestUser2::get_role(),
+		] );
+		$user_object = get_user_by( 'id', $user_id );
+
+		$expected = 'test1234';
+		TestUser2::MK_SCALAR_VAR( $user_object, $expected );
+
+		$this->assertEquals( $expected, TestUser2::MK_SCALAR_VAR( $user_object ) );
+
+		$expected = [ 1 => 'var1', 2 => 'var2' ];
+		TestUser2::MK_ARRAY_VAR( $user_object, $expected );
+
+		$this->assertEquals( $expected, TestUser2::MK_ARRAY_VAR( $user_object ) );
+
+		TestUser2::clear_meta( $user_object );
+
+		$this->assertEmpty( TestUser2::MK_SCALAR_VAR( $user_object ) );
+		$this->assertEmpty( TestUser2::MK_ARRAY_VAR( $user_object ) );
+	}
 }
 
 class TestUser extends AbstractUser {

@@ -93,6 +93,32 @@ class AbstractTaxTest extends \WP_UnitTestCase {
 		$this->assertEmpty( RegisterTextTax5::MK_SCALAR_VAR( $term_id ) );
 		$this->assertEmpty( RegisterTextTax5::MK_ARRAY_VAR( $term_id ) );
 	}
+
+	public function test_meta_operations_using_meta_key_constant_with_term_object() {
+		RegisterTextTax5::get_instance()->register_taxonomy();
+
+		$term_id     = $this->factory->term->create( [
+			'taxonomy' => RegisterTextTax5::get_taxonomy(),
+			'name'     => 'test_term',
+			'slug'     => 'test_term_slug',
+		] );
+		$term_object = get_term( $term_id );
+
+		$expected = 'test1234';
+		RegisterTextTax5::MK_SCALAR_VAR( $term_object, $expected );
+
+		$this->assertEquals( $expected, RegisterTextTax5::MK_SCALAR_VAR( $term_object ) );
+
+		$expected = [ 1 => 'var1', 2 => 'var2' ];
+		RegisterTextTax5::MK_ARRAY_VAR( $term_object, $expected );
+
+		$this->assertEquals( $expected, RegisterTextTax5::MK_ARRAY_VAR( $term_object ) );
+
+		RegisterTextTax5::clear_meta( $term_object );
+
+		$this->assertEmpty( RegisterTextTax5::MK_SCALAR_VAR( $term_object ) );
+		$this->assertEmpty( RegisterTextTax5::MK_ARRAY_VAR( $term_object ) );
+	}
 }
 
 class TestTax extends AbstractTax {
