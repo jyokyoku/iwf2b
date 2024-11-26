@@ -119,6 +119,19 @@ class AbstractTaxTest extends \WP_UnitTestCase {
 		$this->assertEmpty( RegisterTextTax5::MK_SCALAR_VAR( $term_object ) );
 		$this->assertEmpty( RegisterTextTax5::MK_ARRAY_VAR( $term_object ) );
 	}
+
+	public function test_get_term_link() {
+		$term_id = $this->factory->term->create( [
+			'taxonomy' => 'test_tax',
+			'name'     => 'test_term',
+			'slug'     => 'test_term_slug',
+		] );
+
+		$term_data = get_term( $term_id );
+
+		$this->assertEquals( get_term_link( $term_data ), TestTax::get_term_link( [ 'include' => $term_id ] ) );
+		$this->assertEquals( get_term_link( $term_data ), TestTax::get_term_link( [ 'slug' => 'test_term_slug' ] ) );
+	}
 }
 
 class TestTax extends AbstractTax {

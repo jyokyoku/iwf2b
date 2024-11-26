@@ -102,6 +102,17 @@ class AbstractUserTest extends \WP_UnitTestCase {
 		$this->assertEmpty( TestUser2::MK_SCALAR_VAR( $user_object ) );
 		$this->assertEmpty( TestUser2::MK_ARRAY_VAR( $user_object ) );
 	}
+
+	public function test_get_author_link() {
+		$user_id = $this->factory->user->create( [
+			'user_login' => 'test4',
+			'user_email' => 'test4@test.com',
+			'user_pass'  => 'pass',
+			'role'       => 'test_role',
+		] );
+
+		$this->assertEquals( get_author_posts_url( $user_id ), TestUser::get_author_link( [ 'ID' => $user_id ] ) );
+	}
 }
 
 class TestUser extends AbstractUser {

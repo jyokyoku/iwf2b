@@ -3,10 +3,8 @@
 namespace Iwf2b\Post;
 
 use Iwf2b\AbstractSingleton;
-use Iwf2b\Arr;
 use Iwf2b\DefineMetaTrait;
 use Iwf2b\Tax\AbstractTax;
-use Iwf2b\Util;
 
 /**
  * Class AbstractPost
@@ -129,9 +127,9 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	/**
-	 * @param int      $post_id
+	 * @param int $post_id
 	 * @param \WP_Post $post
-	 * @param bool     $update
+	 * @param bool $update
 	 */
 	public function insert_default_meta( $post_id, $post, $update ) {
 		if ( ! $this->insert_default_meta || $update ) {
@@ -301,8 +299,8 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	/**
 	 * @param int|\WP_Post $post_id
-	 * @param string       $taxonomy
-	 * @param array        $args
+	 * @param string $taxonomy
+	 * @param array $args
 	 *
 	 * @return array
 	 */
@@ -335,8 +333,8 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	/**
 	 * @param int|\WP_Post $post_id
-	 * @param string       $taxonomy
-	 * @param array        $args
+	 * @param string $taxonomy
+	 * @param array $args
 	 *
 	 * @return null|\WP_Term
 	 */
@@ -352,8 +350,8 @@ abstract class AbstractPost extends AbstractSingleton {
 
 	/**
 	 * @param int|\WP_Post $post_id
-	 * @param bool|string  $search_post_key
-	 * @param string       $dummy_image
+	 * @param bool|string $search_post_key
+	 * @param string $dummy_image
 	 *
 	 * @return array
 	 */
@@ -454,9 +452,25 @@ abstract class AbstractPost extends AbstractSingleton {
 	}
 
 	/**
+	 * @param array $args
+	 * @param string $default
+	 *
+	 * @return string
+	 */
+	public static function get_permalink( array $args = [], $default = '' ) {
+		$post = static::get_post( $args );
+
+		if ( $post ) {
+			return get_permalink( $post );
+		}
+
+		return $default;
+	}
+
+	/**
 	 * @param int|\WP_Post $post_id
-	 * @param bool         $include_current
-	 * @param bool         $reverse
+	 * @param bool $include_current
+	 * @param bool $reverse
 	 *
 	 * @return \WP_Post[]
 	 */
