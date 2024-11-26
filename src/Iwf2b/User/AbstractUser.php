@@ -3,9 +3,7 @@
 namespace Iwf2b\User;
 
 use Iwf2b\AbstractSingleton;
-use Iwf2b\Arr;
 use Iwf2b\DefineMetaTrait;
-use Iwf2b\Util;
 
 /**
  * Class AbstractUser
@@ -217,7 +215,7 @@ class AbstractUser extends AbstractSingleton {
 	/**
 	 * @param string $user_login
 	 * @param string $user_pass
-	 * @param array  $userdata
+	 * @param array $userdata
 	 *
 	 * @return int|\WP_Error
 	 */
@@ -234,5 +232,21 @@ class AbstractUser extends AbstractSingleton {
 		unset( $userdata['ID'] );
 
 		return wp_insert_user( $userdata );
+	}
+
+	/**
+	 * @param array $args
+	 * @param $default
+	 *
+	 * @return mixed|string
+	 */
+	public static function get_author_link( array $args = [], $default = '' ) {
+		$user = static::get_user( $args );
+
+		if ( $user ) {
+			return get_author_posts_url( $user->ID );
+		}
+
+		return $default;
 	}
 }

@@ -3,10 +3,8 @@
 namespace Iwf2b\Tax;
 
 use Iwf2b\AbstractSingleton;
-use Iwf2b\Arr;
 use Iwf2b\DefineMetaTrait;
 use Iwf2b\Post\AbstractPost;
-use Iwf2b\Util;
 
 /**
  * Class AbstractTax
@@ -117,8 +115,8 @@ abstract class AbstractTax extends AbstractSingleton {
 	}
 
 	/**
-	 * @param int    $term_id
-	 * @param int    $tt_id
+	 * @param int $term_id
+	 * @param int $tt_id
 	 * @param string $taxonomy
 	 */
 	public function insert_default_meta( $term_id, $tt_id, $taxonomy ) {
@@ -300,11 +298,29 @@ abstract class AbstractTax extends AbstractSingleton {
 
 	/**
 	 * @param string $name
-	 * @param array  $args
+	 * @param array $args
 	 *
 	 * @return array|\WP_Error
 	 */
 	public static function insert( $name, array $args = [] ) {
 		return wp_insert_term( $name, static::get_instance()->taxonomy, $args );
+	}
+
+	/**
+	 * @param array $args
+	 * @param string $default
+	 *
+	 * @return string
+	 */
+	public static function get_term_link( array $args = [], $default = '' ) {
+		$args['hide_empty'] = false;
+
+		$term = static::get_term( $args );
+
+		if ( $term ) {
+			return get_term_link( $term );
+		}
+
+		return $default;
 	}
 }

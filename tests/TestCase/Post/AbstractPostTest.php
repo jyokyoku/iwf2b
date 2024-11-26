@@ -260,6 +260,15 @@ class AbstractPostTest extends \WP_UnitTestCase {
 		$this->assertEmpty( TestPost4::MK_ARRAY_VAR( $post_object ) );
 	}
 
+	public function test_get_permalink() {
+		$post_id = $this->factory->post->create( [
+			'post_type'  => 'test_post',
+			'post_title' => 'Test',
+		] );
+
+		$this->assertEquals( get_permalink( $post_id ), TestPost::get_permalink( [ 'include' => $post_id ] ) );
+	}
+
 	protected function create_virtual_image( $file_name, $type = 'jpg', array $args = [] ) {
 		$width  = isset( $args['width'] ) && $args['width'] > 0 ? (int) $args['width'] : 100;
 		$height = isset( $args['height'] ) && $args['height'] > 0 ? (int) $args['height'] : 100;
