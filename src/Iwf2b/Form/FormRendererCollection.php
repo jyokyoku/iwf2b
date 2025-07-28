@@ -155,7 +155,7 @@ class FormRendererCollection implements FormRendererInterface, \ArrayAccess, \It
 	/**
 	 * @return \ArrayIterator|FormRendererInterface[]
 	 */
-	public function getIterator() {
+	public function getIterator(): \Traversable {
 		return new \ArrayIterator( $this->forms );
 	}
 
@@ -164,7 +164,7 @@ class FormRendererCollection implements FormRendererInterface, \ArrayAccess, \It
 	 *
 	 * @return FormRendererInterface|null
 	 */
-	public function offsetGet( $index ) {
+	public function offsetGet( $index ): mixed {
 		return isset( $this->forms[ $index ] ) ? $this->forms[ $index ] : null;
 	}
 
@@ -173,7 +173,7 @@ class FormRendererCollection implements FormRendererInterface, \ArrayAccess, \It
 	 *
 	 * @return bool
 	 */
-	public function offsetExists( $index ) {
+	public function offsetExists( $index ): bool {
 		return isset( $this->forms[ $index ] );
 	}
 
@@ -181,7 +181,7 @@ class FormRendererCollection implements FormRendererInterface, \ArrayAccess, \It
 	 * @param string $index
 	 * @param FormRendererInterface $value
 	 */
-	public function offsetSet( $index, $value ) {
+	public function offsetSet( $index, $value ): void {
 		if ( ! $value instanceof FormRendererInterface ) {
 			throw new \InvalidArgumentException( 'The value must be an Object and that implements the "FormRendererInterface"' );
 		}
@@ -197,14 +197,14 @@ class FormRendererCollection implements FormRendererInterface, \ArrayAccess, \It
 	/**
 	 * @param string $index
 	 */
-	public function offsetUnset( $index ) {
+	public function offsetUnset( $index ): void {
 		unset( $this->forms[ $index ] );
 	}
 
 	/**
 	 * @return int
 	 */
-	public function count() {
+	public function count(): int {
 		return count( $this->forms );
 	}
 }
