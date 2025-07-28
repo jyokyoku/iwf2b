@@ -50,7 +50,7 @@ class HtmlNodeCollection implements HtmlNodeCollectionInterface {
 	/**
 	 * @return \ArrayIterator|HtmlNodeInterface[]
 	 */
-	public function getIterator() {
+	public function getIterator(): \Traversable {
 		return new \ArrayIterator( $this->nodes );
 	}
 
@@ -59,7 +59,7 @@ class HtmlNodeCollection implements HtmlNodeCollectionInterface {
 	 *
 	 * @return HtmlNodeInterface|null
 	 */
-	public function offsetGet( $index ) {
+	public function offsetGet( $index ): mixed {
 		return isset( $this->nodes[ $index ] ) ? $this->nodes[ $index ] : null;
 	}
 
@@ -68,15 +68,15 @@ class HtmlNodeCollection implements HtmlNodeCollectionInterface {
 	 *
 	 * @return bool
 	 */
-	public function offsetExists( $index ) {
-		return isset( $this->fields[ $index ] );
+	public function offsetExists( $index ): bool {
+		return isset( $this->nodes[ $index ] );
 	}
 
 	/**
 	 * @param string $index
 	 * @param HtmlNodeInterface $value
 	 */
-	public function offsetSet( $index, $value ) {
+	public function offsetSet( $index, $value ): void {
 		if ( ! $value instanceof HtmlNodeInterface ) {
 			throw new \InvalidArgumentException( 'The value must be an Object and that implements the "HtmlNodeInterface"' );
 		}
@@ -92,14 +92,14 @@ class HtmlNodeCollection implements HtmlNodeCollectionInterface {
 	/**
 	 * @param string $index
 	 */
-	public function offsetUnset( $index ) {
+	public function offsetUnset( $index ): void {
 		unset( $this->nodes[ $index ] );
 	}
 
 	/**
 	 * @return int
 	 */
-	public function count() {
+	public function count(): int {
 		return count( $this->nodes );
 	}
 }

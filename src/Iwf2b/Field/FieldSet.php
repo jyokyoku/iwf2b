@@ -158,7 +158,7 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 	/**
 	 * @return \ArrayIterator|FieldInterface[]
 	 */
-	public function getIterator() {
+	public function getIterator(): \Traversable {
 		return new \ArrayIterator( $this->fields );
 	}
 
@@ -167,7 +167,7 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 	 *
 	 * @return FieldInterface|null
 	 */
-	public function offsetGet( $index ) {
+	public function offsetGet( $index ): mixed {
 		return isset( $this->fields[ $index ] ) ? $this->fields[ $index ] : null;
 	}
 
@@ -176,7 +176,7 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 	 *
 	 * @return bool
 	 */
-	public function offsetExists( $index ) {
+	public function offsetExists( $index ): bool {
 		return isset( $this->fields[ $index ] );
 	}
 
@@ -184,7 +184,7 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 	 * @param string $index
 	 * @param FieldInterface $value
 	 */
-	public function offsetSet( $index, $value ) {
+	public function offsetSet( $index, $value ): void {
 		if ( ! $value instanceof FieldInterface ) {
 			throw new \InvalidArgumentException( 'The value must be an Object and that implements the "FieldInterface"' );
 		}
@@ -199,14 +199,14 @@ class FieldSet implements \ArrayAccess, \IteratorAggregate, \Countable {
 	/**
 	 * @param string $index
 	 */
-	public function offsetUnset( $index ) {
+	public function offsetUnset( $index ): void {
 		unset( $this->fields[ $index ] );
 	}
 
 	/**
 	 * @return int
 	 */
-	public function count() {
+	public function count(): int {
 		return count( $this->fields );
 	}
 }
